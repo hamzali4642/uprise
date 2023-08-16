@@ -171,7 +171,7 @@ class BandDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
+        const Padding(
           padding: EdgeInsets.symmetric(horizontal: Constants.horizontalPadding,),
           child: Text(
             "Members",
@@ -182,13 +182,13 @@ class BandDetails extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         SizedBox(
           height: 200,
           child: ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: Constants.horizontalPadding,),
+            padding: const EdgeInsets.symmetric(horizontal: Constants.horizontalPadding,),
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
               return SongsWidget();
