@@ -3,9 +3,9 @@ import 'package:uprise/screens/dashboard/discovery.dart';
 import 'package:uprise/screens/dashboard/home.dart';
 import 'package:uprise/screens/dashboard/home/promos.dart';
 import 'package:uprise/screens/dashboard/home/statistics.dart';
-import 'package:uprise/screens/dashboard/profile/user_profile.dart';
 import '../screens/dashboard/home/event.dart';
 import '../screens/dashboard/home/feed.dart';
+import '../screens/dashboard/profile_details/profile_details.dart';
 
 class DashboardProvider with ChangeNotifier {
   int _selectedIndex = 0;
@@ -21,7 +21,7 @@ class DashboardProvider with ChangeNotifier {
     const Home(),
     null,
     const Discovery(),
-    const UserProfile(),
+    const ProfileDetails(),
 
   ];
 
