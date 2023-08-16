@@ -1,104 +1,109 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_details.dart';
-import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 import '../../../generated/assets.dart';
 import '../../../helpers/colors.dart';
 import '../../../helpers/constants.dart';
 import '../../auth/signin.dart';
 
-class User_Profile extends StatelessWidget {
-  const User_Profile({Key? key}) : super(key: key);
+class UserProfile extends StatelessWidget {
+  const UserProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-                left: Constants.homePadding, right: Constants.homePadding),
-            child: Column(
-              children: [
-                const SizedBox(height: 30),
-                Row(
+      child: Consumer<DataProvider>(
+        builder: (ctx,value,child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: Constants.homePadding, right: Constants.homePadding),
+                child: Column(
                   children: [
-                    Container(
-                      height: 70,
-                      width: 70,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const ClipOval(
-                        child: Image(
-                          image: AssetImage(Assets.imagesUsers),
+                    const SizedBox(height: 30),
+                    Row(
+                      children: [
+                        Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const ClipOval(
+                            child: Image(
+                              image: AssetImage(Assets.imagesUsers),
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 20),
+                        headerTitle(value.userModel!.username),
+                      ],
                     ),
-                    const SizedBox(width: 20),
-                    headerTitle(),
+                    const SizedBox(height: 30),
+                    detailRow(value.userModel!.email, Icons.email_outlined),
+                    const SizedBox(height: 10),
+                    detailRow(value.userModel?.phone ?? "", Icons.phone),
                   ],
                 ),
-                const SizedBox(height: 30),
-                detailRow("fahad.codingsquare@gmail.com", Icons.email_outlined),
-                const SizedBox(height: 10),
-                detailRow("", Icons.phone),
-              ],
-            ),
-          ),
-          const SizedBox(height: 15),
-          Container(
-            height: 1,
-            color: CColors.textColor.withOpacity(0.13),
-          ),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(child: followDetails()),
-                Container(
-                  width: 1,
-                  color: CColors.textColor.withOpacity(0.13),
+              ),
+              const SizedBox(height: 15),
+              Container(
+                height: 1,
+                color: CColors.textColor.withOpacity(0.13),
+              ),
+              IntrinsicHeight(
+                child: Row(
+                  children: [
+                    Expanded(child: followDetails()),
+                    Container(
+                      width: 1,
+                      color: CColors.textColor.withOpacity(0.13),
+                    ),
+                    Expanded(child: followDetails()),
+                  ],
                 ),
-                Expanded(child: followDetails()),
-              ],
-            ),
-          ),
-          Container(
-            height: 1,
-            color: CColors.textColor.withOpacity(0.13),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: Constants.homePadding, right: Constants.homePadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "SOCIAL PLATFORMS",
-                  style: TextStyle(
-                    color: CColors.textColor,
-                  ),
+              ),
+              Container(
+                height: 1,
+                color: CColors.textColor.withOpacity(0.13),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: Constants.homePadding, right: Constants.homePadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "SOCIAL PLATFORMS",
+                      style: TextStyle(
+                        color: CColors.textColor,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    platform("Facebook:"),
+                    const SizedBox(height: 20),
+                    platform("Instagram:"),
+                    const SizedBox(height: 20),
+                    platform("Twitter:"),
+                    const SizedBox(height: 30),
+                    btn("Change Password",context),
+                    const SizedBox(height: 10),
+                    btn("Instruments interested in",context),
+                    const SizedBox(height: 10,),
+                    btn("Logout",context),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                platform("Facebook:"),
-                const SizedBox(height: 20),
-                platform("Instagram:"),
-                const SizedBox(height: 20),
-                platform("Twitter:"),
-                const SizedBox(height: 30),
-                btn("Change Password",context),
-                const SizedBox(height: 10),
-                btn("Instruments interested in",context),
-                const SizedBox(height: 10,),
-                btn("Logout",context),
-              ],
-            ),
-          )
-        ],
+              )
+            ],
+          );
+        }
       ),
     );
   }
