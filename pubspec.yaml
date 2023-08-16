@@ -42,10 +42,10 @@ dependencies:
 
   #firebase
   firebase_core: ^2.15.0
-#  firebase_auth: ^4.7.2
-#  firebase_messaging: ^14.6.5
-#  firebase_storage: ^11.2.5
-#  cloud_firestore: ^4.8.4
+  firebase_auth: ^4.7.2
+  firebase_messaging: ^14.6.5
+  firebase_storage: ^11.2.5
+  cloud_firestore: ^4.8.4
 
   google_sign_in: ^6.1.4
   flutter_svg: ^2.0.7
@@ -61,3 +61,18 @@ flutter:
 
   assets:
      - assets/images/
+  fonts:
+    - family: Oswald
+      fonts:
+        - asset: assets/fonts/OswaldRegular.ttf
+          weight: 400
+        - asset: assets/fonts/OswaldBold.ttf
+          weight: 700
+        - asset: assets/fonts/OswaldSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/OswaldMedium.ttf
+          weight: 500
+        - asset: assets/fonts/OswaldLight.ttf
+          weight: 300
+        - asset: assets/fonts/OswaldExtraLight.ttf
+          weight: 200
