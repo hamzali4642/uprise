@@ -26,6 +26,10 @@ class _SignInState extends State<SignIn> {
   bool emailError = false;
   bool passwordError = false;
 
+
+  bool hidePassword = true;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,6 +116,21 @@ class _SignInState extends State<SignIn> {
           const SizedBox(height: 30),
           buildText("Password"),
           TextFieldWidget(
+            isPass: hidePassword,
+            suffixWidget: GestureDetector(
+              onTap: () {
+                setState(() {
+                  hidePassword = !hidePassword;
+                });
+              },
+              child: Icon(
+                  hidePassword
+                      ? Icons.remove_red_eye
+                      : Icons.remove_red_eye_outlined,
+                  color: hidePassword
+                      ? CColors.placeholderTextColor
+                      : CColors.primary),
+            ),
             errorText: "Password must be atleast 8 characters",
             controller: password,
             hint: "Enter your password",

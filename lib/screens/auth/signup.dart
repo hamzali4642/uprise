@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/colors.dart';
+import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/helpers/textstyles.dart';
+import 'package:uprise/models/user_model.dart';
+import 'package:uprise/screens/auth/auth_service.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
+import 'package:utility_extensions/utility_extensions.dart';
 
 import '../../widgets/google_login.dart';
 import '../../widgets/textfield_widget.dart';
@@ -19,12 +24,16 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>(); // Create a GlobalKey for the form
 
   TextEditingController email = TextEditingController();
+  TextEditingController brandName = TextEditingController();
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController cPassword = TextEditingController();
 
   bool emailError = false;
   bool passwordError = false;
+
+  bool registerBandArtist = false;
+  bool privacyPolicy = false;
 
   bool hidePassword = true;
   bool hideCPassword = true;
@@ -74,29 +83,100 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(height: 20),
                   details(),
                   const SizedBox(height: 35),
-                  loginButton(),
-                  const SizedBox(height: 10),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Forgot password?",
-                      style: AppTextStyles.popins(
-                        style: const TextStyle(
-                          decoration: TextDecoration.underline,
+                  Row(
+                    children: [
+                      checkWidget(registerBandArtist, () {
+                        setState(() {
+                          registerBandArtist = !registerBandArtist;
+                        });
+                      }),
+                      const SizedBox(width: 15),
+                      Text(
+                        "Register as a Band or Artist",
+                        style: AppTextStyles.popins(
+                            style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeights.medium,
+                        )),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      checkWidget(privacyPolicy, () {
+                        setState(() {
+                          privacyPolicy = !privacyPolicy;
+                        });
+                      }),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: RichText(
+                          text: const TextSpan(
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeights.medium,
+                            ),
+                            text: "Agree with ",
+                            children: [
+                              TextSpan(
+                                  text: 'Terms & Conditions ',
+                                  style: TextStyle(color: CColors.primary)),
+                              TextSpan(text: 'and '),
+                              TextSpan(
+                                text: 'Privacy Policy',
+                                style: TextStyle(color: CColors.primary),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
+                  const SizedBox(height: 35),
+                  signUpButton(),
+                  const SizedBox(height: 10),
                   bottomRow(),
-                  const SizedBox(height: 20)
+                  const SizedBox(height: 30)
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget textWidget(String str) {
+    return Text(
+      str,
+      style: AppTextStyles.popins(
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeights.medium,
+        ),
+      ),
+    );
+  }
+
+  Widget checkWidget(bool val, Function() onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+          height: 17,
+          width: 17,
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: val ? Colors.white : CColors.placeholderTextColor),
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: val
+              ? const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 12,
+                )
+              : null),
     );
   }
 
@@ -144,11 +224,34 @@ class _SignUpState extends State<SignUp> {
           const SizedBox(height: 30),
           header("Confirm Password"),
           TextFieldWidget(
+            suffixWidget: GestureDetector(
+              onTap: () {
+                setState(() {
+                  hideCPassword = !hideCPassword;
+                });
+              },
+              child: Icon(
+                  hideCPassword
+                      ? Icons.remove_red_eye
+                      : Icons.remove_red_eye_outlined,
+                  color: hideCPassword
+                      ? CColors.placeholderTextColor
+                      : CColors.primary),
+            ),
             isPass: hideCPassword,
             errorText: "Confirm Password must be atleast 8 characters",
             controller: cPassword,
             hint: "Enter your confirm password",
           ),
+          if (registerBandArtist) ...[
+            const SizedBox(height: 30),
+            header("Band name"),
+            TextFieldWidget(
+              errorText: "Band Name is required",
+              controller: brandName,
+              hint: "Enter your Band",
+            ),
+          ]
         ],
       ),
     );
@@ -170,7 +273,7 @@ class _SignUpState extends State<SignUp> {
         TextButton(
           onPressed: () {},
           child: Text(
-            "Don't have an account?",
+            "Already have an account?",
             style: AppTextStyles.popins(
               style: const TextStyle(
                 color: Colors.white,
@@ -181,9 +284,11 @@ class _SignUpState extends State<SignUp> {
           ),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            context.pop();
+          },
           child: Text(
-            "Sign up",
+            "Login",
             style: AppTextStyles.popins(
               style: const TextStyle(
                 decoration: TextDecoration.underline,
@@ -198,19 +303,38 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Widget loginButton() {
+  Widget signUpButton() {
     return SizedBox(
       width: 125,
       height: 45,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
-        onPressed: () {
+        onPressed: () async {
           if (_formKey.currentState!.validate()) {
-            // Form is valid, submit your data or perform actions
+            if (password.text != cPassword.text) {
+              Functions.showSnackBar(context, "Please match the password");
+            } else {
+              try {
+                UserModel userModel = UserModel(
+                    username: username.text,
+                    email: email.text,
+                    isBand: registerBandArtist);
+
+                Functions.showLoaderDialog(context);
+                await AuthService.signUp(context, userModel);
+                Functions.showSnackBar(context, "Success");
+                context.pop();
+              } on FirebaseException catch (e) {
+                context.pop();
+
+                print(e);
+                Functions.showSnackBar(context, "Something went wrong");
+              }
+            }
           }
         },
         child: Text(
-          "Login",
+          "Sign up",
           style: AppTextStyles.popins(
               style: const TextStyle(
                   color: Colors.black, fontWeight: FontWeights.medium)),
