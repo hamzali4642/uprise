@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
+import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
@@ -107,7 +108,7 @@ class _DashboardState extends State<Dashboard> {
               ),
               IconButton(
                 onPressed: (){
-
+                  context.push(child: RadioPreferences());
                 },
                 color: Colors.white,
                 icon: Icon(
