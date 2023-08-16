@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_details.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
+import 'package:utility_extensions/utility_extensions.dart';
 import '../../../generated/assets.dart';
 import '../../../helpers/colors.dart';
 import '../../../helpers/constants.dart';
+import '../../auth/signin.dart';
 
 class User_Profile extends StatelessWidget {
   const User_Profile({Key? key}) : super(key: key);
@@ -87,11 +90,11 @@ class User_Profile extends StatelessWidget {
                 const SizedBox(height: 20),
                 platform("Twitter:"),
                 const SizedBox(height: 30),
-                btn("Change Password"),
+                btn("Change Password",context),
                 const SizedBox(height: 10),
-                btn("Instruments interested in"),
-                const SizedBox(height: 10),
-                btn("Logout"),
+                btn("Instruments interested in",context),
+                const SizedBox(height: 10,),
+                btn("Logout",context),
               ],
             ),
           )
@@ -100,9 +103,12 @@ class User_Profile extends StatelessWidget {
     );
   }
 
-  Widget btn(String str) {
+  Widget btn(String str, BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        FirebaseAuth.instance.signOut();
+        context.pushAndRemoveUntil(child: const SignIn());
+      },
       child: Text(
         str,
         style: const TextStyle(color: Colors.white, fontSize: 18),

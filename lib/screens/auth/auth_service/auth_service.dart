@@ -20,13 +20,12 @@ class AuthService {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: model.email, password: password);
 
-      DocumentReference doc = userRef.doc();
-      model.id = doc.id;
-
+      String id = FirebaseAuth.instance.currentUser!.uid;
+      DocumentReference doc = userRef.doc(id);
+      model.id = id;
       await doc.set(model.toMap());
       // ignore: use_build_context_synchronously
       context.pushAndRemoveUntil(child: const Dashboard());
-
     } on FirebaseException catch (e) {
       switch (e.code) {
         case 'invalid-email':

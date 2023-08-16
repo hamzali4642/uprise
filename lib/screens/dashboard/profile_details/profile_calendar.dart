@@ -17,13 +17,13 @@ class _ProfileCalendarState extends State<ProfileCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return SingleChildScrollView(
+      child: Column(
         children: [
           const SizedBox(height: 10),
           TableCalendar(
             headerStyle: const HeaderStyle(
-              formatButtonVisible: false, // Hide the format button
+              formatButtonVisible: false,
               titleCentered: true,
               titleTextStyle: TextStyle(
                   color: Colors.white,
@@ -31,7 +31,6 @@ class _ProfileCalendarState extends State<ProfileCalendar> {
                   fontWeight: FontWeights.medium),
             ),
             calendarStyle: const CalendarStyle(
-
               selectedDecoration: BoxDecoration(
                 color: CColors.primary,
                 shape: BoxShape.circle,
@@ -55,9 +54,36 @@ class _ProfileCalendarState extends State<ProfileCalendar> {
             selectedDayPredicate: (date) {
               return isSameDay(_selectedDay, date);
             },
+            firstDay: DateTime(1970),
+            lastDay: DateTime.utc(2030, 3, 14),
+            // focusedDay: DateTime.now(),
             focusedDay: _selectedDay!,
-            firstDay: _focusedDay,
-            lastDay: DateTime.now().add(const Duration(days: 3650)),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            height: 100,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: CColors.eventViewBgColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(7),
+                bottomRight: Radius.circular(7),
+              ),
+            ),
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(15.0),
+            child: const Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                "No events scheduled.",
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeights.medium),
+              ),
+            ),
           )
         ],
       ),

@@ -4,12 +4,14 @@ class UserModel {
   late String email;
   late bool isBand;
   String? bandName;
+  String? phone;
 
   UserModel(
       {required this.username,
       required this.email,
       required this.isBand,
-      this.bandName});
+      this.bandName,
+      this.phone});
 
   Map<String, dynamic> toMap() {
     return {
@@ -18,6 +20,7 @@ class UserModel {
       "email": email,
       "isBand": isBand,
       "bandName": bandName,
+      "phone": phone,
     };
   }
 
@@ -27,5 +30,6 @@ class UserModel {
     email = data["email"];
     isBand = data["isBand"];
     bandName = data["bandName"];
+    phone = data["phone"];
   }
 }

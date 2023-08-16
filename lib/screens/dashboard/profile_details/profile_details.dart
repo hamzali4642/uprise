@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_calendar.dart';
 import 'package:uprise/screens/dashboard/profile_details/user_profile.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
-
 import '../../../generated/assets.dart';
 import 'favorites.dart';
 
@@ -19,6 +20,8 @@ class ProfileDetails extends StatefulWidget {
 class _ProfileDetailsState extends State<ProfileDetails>
     with SingleTickerProviderStateMixin {
   late TabController controller;
+
+  late DataProvider provider;
 
   @override
   void initState() {
@@ -34,47 +37,50 @@ class _ProfileDetailsState extends State<ProfileDetails>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-                left: Constants.horizontalPadding,
-                right: Constants.horizontalPadding),
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-                headerWidget(),
-                const SizedBox(height: 30),
-              ],
+    return Consumer<DataProvider>(builder: (ctx, provider, child) {
+      print(provider.profileState);
+      return Scaffold(
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: Constants.horizontalPadding,
+                  right: Constants.horizontalPadding),
+              child: Column(
+                children: [
+                  const SizedBox(height: 40),
+                  headerWidget(),
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
-          ),
-          TabBar(
-            physics: const NeverScrollableScrollPhysics(),
-            indicatorColor: Colors.white,
-            isScrollable: false,
-            unselectedLabelColor: CColors.textColor,
-            labelColor: CColors.primary,
-            indicator: const UnderlineTabIndicator(
-              borderSide: BorderSide(width: 3.0, color: CColors.primary),
-            ),
-            tabs: [
-              buildText("Profile"),
-              buildText("Calendar"),
-              buildText("Favorites"),
-            ],
-            controller: controller,
-          ),
-          Expanded(
-            child: TabBarView(
+            TabBar(
               physics: const NeverScrollableScrollPhysics(),
+              indicatorColor: Colors.white,
+              isScrollable: false,
+              unselectedLabelColor: CColors.textColor,
+              labelColor: CColors.primary,
+              indicator: const UnderlineTabIndicator(
+                borderSide: BorderSide(width: 3.0, color: CColors.primary),
+              ),
+              tabs: [
+                buildText("Profile"),
+                buildText("Calendar"),
+                buildText("Favorites"),
+              ],
               controller: controller,
-              children: tabBarViews,
             ),
-          ),
-        ],
-      ),
-    );
+            Expanded(
+              child: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: controller,
+                children: tabBarViews,
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget headerWidget() {
@@ -127,5 +133,3 @@ Widget headerTitle() {
         fontSize: 25, color: Colors.white, fontWeight: FontWeights.medium),
   );
 }
-
-
