@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "552912459156",
+    "project_id": "uprise-project",
+    "storage_bucket": "uprise-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:552912459156:android:2d3295fb5717911b78ab81",
+        "android_client_info": {
+          "package_name": "com.devruptors.uprise"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "552912459156-nt071cffmaue5deslv0jftl3e893niid.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3feTF4rFZr9bHupABo3a9NxWRHW-ueVk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "552912459156-nt071cffmaue5deslv0jftl3e893niid.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

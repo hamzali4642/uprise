@@ -44,4 +44,3 @@ class Landing extends StatelessWidget {
     return const Placeholder();
   }
 }
-
