@@ -48,4 +48,9 @@ class DashboardProvider with ChangeNotifier {
         return const Statistics();
     }
   }
+
+  List<String> selectedGenres = [];
+  refresh(){
+    notifyListeners();
+  }
 }

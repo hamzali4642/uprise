@@ -22,6 +22,7 @@ class GenreTileWidget extends StatelessWidget {
               }else{
                 provider.selectedGenres.add(text);
               }
+              provider.refresh();
             },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5,),
