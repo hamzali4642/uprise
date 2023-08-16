@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/textstyles.dart';
 
+import '../helpers/colors.dart';
+
 class EventWidget extends StatelessWidget {
   const EventWidget({super.key});
 
@@ -28,13 +30,20 @@ class EventWidget extends StatelessWidget {
                   ),
                   TextButton(
                     style: TextButton.styleFrom(
-
+                      padding: EdgeInsets.zero
                     ),
                     onPressed: () {},
-                    child: Text(
-                      "Add to Calendar",
-                      style: TextStyle(
-                        color: Colors.white,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: CColors.URbtnBgColor,
+                        borderRadius: BorderRadius.circular(15,),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5,),
+                      child: Text(
+                        "Add to Calendar",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
