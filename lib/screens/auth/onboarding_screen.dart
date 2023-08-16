@@ -25,31 +25,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: Column(
         children: [
           Expanded(
-            child: Container(
-              // color: Colors.blue,
-              child: CarouselSlider(
-                items: const [
-                  ScreenWidget(
-                    title1: "Discover new music",
-                    title2: "Explore the taste of local music through Uprise.",
-                    path: Assets.imagesStepOne,
-                  ),
-                  ScreenWidget(
-                    title1: "Explore the music",
-                    title2:
-                        "Every piece of music has its own encourage. Listen to the best local and international music",
-                    path: Assets.imagesStepTwo,
-                  ),
-                ],
-                options: CarouselOptions(
-                  height: 520,
-                  // aspectRatio: 0.6,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
+            child: CarouselSlider(
+
+              items: const [
+                ScreenWidget(
+                  title1: "Discover new music",
+                  title2: "Explore the taste of local music through Uprise.",
+                  path: Assets.imagesStepOne,
                 ),
+                ScreenWidget(
+                  title1: "Explore the music",
+                  title2:
+                      "Every piece of music has its own encourage. Listen to the best local and international music",
+                  path: Assets.imagesStepTwo,
+                ),
+              ],
+              options: CarouselOptions(
+                viewportFraction : 1,
+                height: 520,
+                // aspectRatio: 0.6,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
               ),
             ),
           ),
@@ -124,40 +123,43 @@ class ScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 35, right: 35),
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 100,
-          ),
-          CustomAssetImage(
-            height: 200,
-            path: path,
-            fit: BoxFit.contain,
-          ),
-          const SizedBox(height: 40),
-          Text(
-            title1,
-            style: AppTextStyles.popins(
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeights.bold),
+    return SizedBox(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 45, right: 45),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 100,
             ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            title2,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.popins(
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeights.medium),
+            CustomAssetImage(
+              height: 200,
+              path: path,
+              fit: BoxFit.contain,
             ),
-          ),
-        ],
+            const SizedBox(height: 40),
+            Text(
+              title1,
+              style: AppTextStyles.popins(
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeights.bold),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              title2,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.popins(
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeights.medium),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

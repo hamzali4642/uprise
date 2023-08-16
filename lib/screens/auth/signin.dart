@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/textstyles.dart';
+import 'package:uprise/screens/auth/auth_service/auth_service.dart';
 import 'package:uprise/screens/auth/signup.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:uprise/widgets/google_login.dart';
-import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
-
 import '../../widgets/textfield_widget.dart';
 
 class SignIn extends StatefulWidget {
@@ -26,9 +25,7 @@ class _SignInState extends State<SignIn> {
   bool emailError = false;
   bool passwordError = false;
 
-
   bool hidePassword = true;
-
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +105,7 @@ class _SignInState extends State<SignIn> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildText("Email or username"),
+          const SizedBox(height: 2),
           TextFieldWidget(
             errorText: "Email or username is required",
             controller: email,
@@ -115,6 +113,7 @@ class _SignInState extends State<SignIn> {
           ),
           const SizedBox(height: 30),
           buildText("Password"),
+          const SizedBox(height: 2),
           TextFieldWidget(
             isPass: hidePassword,
             suffixWidget: GestureDetector(
@@ -185,7 +184,7 @@ class _SignInState extends State<SignIn> {
         style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            // Form is valid, submit your data or perform actions
+            AuthService.signIn(context, email.text, password.text);
           }
         },
         child: Text(

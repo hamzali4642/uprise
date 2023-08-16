@@ -5,7 +5,8 @@ import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/user_model.dart';
-import 'package:uprise/screens/auth/auth_service.dart';
+import 'package:uprise/screens/auth/auth_service/auth_service.dart';
+import 'package:uprise/screens/dashboard.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
@@ -187,6 +188,7 @@ class _SignUpState extends State<SignUp> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           header("Username"),
+          const SizedBox(height: 2),
           TextFieldWidget(
             errorText: "Username is required",
             controller: username,
@@ -194,6 +196,7 @@ class _SignUpState extends State<SignUp> {
           ),
           const SizedBox(height: 30),
           header("Email"),
+          const SizedBox(height: 2),
           TextFieldWidget(
             errorText: "Email is required",
             controller: email,
@@ -201,6 +204,7 @@ class _SignUpState extends State<SignUp> {
           ),
           const SizedBox(height: 30),
           header("Password"),
+          const SizedBox(height: 2),
           TextFieldWidget(
             suffixWidget: GestureDetector(
               onTap: () {
@@ -223,6 +227,7 @@ class _SignUpState extends State<SignUp> {
           ),
           const SizedBox(height: 30),
           header("Confirm Password"),
+          const SizedBox(height: 2),
           TextFieldWidget(
             suffixWidget: GestureDetector(
               onTap: () {
@@ -246,6 +251,7 @@ class _SignUpState extends State<SignUp> {
           if (registerBandArtist) ...[
             const SizedBox(height: 30),
             header("Band name"),
+            const SizedBox(height: 2),
             TextFieldWidget(
               errorText: "Band Name is required",
               controller: brandName,
@@ -310,26 +316,24 @@ class _SignUpState extends State<SignUp> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
         onPressed: () async {
+          if (!privacyPolicy) {
+            Functions.showSnackBar(context,
+                "You must agree with Terms & Conditions and Privacy Policy");
+            return;
+          }
           if (_formKey.currentState!.validate()) {
             if (password.text != cPassword.text) {
               Functions.showSnackBar(context, "Please match the password");
             } else {
-              try {
                 UserModel userModel = UserModel(
-                    username: username.text,
-                    email: email.text,
-                    isBand: registerBandArtist);
+                  username: username.text,
+                  email: email.text,
+                  isBand: registerBandArtist,
+                  bandName: registerBandArtist ? brandName.text : null,
+                );
 
-                Functions.showLoaderDialog(context);
-                await AuthService.signUp(context, userModel);
-                Functions.showSnackBar(context, "Success");
-                context.pop();
-              } on FirebaseException catch (e) {
-                context.pop();
+                await AuthService.signUp(context, userModel,password.text);
 
-                print(e);
-                Functions.showSnackBar(context, "Something went wrong");
-              }
             }
           }
         },

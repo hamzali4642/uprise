@@ -5,9 +5,7 @@ import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
-
 import '../generated/assets.dart';
-import '../helpers/colors.dart';
 import '../helpers/textstyles.dart';
 import '../widgets/bottom_nav.dart';
 
@@ -31,8 +29,10 @@ class _DashboardState extends State<Dashboard> {
         bottomNavigationBar: bottomNavigationWidget(),
         body: Column(
           children: [
-            headerWidget(),
-            locationWidget(),
+            if(provider.selectedIndex == 0 || provider.selectedIndex == 2)...[
+              headerWidget(),
+              locationWidget(),
+            ],
             Expanded(child: provider.pages[provider.selectedIndex]!),
           ],
         ),
@@ -50,12 +50,17 @@ class _DashboardState extends State<Dashboard> {
       ),
       child: Row(
         children: [
-          const SizedBox(
-            height: 40,
-            width: 40,
-            child: ClipOval(
-              child: Image(
-                image: AssetImage(Assets.imagesUsers),
+          InkWell(
+            onTap: (){
+              provider.selectedIndex = 3;
+            },
+            child: const SizedBox(
+              height: 40,
+              width: 40,
+              child: ClipOval(
+                child: Image(
+                  image: AssetImage(Assets.imagesUsers),
+                ),
               ),
             ),
           ),
@@ -64,14 +69,19 @@ class _DashboardState extends State<Dashboard> {
               padding: const EdgeInsets.symmetric(
                 horizontal: Constants.horizontalPadding / 2,
               ),
-              child: Text(
-                "UserName",
-                style: AppTextStyles.popins(
-                    style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeights.bold,
-                )),
+              child: InkWell(
+                onTap: (){
+                  provider.selectedIndex = 3;
+                },
+                child: Text(
+                  "UserName",
+                  style: AppTextStyles.popins(
+                      style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeights.bold,
+                  )),
+                ),
               ),
             ),
           ),
@@ -107,7 +117,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               IconButton(
-                onPressed: (){
+                onPressed: () {
                   context.push(child: RadioPreferences());
                 },
                 color: Colors.white,

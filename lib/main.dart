@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
+import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/auth/splash.dart';
 import 'firebase_options.dart';
 
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => DashboardProvider()),
+        ChangeNotifierProvider(create: (_) => DataProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

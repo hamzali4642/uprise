@@ -33,6 +33,8 @@ class TextFieldWidget extends StatelessWidget {
       validator: (value) {
         if (value!.isEmpty) {
           return errorText;
+        } else if (isPass) {
+          return errorText;
         }
         return null;
       },
