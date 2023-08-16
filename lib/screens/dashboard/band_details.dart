@@ -2,13 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/widgets/event_widget.dart';
 import 'package:uprise/widgets/songs_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
+import 'package:utility_extensions/utility_extensions.dart';
 
 import '../../helpers/colors.dart';
 
-class BandDetails extends StatelessWidget {
+class BandDetails extends StatefulWidget {
   const BandDetails({super.key});
+
+  @override
+  State<BandDetails> createState() => _BandDetailsState();
+}
+
+class _BandDetailsState extends State<BandDetails>
+    with SingleTickerProviderStateMixin {
+  late TabController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TabController(length: 2, vsync: this);
+    controller.addListener(() {
+      if (!controller.indexIsChanging) {
+        setState(() {
+          print(controller.index);
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +49,8 @@ class BandDetails extends StatelessWidget {
         centerTitle: false,
       ),
       body: Container(
-        child: Column(
-          children: [
+        child: CustomScrollView(
+          slivers: [
             const Image(
               image: NetworkImage(
                 Constants.demoCoverImage,
@@ -35,10 +58,34 @@ class BandDetails extends StatelessWidget {
               height: 200,
               width: double.infinity,
               fit: BoxFit.cover,
-            ),
-            brandInfoWidget(),
-            memberWidget(),
-            songsWidget(),
+            ).toSliver,
+            brandInfoWidget().toSliver,
+            memberWidget().toSliver,
+            songsWidget().toSliver,
+            TabBar(
+              controller: controller,
+              labelColor: CColors.primary,
+              unselectedLabelColor: CColors.textColor,
+              labelStyle: const TextStyle(
+                color: CColors.primary,
+              ),
+              unselectedLabelStyle: const TextStyle(
+                color: CColors.textColor,
+              ),
+              tabs: const [
+                Tab(
+                  child: Text(
+                    "Gallery",
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    "Events",
+                  ),
+                ),
+              ],
+            ).toSliver,
+            controller.index == 0 ? galleryWidget() : eventsWidget(),
           ],
         ),
       ),
@@ -132,16 +179,16 @@ class BandDetails extends StatelessWidget {
       height: 100,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: Constants.horizontalPadding,
         ),
         itemBuilder: (ctx, i) {
-          return Column(
+          return const Column(
             children: [
               SizedBox(
                 width: 80,
                 height: 80,
-                child: const ClipOval(
+                child: ClipOval(
                     child: Image(
                   image: NetworkImage(Constants.demoImage),
                 )),
@@ -172,7 +219,9 @@ class BandDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: Constants.horizontalPadding,),
+          padding: EdgeInsets.symmetric(
+            horizontal: Constants.horizontalPadding,
+          ),
           child: Text(
             "Members",
             style: TextStyle(
@@ -188,18 +237,58 @@ class BandDetails extends StatelessWidget {
         SizedBox(
           height: 200,
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: Constants.horizontalPadding,),
+            padding: const EdgeInsets.symmetric(
+              horizontal: Constants.horizontalPadding,
+            ),
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
               return SongsWidget();
             },
             separatorBuilder: (ctx, i) {
-              return SizedBox(width: 10,);
+              return SizedBox(
+                width: 10,
+              );
             },
             itemCount: 4,
           ),
         )
       ],
+    );
+  }
+
+  Widget eventsWidget() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((ctx, i) {
+        return EventWidget();
+      }, childCount: 5),
+    );
+  }
+
+  Widget galleryWidget() {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: Constants.horizontalPadding, vertical: 15),
+      sliver: SliverGrid(
+        delegate: SliverChildBuilderDelegate(
+          (ctx, i) {
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(10,),
+              child: const Image(
+                image: NetworkImage(
+                  Constants.demoCoverImage,
+                ),
+                fit: BoxFit.cover,
+              ),
+            );
+          },
+          childCount: 5,
+        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 1,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10
+        ),
+      ),
     );
   }
 }
