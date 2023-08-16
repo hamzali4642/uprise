@@ -22,10 +22,8 @@ class CustomAssetImage extends StatelessWidget {
     return Image(
       fit: fit,
       image: AssetImage(path),
-      width: width ,
+      width: width,
       height: height,
-      // width: width - (reduce ? 25 : 0),
-      // height: height - (reduce ? 25 : 0),
       color: color,
     );
   }
