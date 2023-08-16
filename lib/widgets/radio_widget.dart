@@ -19,21 +19,28 @@ class RadioWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: CColors.bandslineStrokeColor,
           ),
-          child: Column(
+          child: Stack(
             children: [
-              Container(
-                width: double.infinity,
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
                 child: SvgPicture.asset(
                   Assets.imagesRadioStations,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.fitWidth,
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                "title",
-                style: AppTextStyles.clickable(color: Colors.white),
+
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 10,
+                child: Text(
+                  "title",
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.clickable(color: Colors.white),
+                ),
               ),
             ],
           ),

@@ -34,11 +34,19 @@ class MyApp extends StatelessWidget {
             ),
           ),
           fontFamily: "Oswald",
+          unselectedWidgetColor: CColors.White,
           elevatedButtonTheme: ElevatedButtonThemeData(
-              style:
-                  ElevatedButton.styleFrom(backgroundColor: CColors.primary)),
-          colorScheme:
-              ColorScheme.fromSeed(seedColor: CColors.getMaterialColor()),
+            style: ElevatedButton.styleFrom(backgroundColor: CColors.primary),
+          ),
+          radioTheme: RadioThemeData(
+
+          ),
+          appBarTheme: const AppBarTheme(
+              color: CColors.transparentColor,
+              iconTheme: IconThemeData(
+                color: CColors.White,
+              )),
+          primarySwatch: CColors.getMaterialColor(),
           useMaterial3: false,
         ),
         home: const Landing(),
