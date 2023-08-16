@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:uprise/generated/assets.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
+import 'package:utility_extensions/utility_extensions.dart';
 
 import '../helpers/colors.dart';
 import '../helpers/textstyles.dart';
@@ -13,38 +15,76 @@ class CustomBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      shape: CircularNotchedRectangle(), // This creates the center curve
-      notchMargin: 6.0, // Adjust the margin according to your preference
-      child: Row(
+    return Container(
+      height: context.bottomPadding + 50,
+      child: Stack(
         children: [
-          for (var item in items)
-            itemWidget(
-              item,
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: Color(0xff3b3b2c),
+              height: 20,
             ),
+          ),
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Image(
+              image: AssetImage(
+                Assets.imagesURTabBase,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+
+              padding: EdgeInsets.only(
+                bottom: context.bottomPadding,
+              ),
+              child: Row(
+                children: [
+                  for (var item in items)
+                    itemWidget(
+                      item,
+                    ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
   itemWidget(BottomNavItem item) {
-    if (item.index == 2) {
-      return Expanded(child: SizedBox());
+    if (item.index == 1) {
+      return const Expanded(flex: 1, child: SizedBox());
     } else {
       return Expanded(
-        child: IconButton(
-          onPressed: () {
+        flex: 2,
+        child: InkWell(
+          onTap: () {
             onSelect(item.index);
           },
-          icon: Column(
+          child: Column(
             children: [
+              SizedBox(height: 10,),
               Expanded(
-                child: ImageIcon(
-                  AssetImage(item.iconData),
-                  size: 20,
-                  color: item.isSelected ? CColors.primary : CColors.White,
+                child: Icon(
+                  item.iconData,
+                  size: 24,
+                  color: item.isSelected ? Colors.white : Colors.white60,
                 ),
               ),
+              SizedBox(height: 10,),
               Text(
                 item.title ?? "",
                 maxLines: 1,
@@ -53,7 +93,7 @@ class CustomBottomNavigation extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeights.bold,
-                    color: item.isSelected ? CColors.primary : CColors.White,
+                    color: item.isSelected ? Colors.white : Colors.white60,
                   ),
                 ),
               ),
