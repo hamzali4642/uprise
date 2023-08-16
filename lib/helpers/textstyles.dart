@@ -28,7 +28,7 @@ class AppTextStyles {
     );
   }
 
-  static TextStyle heading({required Color color}) {
+  static TextStyle heading({Color color = CColors.textColor}) {
     return GoogleFonts.poppins(
       color: color,
       height: 1.1,
