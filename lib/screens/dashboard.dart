@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
@@ -6,6 +7,7 @@ import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 import '../generated/assets.dart';
+import '../helpers/colors.dart';
 import '../helpers/textstyles.dart';
 import '../widgets/bottom_nav.dart';
 
@@ -24,16 +26,39 @@ class _DashboardState extends State<Dashboard> {
     return Consumer<DashboardProvider>(builder: (context, value, child) {
       provider = value;
       return Scaffold(
-        floatingActionButton: fabWidget(),
+        floatingActionButton: provider.showOverlay
+            ? InkWell(
+                onTap: () {
+                  provider.showOverlay = !provider.showOverlay;
+                },
+                child: SvgPicture.asset(
+                  Assets.imagesClose,
+                  width: iconSize,
+                ),
+              )
+            : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: bottomNavigationWidget(),
-        body: Column(
+        body: Stack(
           children: [
-            if(provider.selectedIndex == 0 || provider.selectedIndex == 2)...[
-              headerWidget(),
-              locationWidget(),
-            ],
-            Expanded(child: provider.pages[provider.selectedIndex]!),
+            Positioned.fill(
+              child: Scaffold(
+                floatingActionButton: fabWidget(),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+                bottomNavigationBar: bottomNavigationWidget(),
+                body: Column(
+                  children: [
+                    if (provider.selectedIndex == 0 ||
+                        provider.selectedIndex == 2) ...[
+                      headerWidget(),
+                      locationWidget(),
+                    ],
+                    Expanded(child: provider.pages[provider.selectedIndex]!),
+                  ],
+                ),
+              ),
+            ),
+            if (provider.showOverlay) overlayWidget(),
           ],
         ),
       );
@@ -51,7 +76,7 @@ class _DashboardState extends State<Dashboard> {
       child: Row(
         children: [
           InkWell(
-            onTap: (){
+            onTap: () {
               provider.selectedIndex = 3;
             },
             child: const SizedBox(
@@ -70,7 +95,7 @@ class _DashboardState extends State<Dashboard> {
                 horizontal: Constants.horizontalPadding / 2,
               ),
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   provider.selectedIndex = 3;
                 },
                 child: Text(
@@ -99,7 +124,7 @@ class _DashboardState extends State<Dashboard> {
         children: [
           Row(
             children: [
-              Image(
+              const Image(
                 image: AssetImage(
                   Assets.imagesRadio,
                 ),
@@ -107,7 +132,7 @@ class _DashboardState extends State<Dashboard> {
               ),
               Expanded(
                 child: Container(
-                  margin: EdgeInsets.symmetric(
+                  margin: const EdgeInsets.symmetric(
                     horizontal: 10,
                   ),
                   child: Text(
@@ -118,7 +143,7 @@ class _DashboardState extends State<Dashboard> {
               ),
               IconButton(
                 onPressed: () {
-                  context.push(child: RadioPreferences());
+                  context.push(child: const RadioPreferences());
                 },
                 color: Colors.white,
                 icon: Icon(
@@ -145,9 +170,14 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget fabWidget() {
-    return const Image(
-      image: AssetImage(Assets.imagesUpriseRadiyoIcon),
-      width: 70,
+    return InkWell(
+      onTap: () {
+        provider.showOverlay = !provider.showOverlay;
+      },
+      child: const Image(
+        image: AssetImage(Assets.imagesUpriseRadiyoIcon),
+        width: 70,
+      ),
     );
   }
 
@@ -169,6 +199,53 @@ class _DashboardState extends State<Dashboard> {
       onSelect: (index) {
         provider.selectedIndex = index;
       },
+    );
+  }
+
+  Widget overlayWidget() {
+    return Positioned.fill(
+      child: Container(
+        alignment: Alignment.bottomCenter,
+        decoration: BoxDecoration(
+          color: CColors.Black.withOpacity(0.9),
+        ),
+        child: Column(
+          children: [],
+        ),
+      ),
+    );
+  }
+
+  var iconSize = 40.0;
+  Widget overlayItemWidget(
+    String text1,
+    String text2,
+    String image1,
+    String image2,
+    double margin,
+  ) {
+    return Row(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Text(text1,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Row(
+            children: [
+
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
