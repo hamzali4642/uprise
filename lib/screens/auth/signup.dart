@@ -325,15 +325,14 @@ class _SignUpState extends State<SignUp> {
             if (password.text != cPassword.text) {
               Functions.showSnackBar(context, "Please match the password");
             } else {
-                UserModel userModel = UserModel(
-                  username: username.text,
-                  email: email.text,
-                  isBand: registerBandArtist,
-                  bandName: registerBandArtist ? brandName.text : null,
-                );
+              UserModel userModel = UserModel(
+                username: username.text,
+                email: email.text,
+                isBand: registerBandArtist,
+                bandName: registerBandArtist ? brandName.text : null,
+              );
 
-                await AuthService.signUp(context, userModel,password.text);
-
+              await AuthService.signUp(context, userModel, password.text);
             }
           }
         },

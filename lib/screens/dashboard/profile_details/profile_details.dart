@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/helpers/data_state.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_calendar.dart';
 import 'package:uprise/screens/dashboard/profile_details/user_profile.dart';
@@ -30,57 +31,69 @@ class _ProfileDetailsState extends State<ProfileDetails>
   }
 
   List<Widget> tabBarViews = [
-    const User_Profile(),
+    const UserProfile(),
     const ProfileCalendar(),
     const Favorites(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataProvider>(builder: (ctx, provider, child) {
-      print(provider.profileState);
+    return Consumer<DataProvider>(builder: (ctx, value, child) {
+     provider = value;
       return Scaffold(
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: Constants.horizontalPadding,
-                  right: Constants.horizontalPadding),
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-                  headerWidget(),
-                  const SizedBox(height: 30),
-                ],
-              ),
-            ),
-            TabBar(
-              physics: const NeverScrollableScrollPhysics(),
-              indicatorColor: Colors.white,
-              isScrollable: false,
-              unselectedLabelColor: CColors.textColor,
-              labelColor: CColors.primary,
-              indicator: const UnderlineTabIndicator(
-                borderSide: BorderSide(width: 3.0, color: CColors.primary),
-              ),
-              tabs: [
-                buildText("Profile"),
-                buildText("Calendar"),
-                buildText("Favorites"),
-              ],
-              controller: controller,
-            ),
-            Expanded(
-              child: TabBarView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: controller,
-                children: tabBarViews,
-              ),
-            ),
-          ],
-        ),
+        body:
+          details(),
       );
     });
+  }
+
+  Widget details() {
+    if (provider.profileState == DataStates.waiting) {
+      return const Center(child: CircularProgressIndicator(),);
+    }
+    if (provider.profileState == DataStates.fail) {
+      return const Center(child: Text("Something Went wrong",style: TextStyle(color: Colors.white)),);
+    }
+
+    return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+                left: Constants.horizontalPadding,
+                right: Constants.horizontalPadding),
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
+                headerWidget(),
+                const SizedBox(height: 30),
+              ],
+            ),
+          ),
+          TabBar(
+            physics: const NeverScrollableScrollPhysics(),
+            indicatorColor: Colors.white,
+            isScrollable: false,
+            unselectedLabelColor: CColors.textColor,
+            labelColor: CColors.primary,
+            indicator: const UnderlineTabIndicator(
+              borderSide: BorderSide(width: 3.0, color: CColors.primary),
+            ),
+            tabs: [
+              buildText("Profile"),
+              buildText("Calendar"),
+              buildText("Favorites"),
+            ],
+            controller: controller,
+          ),
+          Expanded(
+            child: TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: controller,
+              children: tabBarViews,
+            ),
+          ),
+        ],
+      );
   }
 
   Widget headerWidget() {
@@ -101,7 +114,7 @@ class _ProfileDetailsState extends State<ProfileDetails>
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: headerTitle(),
+          child: headerTitle(provider.userModel!.username),
         ),
         SvgPicture.asset(
           Assets.imagesEdit, // Replace with your SVG asset path
@@ -126,9 +139,9 @@ class _ProfileDetailsState extends State<ProfileDetails>
   }
 }
 
-Widget headerTitle() {
-  return const Text(
-    "fahad313",
+Widget headerTitle(String name) {
+  return  Text(
+    name,
     style: TextStyle(
         fontSize: 25, color: Colors.white, fontWeight: FontWeights.medium),
   );

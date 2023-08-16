@@ -9,7 +9,8 @@ class TextFieldWidget extends StatelessWidget {
       required this.hint,
       required this.errorText,
       this.isPass = false,
-      this.suffixWidget})
+      this.suffixWidget,
+      this.validator})
       : super(key: key);
 
   final TextEditingController controller;
@@ -17,6 +18,7 @@ class TextFieldWidget extends StatelessWidget {
   final String errorText;
   final bool isPass;
   final Widget? suffixWidget;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +32,13 @@ class TextFieldWidget extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      validator: (value) {
-        if (value!.isEmpty) {
-          return errorText;
-        }
-        return null;
-      },
+      validator: validator ??
+          (value) {
+            if (value!.isEmpty) {
+              return errorText;
+            }
+            return null;
+          },
       decoration: InputDecoration(
         suffixIcon: suffixWidget,
         hintText: hint,
