@@ -5,6 +5,7 @@ import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
+import 'package:uprise/widgets/player_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 import '../generated/assets.dart';
 import '../helpers/colors.dart';
@@ -52,6 +53,7 @@ class _DashboardState extends State<Dashboard> {
                         provider.selectedIndex == 2) ...[
                       headerWidget(),
                       locationWidget(),
+                      PlayerWidget(),
                     ],
                     Expanded(child: provider.pages[provider.selectedIndex]!),
                   ],
@@ -210,7 +212,13 @@ class _DashboardState extends State<Dashboard> {
           color: CColors.Black.withOpacity(0.9),
         ),
         child: Column(
-          children: [],
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            overlayItemWidget("Skip", "Blast", Assets.imagesSkip, Assets.imagesBlast, 20.0),
+            overlayItemWidget("Report", "Unfollow", Assets.imagesReport, Assets.imagesUnFollow, 90.0),
+            overlayItemWidget("Downvote", "Upvote", Assets.imagesDownvote, Assets.imagesUpvote, 130.0),
+            SizedBox(height: context.bottomPadding + 40,),
+          ],
         ),
       ),
     );
@@ -224,28 +232,44 @@ class _DashboardState extends State<Dashboard> {
     String image2,
     double margin,
   ) {
-    return Row(
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              Text(text1,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        children: [
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(text1,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Row(
-            children: [
 
-            ],
+                SizedBox(width: 10,),
+                SvgPicture.asset(image1,),
+              ],
+            ),
           ),
-        ),
-      ],
+          SizedBox(width: margin,),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SvgPicture.asset(image2,),
+                SizedBox(width: 10,),
+                Text(text2,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
