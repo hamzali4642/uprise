@@ -1,11 +1,16 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/screens/auth/splash.dart';
+import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const MyApp());
 }
 
@@ -17,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_)=> DashboardProvider()),
+        ChangeNotifierProvider(create: (_) => DashboardProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -30,11 +35,10 @@ class MyApp extends StatelessWidget {
           ),
           fontFamily: "Oswald",
           elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: CColors.primary
-            )
-          ),
-          colorScheme: ColorScheme.fromSeed(seedColor: CColors.getMaterialColor()),
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: CColors.primary)),
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: CColors.getMaterialColor()),
           useMaterial3: false,
         ),
         home: const Landing(),
