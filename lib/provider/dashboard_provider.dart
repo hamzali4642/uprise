@@ -53,4 +53,14 @@ class DashboardProvider with ChangeNotifier {
   refresh(){
     notifyListeners();
   }
+
+
+  bool _showOverlay = false;
+
+  bool get showOverlay => _showOverlay;
+
+  set showOverlay(bool value) {
+    _showOverlay = value;
+    notifyListeners();
+  }
 }
