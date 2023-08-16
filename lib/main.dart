@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
               padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
             ),
           ),
+          fontFamily: "Oswald",
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               backgroundColor: CColors.primary
