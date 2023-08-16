@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:uprise/helpers/textstyles.dart';
+import 'package:uprise/widgets/songs_widget.dart';
 
 import '../../helpers/constants.dart';
 import '../../widgets/band_widget.dart';
@@ -26,17 +27,23 @@ class _DiscoveryState extends State<Discovery> {
             HeadingWidget(
               text: "Popular Brands",
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             popularBandsWidget(),
             HeadingWidget(
               text: "Popular Radio Stations",
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             popularRadioWidget(),
             HeadingWidget(
               text: "Popular Songs",
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             popularSongsWidget(),
 
           ],
@@ -44,7 +51,6 @@ class _DiscoveryState extends State<Discovery> {
       ),
     );
   }
-
 
   var height = 250.0;
 
@@ -55,14 +61,13 @@ class _DiscoveryState extends State<Discovery> {
         return const BandWidget();
       },
       options: CarouselOptions(
-        initialPage: 0,
-        height: height,
-        viewportFraction: 0.5,
-        enlargeCenterPage: true,
+          initialPage: 0,
+          height: height,
+          viewportFraction: 0.5,
+          enlargeCenterPage: true,
           enlargeFactor: 0.5,
-        enlargeStrategy: CenterPageEnlargeStrategy.scale,
-        enableInfiniteScroll: false
-      ),
+          enlargeStrategy: CenterPageEnlargeStrategy.scale,
+          enableInfiniteScroll: false),
     );
   }
 
@@ -70,17 +75,19 @@ class _DiscoveryState extends State<Discovery> {
     return CarouselSlider.builder(
       itemCount: 10,
       itemBuilder: (ctx, i, j) {
-        return const RadioWidget();
+        return Align(
+          alignment: Alignment.topCenter,
+          child: const RadioWidget(),
+        );
       },
       options: CarouselOptions(
-        initialPage: 0,
-        height: height - 30,
-        viewportFraction: 0.5,
-        enlargeCenterPage: true,
-        enlargeFactor: 0.5,
-        enlargeStrategy: CenterPageEnlargeStrategy.scale,
-        enableInfiniteScroll: false
-      ),
+          initialPage: 0,
+          height: height - 30,
+          viewportFraction: 0.5,
+          enlargeCenterPage: true,
+          enlargeFactor: 0.5,
+          enlargeStrategy: CenterPageEnlargeStrategy.scale,
+          enableInfiniteScroll: false),
     );
   }
 
@@ -88,18 +95,16 @@ class _DiscoveryState extends State<Discovery> {
     return CarouselSlider.builder(
       itemCount: 10,
       itemBuilder: (ctx, i, j) {
-        return const BandWidget();
+        return const SongsWidget(fromCarousel: true,);
       },
       options: CarouselOptions(
-        initialPage: 0,
-        height: height,
-        viewportFraction: 0.5,
-        enlargeCenterPage: true,
+          initialPage: 0,
+          height: height,
+          viewportFraction: 0.5,
+          enlargeCenterPage: true,
           enlargeFactor: 0.5,
-
-        enlargeStrategy: CenterPageEnlargeStrategy.scale,
-        enableInfiniteScroll: false
-      ),
+          enlargeStrategy: CenterPageEnlargeStrategy.scale,
+          enableInfiniteScroll: false),
     );
   }
 }
