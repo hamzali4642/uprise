@@ -62,8 +62,8 @@ class AppTextStyles {
   static TextStyle title({required Color color}) {
     return GoogleFonts.poppins(
       color: color,
-      fontWeight: FontWeights.medium,
-      fontSize: 15,
+      fontWeight: FontWeights.bold,
+      fontSize: 24,
     );
   }
 }
