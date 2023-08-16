@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:uprise/widgets/heading_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:uprise/provider/dashboard_provider.dart';
+import 'package:uprise/widgets/home_chip_widget.dart';
 
 import '../../helpers/constants.dart';
 
@@ -8,14 +10,48 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: Constants.horizontalPadding),
-      child: Column(
-        children: [
-          const HeadingWidget(text: "New Releases",),
-          const HeadingWidget(text: "Recommended Radio Stations",),
-        ],
-      ),
+    return Consumer<DashboardProvider>(
+      builder: (context, provider, child) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: Constants.horizontalPadding, vertical: 10),
+          child: Column(
+            children: [
+              selectionWidget(),
+              const SizedBox(height: 10,),
+              Expanded(child: provider.homePage()),
+            ],
+          ),
+        );
+      }
+    );
+  }
+
+  Widget selectionWidget() {
+    return const Row(
+      children: [
+        Expanded(
+          child: HomeChipWidget(
+            text: "Feed",
+          ),
+
+        ),
+        Expanded(
+          child: HomeChipWidget(
+            text: "Events",
+          ),
+
+        ),
+        Expanded(
+          child: HomeChipWidget(
+            text: "Promos",
+          ),
+        ),
+        Expanded(
+          child: HomeChipWidget(
+            text: "Statistics",
+          ),
+        ),
+      ],
     );
   }
 }
