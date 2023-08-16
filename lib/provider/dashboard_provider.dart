@@ -3,6 +3,7 @@ import 'package:uprise/screens/dashboard/discovery.dart';
 import 'package:uprise/screens/dashboard/home.dart';
 import 'package:uprise/screens/dashboard/home/promos.dart';
 import 'package:uprise/screens/dashboard/home/statistics.dart';
+import 'package:uprise/screens/dashboard/profile/user_profile.dart';
 import '../screens/dashboard/home/event.dart';
 import '../screens/dashboard/home/feed.dart';
 
@@ -17,9 +18,11 @@ class DashboardProvider with ChangeNotifier {
   }
 
   List<Widget?> pages = [
-    Home(),
+    const Home(),
     null,
-    Discovery(),
+    const Discovery(),
+    const UserProfile(),
+
   ];
 
   String _homeSelected = "Feed";

@@ -8,8 +8,11 @@ class UserProfile extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-
-
+          const SizedBox(height: 0),
+          Text(
+            "Fahad313",
+            style: TextStyle(fontSize: 20,color: Colors.white),
+          ),
         ],
       ),
     );
