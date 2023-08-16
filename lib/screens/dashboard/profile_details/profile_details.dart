@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/screens/dashboard/profile_details/profile_calendar.dart';
 import 'package:uprise/screens/dashboard/profile_details/user_profile.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 
@@ -27,7 +28,7 @@ class _ProfileDetailsState extends State<ProfileDetails>
 
   List<Widget> tabBarViews = [
     const User_Profile(),
-    const Center(child: Text("This Is Second View")),
+    const ProfileCalendar(),
     const Favorites(),
   ];
 

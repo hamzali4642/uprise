@@ -38,6 +38,7 @@ class _DiscoveryState extends State<Discovery> {
             ),
             const SizedBox(height: 20,),
             popularSongsWidget(),
+
           ],
         ),
       ),
