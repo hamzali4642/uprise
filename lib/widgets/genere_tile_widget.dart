@@ -25,18 +25,19 @@ class GenreTileWidget extends StatelessWidget {
               provider.refresh();
             },
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5,),
-              padding: const EdgeInsets.symmetric(vertical: 5,),
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10,),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
               decoration: BoxDecoration(
-                color: isSelected ? CColors.URbtnBgColor : CColors.feedContainerViewColor,
+                color: isSelected ? CColors.primary : null,
                 borderRadius: BorderRadius.circular(20,),
+                border: isSelected ? null : Border.all(color: Colors.white, width: 1)
               ),
               child: Text(
                 text,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: isSelected ? CColors.primary : Colors.white,
-                  fontSize: 14,
+                  color: isSelected ? CColors.Black : Colors.white,
+                  fontSize: 16,
                   fontWeight: FontWeights.medium,
                 ),
               ),

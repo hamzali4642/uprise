@@ -11,16 +11,19 @@ class RadioWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Align(
       alignment: Alignment.topCenter,
       child: AspectRatio(
         aspectRatio: 1,
         child: Container(
-          decoration: BoxDecoration(
+          width: 145,
+          decoration: const BoxDecoration(
             color: CColors.bandslineStrokeColor,
           ),
           child: Stack(
             children: [
+
               Positioned(
                 left: 0,
                 right: 0,
@@ -31,7 +34,6 @@ class RadioWidget extends StatelessWidget {
                   fit: BoxFit.fitWidth,
                 ),
               ),
-
               Positioned(
                 left: 0,
                 right: 0,

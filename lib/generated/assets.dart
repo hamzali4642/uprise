@@ -58,12 +58,14 @@ class Assets {
   static const String imagesGenrCheck = 'assets/images/genr_check.png';
   static const String imagesGenrUncheck = 'assets/images/genr_uncheck.png';
   static const String imagesGenreBgImg = 'assets/images/genreBgImg.png';
+  static const String imagesGoogleIcon = 'assets/images/googleIcon.png';
   static const String imagesGoogleicon = 'assets/images/googleicon.svg';
   static const String imagesHome = 'assets/images/home.svg';
   static const String imagesIconfinderRadio = 'assets/images/iconfinder_radio.svg';
   static const String imagesLocation = 'assets/images/location.png';
   static const String imagesLocationIcon = 'assets/images/locationIcon.png';
   static const String imagesLocationOn = 'assets/images/location_on.svg';
+  static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesMiniPlayer = 'assets/images/miniPlayer.png';
   static const String imagesMoreFeedIllustration = 'assets/images/More_feed_illustration.png';
   static const String imagesMusicDefaultImg = 'assets/images/music_default_img.png';
@@ -79,6 +81,7 @@ class Assets {
   static const String imagesPlayBtn = 'assets/images/playBtn.svg';
   static const String imagesPromoPost = 'assets/images/promoPost.png';
   static const String imagesPromoPost1 = 'assets/images/promoPost1.png';
+  static const String imagesRadio = 'assets/images/radio.png';
   static const String imagesRadioBlast = 'assets/images/radioBlast.svg';
   static const String imagesRadioBlastOutline = 'assets/images/radio_Blast_outline.svg';
   static const String imagesRadioStations = 'assets/images/radio_stations.svg';

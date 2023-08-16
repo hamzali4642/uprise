@@ -49,11 +49,13 @@ class _RadioPreferencesState extends State<RadioPreferences> {
             ),
             radioWidget(),
             TextFieldWidget(
-                controller: controller,
-                hint: "Manually Enter Location",
-                errorText: "errorText",
+              controller: controller,
+              hint: "Manually Enter Location",
+              errorText: "errorText",
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             const Text(
               "Pick your favourite Genere",
               style: TextStyle(
@@ -62,16 +64,43 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                 fontSize: 24,
               ),
             ),
-            Wrap(
+            const SizedBox(
+              height: 10,
+            ),
+            const Wrap(
               children: [
-                GenreTileWidget(text: "Blues",),
-                GenreTileWidget(text: "Blues",),
-                GenreTileWidget(text: "Blues",),
-                GenreTileWidget(text: "Blues",),
-                GenreTileWidget(text: "Blues",),
-                GenreTileWidget(text: "Blues",),
-                GenreTileWidget(text: "Blues",),
+                GenreTileWidget(
+                  text: "Blues",
+                ),
+                GenreTileWidget(
+                  text: "Rock Music",
+                ),
+                GenreTileWidget(
+                  text: "Pop",
+                ),
+                GenreTileWidget(
+                  text: "Jazz",
+                ),
+                GenreTileWidget(
+                  text: "Classical",
+                ),
+                GenreTileWidget(
+                  text: "Country",
+                ),
+                GenreTileWidget(
+                  text: "Dubstep",
+                ),
               ],
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Text("Save",),
+              ),
             ),
           ],
         ),
