@@ -39,12 +39,15 @@ class _RadioPreferencesState extends State<RadioPreferences> {
           dataProvider = provider;
           if(check){
             dashboardProvider.selectedGenres = dataProvider.userModel!.selectedGenres;
+            city.text = dataProvider.userModel!.city;
+            state.text = dataProvider.userModel!.state;
+            country.text = dataProvider.userModel!.country;
             check = false;
           }
           return Scaffold(
             appBar: AppBar(
               backgroundColor: CColors.transparentColor,
-              title: Text(
+              title: const Text(
                 "Radio Preferences",
                 style: TextStyle(
                   color: Colors.white,
@@ -55,7 +58,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
               centerTitle: false,
             ),
             body: Container(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: Constants.horizontalPadding,
                 vertical: 10,
               ),

@@ -9,6 +9,9 @@ class UserModel {
   String? instagram;
   String? twitter;
   String? description;
+  late String city;
+  late String state;
+  late String country;
 
   List<String> selectedGenres = [];
 
@@ -51,6 +54,9 @@ class UserModel {
     instagram = data["instagram"];
     twitter = data["twitter"];
     description = data["description"];
+    city = data["city"] ?? "";
+    state = data["state"] ?? "";
+    country = data["country"] ?? "";
 
     List selectedGenres = data["selectedGenres"] ?? [];
     this.selectedGenres =

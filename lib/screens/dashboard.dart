@@ -145,7 +145,7 @@ class _DashboardState extends State<Dashboard> {
                     horizontal: 10,
                   ),
                   child: Text(
-                    "Name",
+                    dataProvider.userModel?.city ?? "",
                     style: AppTextStyles.message(color: Colors.white),
                   ),
                 ),

@@ -180,10 +180,12 @@ class Statistics extends StatelessWidget {
               margin: EdgeInsets.zero,
               plotAreaBorderWidth: 0,
               primaryXAxis: DateTimeAxis(
+                axisLine: const AxisLine(width: 0),
                 interval: 2,
                 majorGridLines: majorGridLines,
               ),
               primaryYAxis: NumericAxis(
+                axisLine: const AxisLine(width: 0),
                 minimum: 0,
                 interval: 2,
                 majorGridLines: majorGridLines,
@@ -347,7 +349,7 @@ class Statistics extends StatelessWidget {
     var majorGridLines = const MajorGridLines(
       width: 1,
       color: Colors.grey,
-      dashArray: <double>[4, 5], // [5 units of line, 2 units of gap]
+      dashArray: <double>[4, 5],
     );
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -373,11 +375,13 @@ class Statistics extends StatelessWidget {
               margin: EdgeInsets.zero,
               plotAreaBorderWidth: 0,
               primaryXAxis: DateTimeAxis(
+                axisLine: const AxisLine(width: 0),
                 interval: 1,
                 majorGridLines: majorGridLines,
                 isVisible: true,
               ),
               primaryYAxis: NumericAxis(
+                axisLine: const AxisLine(width: 0),
                 minimum: 0,
                 maximum: 1,
                 majorGridLines: majorGridLines,
