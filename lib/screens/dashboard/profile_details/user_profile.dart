@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
-import 'package:uprise/screens/dashboard/profile_details/change_password.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_details.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
@@ -11,6 +11,7 @@ import '../../../generated/assets.dart';
 import '../../../helpers/colors.dart';
 import '../../../helpers/constants.dart';
 import '../../auth/signin.dart';
+import 'avatars.dart';
 
 typedef UserCallBack = void Function(bool);
 
@@ -31,10 +32,13 @@ class _UserProfileState extends State<UserProfile> {
   TextEditingController phone = TextEditingController();
   TextEditingController description = TextEditingController();
 
+
+  late DataProvider provider;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Consumer<DataProvider>(builder: (ctx, value, child) {
+        provider = value;
         facebook.text = value.userModel!.facebook ?? "";
         instagram.text = value.userModel!.instagram ?? "";
         twitter.text = value.userModel!.twitter ?? "";
@@ -141,13 +145,13 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                     const SizedBox(height: 50),
                   ] else ...[
-                    btn("Change Password", context, const ChangePassword()),
+                    btn("Change Password", context),
                     const SizedBox(height: 10),
-                    btn("Instruments interested in", context, const SignIn()),
+                    btn("Instruments interested in", context),
                     const SizedBox(
                       height: 10,
                     ),
-                    btn("Logout", context, const SignIn()),
+                    btn("Logout", context),
                   ]
                 ],
               ),
@@ -169,10 +173,36 @@ class _UserProfileState extends State<UserProfile> {
             border: Border.all(color: Colors.white, width: 0.2),
             shape: BoxShape.circle,
           ),
-          child: const ClipOval(
-            child: Image(
-              image: AssetImage(Assets.imagesUsers),
-            ),
+          child: Stack(
+            children: [
+              ClipOval(
+                child: Image(
+                  image: AssetImage(provider.userModel?.avatar == null ? Assets.imagesUsers : provider.userModel!.avatar!),
+                ),
+              ),
+              if (widget.isEdit)
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: InkWell(
+                    onTap: (){
+
+                      context.push(child: Avatars());
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(6,),
+                      decoration: BoxDecoration(
+                        color: CColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: SvgPicture.asset(
+                        Assets.imagesEdit,
+                        color: CColors.Black,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
         const SizedBox(width: 20),
@@ -196,13 +226,13 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Widget btn(String str, BuildContext context, Widget widget) {
+  Widget btn(String str, BuildContext context) {
     return InkWell(
       onTap: () {
-        if (widget is SignIn) {
+        if (str == "Logout") {
           FirebaseAuth.instance.signOut();
+          context.pushAndRemoveUntil(child: const SignIn());
         }
-        context.push(child: widget);
       },
       child: Text(
         str,

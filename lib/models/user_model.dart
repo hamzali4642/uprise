@@ -7,6 +7,7 @@ class UserModel {
   String? phone;
   String? facebook;
   String? instagram;
+  String? avatar;
   String? twitter;
   String? description;
   late String city;
@@ -57,6 +58,7 @@ class UserModel {
     city = data["city"] ?? "";
     state = data["state"] ?? "";
     country = data["country"] ?? "";
+    avatar = data["avatar"] ?? "";
 
     List selectedGenres = data["selectedGenres"] ?? [];
     this.selectedGenres =
