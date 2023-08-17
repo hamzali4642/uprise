@@ -58,7 +58,7 @@ class UserModel {
     city = data["city"] ?? "";
     state = data["state"] ?? "";
     country = data["country"] ?? "";
-    avatar = data["avatar"] ?? "";
+    avatar = data["avatar"];
 
     List selectedGenres = data["selectedGenres"] ?? [];
     this.selectedGenres =

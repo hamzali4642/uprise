@@ -58,7 +58,7 @@ class _DashboardState extends State<Dashboard> {
                             provider.selectedIndex == 2) ...[
                           headerWidget(),
                           locationWidget(),
-                          // PlayerWidget(),
+                          const PlayerWidget(),
                         ],
                         Expanded(child: provider.pages[provider.selectedIndex]!),
                       ],

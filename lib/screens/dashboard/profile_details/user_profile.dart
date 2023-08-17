@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:uprise/screens/dashboard/profile_details/change_password.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_details.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
@@ -145,13 +146,13 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                     const SizedBox(height: 50),
                   ] else ...[
-                    btn("Change Password", context),
+                    btn("Change Password", context, const ChangePassword()),
                     const SizedBox(height: 10),
-                    btn("Instruments interested in", context),
+                    btn("Instruments interested in", context, const ChangePassword()),
                     const SizedBox(
                       height: 10,
                     ),
-                    btn("Logout", context),
+                    btn("Logout", context, const SignIn()),
                   ]
                 ],
               ),
@@ -226,13 +227,13 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Widget btn(String str, BuildContext context) {
+  Widget btn(String str, BuildContext context,Widget widget) {
     return InkWell(
       onTap: () {
-        if (str == "Logout") {
+        if (widget is SignIn) {
           FirebaseAuth.instance.signOut();
-          context.pushAndRemoveUntil(child: const SignIn());
         }
+        context.push(child: widget);
       },
       child: Text(
         str,
