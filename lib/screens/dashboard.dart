@@ -130,6 +130,7 @@ class _DashboardState extends State<Dashboard> {
         horizontal: Constants.horizontalPadding,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [

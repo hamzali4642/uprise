@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/models/user_model.dart';
+import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/profile_details/change_password.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_details.dart';
@@ -33,10 +34,11 @@ class _UserProfileState extends State<UserProfile> {
   TextEditingController phone = TextEditingController();
   TextEditingController description = TextEditingController();
 
-
   late DataProvider provider;
+
   @override
   Widget build(BuildContext context) {
+
     return SingleChildScrollView(
       child: Consumer<DataProvider>(builder: (ctx, value, child) {
         provider = value;
@@ -146,9 +148,15 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                     const SizedBox(height: 50),
                   ] else ...[
-                    btn("Change Password", context, const ChangePassword()),
+                    if(FirebaseAuth.instance.currentUser!.providerData.where((element) => element.providerId == "password").isNotEmpty)
+                    btn(
+                      "Change Password",
+                      context,
+                      const ChangePassword(),
+                    ),
                     const SizedBox(height: 10),
-                    btn("Instruments interested in", context, const ChangePassword()),
+                    btn("Instruments interested in", context,
+                        const ChangePassword()),
                     const SizedBox(
                       height: 10,
                     ),
@@ -178,7 +186,9 @@ class _UserProfileState extends State<UserProfile> {
             children: [
               ClipOval(
                 child: Image(
-                  image: AssetImage(provider.userModel?.avatar == null ? Assets.imagesUsers : provider.userModel!.avatar!),
+                  image: AssetImage(provider.userModel?.avatar == null
+                      ? Assets.imagesUsers
+                      : provider.userModel!.avatar!),
                 ),
               ),
               if (widget.isEdit)
@@ -186,12 +196,13 @@ class _UserProfileState extends State<UserProfile> {
                   right: 0,
                   bottom: 0,
                   child: InkWell(
-                    onTap: (){
-
+                    onTap: () {
                       context.push(child: Avatars());
                     },
                     child: Container(
-                      padding: EdgeInsets.all(6,),
+                      padding: EdgeInsets.all(
+                        6,
+                      ),
                       decoration: BoxDecoration(
                         color: CColors.primary,
                         shape: BoxShape.circle,
@@ -227,11 +238,16 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Widget btn(String str, BuildContext context,Widget widget) {
+  Widget btn(String str, BuildContext context, Widget widget) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
         if (widget is SignIn) {
-          FirebaseAuth.instance.signOut();
+
+          await FirebaseAuth.instance.signOut();
+          var p = Provider.of<DashboardProvider>(context, listen: false);
+          p.selectedIndex = 0;
+          p.homeSelected = "Feed";
+
         }
         context.push(child: widget);
       },
@@ -253,17 +269,27 @@ class _UserProfileState extends State<UserProfile> {
           ),
         ),
         const SizedBox(height: 20),
-        SizedBox(
-          height: widget.isEdit ? null : 5,
-          width: double.infinity,
-          child: TextFieldWidget(
-            controller: controller,
-            hint: "",
-            errorText: "",
-            enableBorder: false,
-            enable: widget.isEdit,
+        if (widget.isEdit)
+          SizedBox(
+            height: widget.isEdit ? null : 5,
+            width: double.infinity,
+            child: TextFieldWidget(
+              controller: controller,
+              hint: "",
+              errorText: "",
+              enableBorder: false,
+              enable: widget.isEdit,
+            ),
+          )
+        else
+          Text(
+            controller.text,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
         const Divider(
           color: CColors.Grey,
         ),

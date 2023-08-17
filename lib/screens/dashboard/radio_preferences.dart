@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
@@ -32,6 +33,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
   bool check = true;
   @override
   Widget build(BuildContext context) {
+    
     return Consumer<DashboardProvider>(
       builder: (context, p, child) {
         dashboardProvider = p;
@@ -41,7 +43,6 @@ class _RadioPreferencesState extends State<RadioPreferences> {
             dashboardProvider.selectedGenres = dataProvider.userModel!.selectedGenres;
             city.text = dataProvider.userModel!.city;
             state.text = dataProvider.userModel!.state;
-            country.text = dataProvider.userModel!.country;
             check = false;
           }
           return Scaffold(
