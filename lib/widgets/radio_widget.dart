@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/textstyles.dart';
+import 'package:uprise/screens/dashboard/radio_details.dart';
+import 'package:utility_extensions/utility_extensions.dart';
 
 import '../helpers/colors.dart';
 
@@ -15,35 +17,40 @@ class RadioWidget extends StatelessWidget {
 
     return AspectRatio(
       aspectRatio: 1,
-      child: Container(
+      child: InkWell(
+        onTap: (){
+          context.push(child: RadioDetails());
+        },
+        child: Container(
 
-        decoration: BoxDecoration(
-          color: index % 2 == 0 ? CColors.bandslineStrokeColor : Colors.red,
-        ),
-        child: Stack(
-          children: [
+          decoration: BoxDecoration(
+            color: index % 2 == 0 ? CColors.bandslineStrokeColor : Colors.red,
+          ),
+          child: Stack(
+            children: [
 
-            Positioned(
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
-              child: SvgPicture.asset(
-                Assets.imagesRadioStations,
-                fit: BoxFit.fitWidth,
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                child: SvgPicture.asset(
+                  Assets.imagesRadioStations,
+                  fit: BoxFit.fitWidth,
+                ),
               ),
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 10,
-              child: Text(
-                "title",
-                textAlign: TextAlign.center,
-                style: AppTextStyles.clickable(color: Colors.white),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 10,
+                child: Text(
+                  "title",
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.clickable(color: Colors.white),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
