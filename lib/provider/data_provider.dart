@@ -27,10 +27,10 @@ class DataProvider extends ChangeNotifier {
 
   AudioPlayer audioPlayer = AudioPlayer();
   int total = 1;
-  String time = "00:00";
   bool isDisposed = false;
   bool isPlaying = false;
   double completed = 0;
+  double bufferedTime = 0;
 
   authStream() {
     FirebaseAuth.instance.authStateChanges().listen((user) {
@@ -93,13 +93,14 @@ class DataProvider extends ChangeNotifier {
     isPlaying = true;
     total = audioPlayer.duration?.inSeconds ?? 0;
 
-    duration = audioPlayer.bufferedPositionStream.listen((event) async {
+    audioPlayer.positionStream.listen((event) {
       completed = event.inSeconds / total;
-
-      String minutes = (event.inSeconds ~/ 60).toString();
-      String seconds = (event.inSeconds % 60).toString().padLeft(2, '0');
-      time = '${minutes.padLeft(2, '0')}:$seconds';
-
+      if (!isDisposed) {
+        notifyListeners();
+      }
+    });
+    duration = audioPlayer.bufferedPositionStream.listen((event) async {
+      bufferedTime = event.inSeconds / total;
       if (!isDisposed) {
         notifyListeners();
       }
@@ -108,6 +109,7 @@ class DataProvider extends ChangeNotifier {
     audioPlayer.playingStream.listen((event) {
       print(event);
     });
+
   }
 
   updateUser(UserModel userModel) {
