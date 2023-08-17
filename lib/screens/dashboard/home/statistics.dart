@@ -1,45 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/heading_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 
 import '../../../helpers/colors.dart';
 
-class Statistics extends StatelessWidget {
+class Statistics extends StatefulWidget {
   const Statistics({super.key});
 
   @override
+  State<Statistics> createState() => _StatisticsState();
+}
+
+class _StatisticsState extends State<Statistics> {
+  late DataProvider provider;
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          usersWidget(),
-          const SizedBox(
-            height: 20,
+    return Consumer<DataProvider>(
+      builder: (context, provider, child) {
+        this.provider = provider;
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              usersWidget(),
+              const SizedBox(
+                height: 20,
+              ),
+              eventsPerYearWidget(),
+              const SizedBox(
+                height: 20,
+              ),
+              genrePreferencesWidget(),
+              const SizedBox(
+                height: 20,
+              ),
+              bandsWidget(),
+              const SizedBox(
+                height: 20,
+              ),
+              popularArtistWidget(),
+              const SizedBox(
+                height: 20,
+              ),
+              popularArtistPerGenreWidget(),
+              const SizedBox(
+                height: 40,
+              ),
+            ],
           ),
-          eventsPerYearWidget(),
-          const SizedBox(
-            height: 20,
-          ),
-          genrePreferencesWidget(),
-          const SizedBox(
-            height: 20,
-          ),
-          bandsWidget(),
-          const SizedBox(
-            height: 20,
-          ),
-          popularArtistWidget(),
-          const SizedBox(
-            height: 20,
-          ),
-          popularArtistPerGenreWidget(),
-          const SizedBox(
-            height: 40,
-          ),
-        ],
-      ),
+        );
+      }
     );
   }
 
@@ -47,11 +61,11 @@ class Statistics extends StatelessWidget {
     List<_PieData> pieData = [
       _PieData(
         "",
-        1,
+        provider.users.where((element) => element.isBand).length,
       ),
       _PieData(
         "",
-        6,
+        provider.users.where((element) => !element.isBand).length,
       ),
     ];
     return Container(

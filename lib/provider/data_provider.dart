@@ -38,6 +38,7 @@ class DataProvider extends ChangeNotifier {
         cancelStreams();
       } else {
         getUserData();
+        getUsers();
         getGenres();
         getSongs();
       }
@@ -58,6 +59,21 @@ class DataProvider extends ChangeNotifier {
         userModel = null;
         FirebaseAuth.instance.signOut();
       }
+      notifyListeners();
+    });
+  }
+
+  List<UserModel> users = [];
+
+  void getUsers() {
+    db.collection("users").get().then((snapshot) {
+      var docs = snapshot.docs.where((element) => element.exists).toList();
+      users = List.generate(
+        docs.length,
+        (index) => UserModel.fromMap(
+          docs[index].data(),
+        ),
+      );
       notifyListeners();
     });
   }
