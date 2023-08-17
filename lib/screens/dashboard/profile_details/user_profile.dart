@@ -149,14 +149,10 @@ class _UserProfileState extends State<UserProfile> {
                     const SizedBox(height: 50),
                   ] else ...[
                     if(FirebaseAuth.instance.currentUser!.providerData.where((element) => element.providerId == "password").isNotEmpty)
-                    btn(
-                      "Change Password",
-                      context,
-                      const ChangePassword(),
-                    ),
+                      btn("Change Password", context,  ChangePassword(email: value.userModel!.email,)),
                     const SizedBox(height: 10),
-                    btn("Instruments interested in", context,
-                        const ChangePassword()),
+                    btn("Instruments interested in", context,  ChangePassword(email: value.userModel!.email)),
+
                     const SizedBox(
                       height: 10,
                     ),
