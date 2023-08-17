@@ -36,10 +36,7 @@ class MyApp extends StatelessWidget {
               padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
             ),
           ),
-          sliderTheme: SliderThemeData(
-            // here
-            trackShape: CustomTrackShape(),
-      ),
+
           fontFamily: "Oswald",
           unselectedWidgetColor: CColors.White,
           elevatedButtonTheme: ElevatedButtonThemeData(
@@ -71,19 +68,3 @@ class Landing extends StatelessWidget {
   }
 }
 
-class CustomTrackShape extends RoundedRectSliderTrackShape {
-  @override
-  Rect getPreferredRect({
-    required RenderBox parentBox,
-    Offset offset = Offset.zero,
-    required SliderThemeData sliderTheme,
-    bool isEnabled = false,
-    bool isDiscrete = false,
-  }) {
-    final trackHeight = sliderTheme.trackHeight;
-    final trackLeft = offset.dx;
-    final trackTop = offset.dy + (parentBox.size.height - trackHeight!) / 2;
-    final trackWidth = parentBox.size.width;
-    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
-  }
-}
