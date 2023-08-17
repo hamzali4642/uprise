@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +10,24 @@ import '../models/song_model.dart';
 class DataProvider extends ChangeNotifier {
   DataProvider() {
     authStream();
+
+    audioPlayer.positionStream.listen((event) {
+      completed = event;
+      if (completed.inSeconds == total.inSeconds) {
+        bufferedTime = const Duration(seconds: 0);
+        completed = const Duration(seconds: 0);
+        audioState = "stopped";
+      }
+      if (!isDisposed) {
+        notifyListeners();
+      }
+    });
+    duration = audioPlayer.bufferedPositionStream.listen((event) async {
+      bufferedTime = event;
+      if (!isDisposed) {
+        notifyListeners();
+      }
+    });
   }
 
   var db = FirebaseFirestore.instance;
@@ -26,11 +43,12 @@ class DataProvider extends ChangeNotifier {
   StreamSubscription<Duration>? duration;
 
   AudioPlayer audioPlayer = AudioPlayer();
-  int total = 1;
+  Duration total = const Duration(seconds: 0);
   bool isDisposed = false;
   bool isPlaying = false;
-  double completed = 0;
-  double bufferedTime = 0;
+  String audioState = "stopped";
+  Duration completed = const Duration(seconds: 0);
+  Duration? bufferedTime = const Duration(seconds: 0);
 
   authStream() {
     FirebaseAuth.instance.authStateChanges().listen((user) {
@@ -103,29 +121,18 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
-  initializePlayer(String url) {
+  initializePlayer(String url) async {
     audioPlayer.setUrl(url);
-    audioPlayer.play();
+    await audioPlayer.play();
+    audioState = "playing";
     isPlaying = true;
-    total = audioPlayer.duration?.inSeconds ?? 0;
+    if (audioPlayer.duration != null) {
+      total = audioPlayer.duration!;
+    }
 
-    audioPlayer.positionStream.listen((event) {
-      completed = event.inSeconds / total;
-      if (!isDisposed) {
-        notifyListeners();
-      }
-    });
-    duration = audioPlayer.bufferedPositionStream.listen((event) async {
-      bufferedTime = event.inSeconds / total;
-      if (!isDisposed) {
-        notifyListeners();
-      }
-    });
+    notifyListeners();
 
-    audioPlayer.playingStream.listen((event) {
-      print(event);
-    });
-
+    // total = audioPlayer.duration?.inSeconds ?? 0;
   }
 
   updateUser(UserModel userModel) {
@@ -146,12 +153,32 @@ class DataProvider extends ChangeNotifier {
 
   pause() async {
     await audioPlayer.pause();
+    audioState = "pause";
     isPlaying = false;
+    notifyListeners();
+  }
+
+  seek(Duration duration) async {
+
+    completed = duration;
+    audioPlayer.seek(duration);
+
+    notifyListeners();
+
+  }
+
+  play() async {
+    audioState = "playing";
+    isPlaying = true;
+    notifyListeners();
+    await audioPlayer.play();
   }
 
   stop() async {
     await audioPlayer.stop();
+    audioState = "stopped";
     isPlaying = false;
+    notifyListeners();
   }
 
   cancelStreams() {
@@ -160,3 +187,5 @@ class DataProvider extends ChangeNotifier {
     userSubscriptions?.cancel();
   }
 }
+
+
