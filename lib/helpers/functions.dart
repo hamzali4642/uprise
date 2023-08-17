@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'colors.dart';
@@ -48,6 +50,23 @@ class Functions{
         return alert;
       },
     );
+  }
+
+  static Color generateColorFromString(String input) {
+    int hashCode = input.hashCode;
+
+    // Use the hash code to generate a seed for randomization
+    int seed = hashCode % 1000000;
+
+    // Create a random number generator with the determined seed
+    Random random = Random(seed);
+
+    // Generate RGB values with random variations to create different shades of dark colors
+    int red = random.nextInt(128);
+    int green = random.nextInt(128);
+    int blue = random.nextInt(128);
+
+    return Color.fromARGB(255, red + 128, green + 128, blue + 128);
   }
 
 }

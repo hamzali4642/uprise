@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:marquee/marquee.dart';
 import 'package:uprise/generated/assets.dart';
+import 'package:uprise/models/song_model.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 
 import '../helpers/colors.dart';
 import '../helpers/constants.dart';
 
 class SongWidget extends StatelessWidget {
-  const SongWidget({super.key});
+  const SongWidget({super.key, required this.song});
+
+  final SongModel song;
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +20,9 @@ class SongWidget extends StatelessWidget {
           horizontal: Constants.horizontalPadding, vertical: 10),
       child: Row(
         children: [
-          const Image(
+          Image(
             image: NetworkImage(
-              Constants.demoCoverImage,
+              song.posterUrl,
             ),
             fit: BoxFit.cover,
             height: 80,
@@ -37,9 +40,10 @@ class SongWidget extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Some sample text that takes some space.',
+                            Text(
+                              song.title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(

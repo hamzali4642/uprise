@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/feed_widget.dart';
 import 'package:uprise/widgets/heading_widget.dart';
 import 'package:uprise/widgets/radio_widget.dart';
@@ -14,19 +16,26 @@ class Feed extends StatefulWidget {
 }
 
 class _FeedState extends State<Feed> {
+  late DataProvider dataProvider;
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        recommendedRadioWidget().toSliver,
-        FeedWidget().toSliver,
-        newReleasesWidget().toSliver,
-        SliverList(
-          delegate: SliverChildBuilderDelegate((ctx, i) {
-            return FeedWidget();
-          }, childCount: 4),
-        ),
-      ],
+    return Consumer<DataProvider>(
+      builder: (context, provider, value) {
+        dataProvider = provider;
+
+        return CustomScrollView(
+          slivers: [
+            recommendedRadioWidget().toSliver,
+            FeedWidget().toSliver,
+            newReleasesWidget().toSliver,
+            SliverList(
+              delegate: SliverChildBuilderDelegate((ctx, i) {
+                return FeedWidget();
+              }, childCount: 4),
+            ),
+          ],
+        );
+      }
     );
   }
 
@@ -50,10 +59,10 @@ class _FeedState extends State<Feed> {
                 return SizedBox(width: 1,);
               }
               return RadioWidget(
-                index: i,
+                name: dataProvider.cities[i - 1],
               );
             },
-            itemCount: 4,
+            itemCount: dataProvider.cities.length + 1,
             separatorBuilder: (ctx, i) {
               if(i == 0){
                 return SizedBox();

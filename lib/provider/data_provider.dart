@@ -105,7 +105,8 @@ class DataProvider extends ChangeNotifier {
         .map((doc) => SongModel.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
 
-
+    var cities = List.generate(songs.length, (index) => songs[index].city);
+    this.cities = cities.toSet().toList();
     songsState = DataStates.success;
   }
 
