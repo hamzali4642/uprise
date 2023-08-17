@@ -5,12 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:uprise/screens/dashboard.dart';
 import 'package:uprise/widgets/genere_tile_widget.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:http/http.dart' as http;
 
 import '../../helpers/colors.dart';
+import '../../provider/dashboard_provider.dart';
 
 class RadioPreferences extends StatefulWidget {
   const RadioPreferences({super.key});
@@ -25,109 +27,128 @@ class _RadioPreferencesState extends State<RadioPreferences> {
   var country = TextEditingController(text: "USA");
 
   late DataProvider dataProvider;
+  late DashboardProvider dashboardProvider;
 
+  bool check = true;
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataProvider>(builder: (context, provider, child) {
-      dataProvider = provider;
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: CColors.transparentColor,
-          title: Text(
-            "Radio Preferences",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeights.bold,
+    return Consumer<DashboardProvider>(
+      builder: (context, p, child) {
+        dashboardProvider = p;
+        return Consumer<DataProvider>(builder: (context, provider, child) {
+          dataProvider = provider;
+          if(check){
+            dashboardProvider.selectedGenres = dataProvider.userModel!.selectedGenres;
+            check = false;
+          }
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: CColors.transparentColor,
+              title: Text(
+                "Radio Preferences",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeights.bold,
+                ),
+              ),
+              centerTitle: false,
             ),
-          ),
-          centerTitle: false,
-        ),
-        body: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: Constants.horizontalPadding,
-            vertical: 10,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Select Location",
-                  style: TextStyle(
-                    color: CColors.textColor,
-                    fontSize: 12,
-                  ),
-                ),
-                radioWidget(),
-                TextFieldWidget(
-                  controller: type == "City"
-                      ? city
-                      : type == "State"
-                          ? state
-                          : country,
-                  hint: "Manually Enter Location",
-                  errorText: "errorText",
-                  enable: type != "Country",
-                  onChange: (value) async {
-                    if (type == "City") {
-                      responses = await autoCompleteCity(value);
-                      responses = responses.toSet().toList();
-                    } else {
-                      responses = usStates
-                          .where((element) => element
-                              .toLowerCase()
-                              .contains(value.toLowerCase()))
-                          .toList();
-                    }
-
-                    if (value.trim().isEmpty) {
-                      responses = [];
-                    }
-                    setState(() {});
-                  },
-                ),
-                suggestionsWidget(),
-                SizedBox(
-                  height: 10,
-                ),
-                const Text(
-                  "Pick your favourite Genere",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeights.bold,
-                    fontSize: 24,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Wrap(
+            body: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: Constants.horizontalPadding,
+                vertical: 10,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (var model in dataProvider.genres)
-                      GenreTileWidget(
-                        text: model.name,
+                    const Text(
+                      "Select Location",
+                      style: TextStyle(
+                        color: CColors.textColor,
+                        fontSize: 12,
                       ),
+                    ),
+                    radioWidget(),
+                    TextFieldWidget(
+                      controller: type == "City"
+                          ? city
+                          : type == "State"
+                              ? state
+                              : country,
+                      hint: "Manually Enter Location",
+                      errorText: "errorText",
+                      enable: type != "Country",
+                      onChange: (value) async {
+                        if (value.trim().isEmpty) {
+                          responses = [];
+                        }else
+                        if (type == "City") {
+                          responses = await autoCompleteCity(value);
+                          responses = responses.toSet().toList();
+                        } else {
+                          responses = usStates
+                              .where((element) => element
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()))
+                              .toList();
+                        }
+
+
+                        setState(() {});
+                      },
+                    ),
+                    suggestionsWidget(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    const Text(
+                      "Pick your favourite Genere",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeights.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Wrap(
+                      children: [
+                        for (var genre in dataProvider.genres)
+                          GenreTileWidget(
+                            text: genre,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          dataProvider.updateUserPref({
+                            "selectedGenres" : dashboardProvider.selectedGenres,
+                            "city" : city.text,
+                            "country" : country.text,
+                            "state" : state.text,
+                          });
+                        },
+                        child: Text(
+                          "Save",
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Save",
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      );
-    });
+          );
+        });
+      }
+    );
   }
 
   String type = "City";

@@ -10,6 +10,8 @@ class UserModel {
   String? twitter;
   String? description;
 
+  List<String> selectedGenres = [];
+
   UserModel({
     this.id,
     required this.username,
@@ -34,7 +36,7 @@ class UserModel {
       "facebook": facebook,
       "instagram": instagram,
       "twitter": twitter,
-      "description" : description
+      "description": description
     };
   }
 
@@ -49,5 +51,9 @@ class UserModel {
     instagram = data["instagram"];
     twitter = data["twitter"];
     description = data["description"];
+
+    List selectedGenres = data["selectedGenres"] ?? [];
+    this.selectedGenres =
+        List.generate(selectedGenres.length, (index) => selectedGenres[index]);
   }
 }

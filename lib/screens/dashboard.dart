@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
+import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
 import 'package:uprise/widgets/player_widget.dart';
@@ -22,49 +23,55 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   late DashboardProvider provider;
 
+  late DataProvider dataProvider;
   @override
   Widget build(BuildContext context) {
-    return Consumer<DashboardProvider>(builder: (context, value, child) {
-      provider = value;
-      return Scaffold(
-        floatingActionButton: provider.showOverlay
-            ? InkWell(
-                onTap: () {
-                  provider.showOverlay = !provider.showOverlay;
-                },
-                child: SvgPicture.asset(
-                  Assets.imagesClose,
-                  width: iconSize,
+    return Consumer<DataProvider>(
+      builder: (context, p, child) {
+        dataProvider = p;
+        return Consumer<DashboardProvider>(builder: (context, value, child) {
+          provider = value;
+          return Scaffold(
+            floatingActionButton: provider.showOverlay
+                ? InkWell(
+                    onTap: () {
+                      provider.showOverlay = !provider.showOverlay;
+                    },
+                    child: SvgPicture.asset(
+                      Assets.imagesClose,
+                      width: iconSize,
+                    ),
+                  )
+                : null,
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            body: Stack(
+              children: [
+                Positioned.fill(
+                  child: Scaffold(
+                    floatingActionButton: fabWidget(),
+                    floatingActionButtonLocation:
+                        FloatingActionButtonLocation.centerDocked,
+                    bottomNavigationBar: bottomNavigationWidget(),
+                    body: Column(
+                      children: [
+                        if (provider.selectedIndex == 0 ||
+                            provider.selectedIndex == 2) ...[
+                          headerWidget(),
+                          locationWidget(),
+                          PlayerWidget(),
+                        ],
+                        Expanded(child: provider.pages[provider.selectedIndex]!),
+                      ],
+                    ),
+                  ),
                 ),
-              )
-            : null,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: Scaffold(
-                floatingActionButton: fabWidget(),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerDocked,
-                bottomNavigationBar: bottomNavigationWidget(),
-                body: Column(
-                  children: [
-                    if (provider.selectedIndex == 0 ||
-                        provider.selectedIndex == 2) ...[
-                      headerWidget(),
-                      locationWidget(),
-                      PlayerWidget(),
-                    ],
-                    Expanded(child: provider.pages[provider.selectedIndex]!),
-                  ],
-                ),
-              ),
+                if (provider.showOverlay) overlayWidget(),
+              ],
             ),
-            if (provider.showOverlay) overlayWidget(),
-          ],
-        ),
-      );
-    });
+          );
+        });
+      }
+    );
   }
 
   Widget headerWidget() {
@@ -101,7 +108,7 @@ class _DashboardState extends State<Dashboard> {
                   provider.selectedIndex = 3;
                 },
                 child: Text(
-                  "UserName",
+                  dataProvider.userModel == null ? "" : dataProvider.userModel!.username,
                   style: AppTextStyles.popins(
                       style: const TextStyle(
                     color: Colors.white,
@@ -154,15 +161,12 @@ class _DashboardState extends State<Dashboard> {
               ),
             ],
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Wrap(
-              alignment: WrapAlignment.start,
-              direction: Axis.horizontal,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
               children: [
-                ChipWidget(text: "Blues"),
-                ChipWidget(text: "Blues"),
-                ChipWidget(text: "Blues"),
+                for(var genre in dataProvider.userModel?.selectedGenres ?? [])
+                  ChipWidget(text: genre,),
               ],
             ),
           ),

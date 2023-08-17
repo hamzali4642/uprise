@@ -14,9 +14,7 @@ class Constants {
   static const horizontalPadding = 20.0;
   static const boxRadius = 20.0;
 
-  static String mapKey = Platform.isAndroid
-      ? "AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk"
-      : "AIzaSyCct6Mn9T-U4-wclBHsL7mx2hp1JII8kkA";
+  static String mapKey = "AIzaSyCNNmfTGsBatXy77JEAcjxuHCR2WSxVhvg";
 
   static List<BoxShadow> shadow() {
     return const [

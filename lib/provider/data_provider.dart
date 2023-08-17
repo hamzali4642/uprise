@@ -50,11 +50,13 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
-  List<GenreModel> genres = [];
+  List<String> genres = [];
   void getGenres(){
-    FirebaseFirestore.instance.collection("Genre").get().then((value){
-      var docs = value.docs.where((element) => element.exists).toList();
-      genres = List.generate(docs.length, (index) => GenreModel.fromMap(docs[index].data()));
+    FirebaseFirestore.instance.collection("genre").doc("genre").get().then((value){
+      var genres = value.data()!["genre"] ?? <String>[];
+      this.genres = List.generate(genres.length, (index) => genres[index]);
+
+
       notifyListeners();
     });
   }
@@ -70,4 +72,13 @@ class DataProvider extends ChangeNotifier {
       print(e);
     }
   }
+
+  updateUserPref(Map<String, dynamic> map) {
+    try {
+      db.collection("users").doc(userModel!.id!).update(map);
+    } on FirebaseException catch (e) {
+      print(e);
+    }
+  }
+
 }
