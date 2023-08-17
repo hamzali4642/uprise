@@ -1,8 +1,10 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/screens/auth/auth_service/auth_service.dart';
+import 'package:uprise/screens/auth/forgot_password.dart';
 import 'package:uprise/screens/auth/signup.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:uprise/widgets/google_login.dart';
@@ -51,7 +53,9 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  GoogleLogin(onTap: () {}),
+                  GoogleLogin(onTap: () {
+                    AuthService.googleLogin(context);
+                  }),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -75,7 +79,9 @@ class _SignInState extends State<SignIn> {
                   loginButton(),
                   const SizedBox(height: 10),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push(child: const ForgotPassword());
+                    },
                     child: Text(
                       "Forgot password?",
                       style: AppTextStyles.popins(
@@ -110,6 +116,15 @@ class _SignInState extends State<SignIn> {
             errorText: "Email or username is required",
             controller: email,
             hint: "Enter your email or username",
+            validator: (val) {
+              if (val!.isEmpty) {
+                return "Email or username is required";
+              }
+              if (!EmailValidator.validate(val)) {
+                return "Please write valid email";
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 30),
           buildText("Password"),
@@ -133,6 +148,15 @@ class _SignInState extends State<SignIn> {
             errorText: "Password must be atleast 8 characters",
             controller: password,
             hint: "Enter your password",
+            validator: (val) {
+              if (val!.isEmpty) {
+                return "Password is required";
+              }
+              if (val.length < 8) {
+                return "Password must be atleast 8 characters";
+              }
+              return null;
+            },
           ),
         ],
       ),

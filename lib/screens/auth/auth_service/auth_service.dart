@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:utility_extensions/extensions/context_extensions.dart';
 
 import '../../../helpers/functions.dart';
 import '../../../models/user_model.dart';
 import '../../dashboard.dart';
+import '../signin.dart';
 
 class AuthService {
   static CollectionReference userRef =
@@ -76,5 +78,49 @@ class AuthService {
       print(e.code);
       context.pop();
     }
+  }
+
+  static googleLogin(BuildContext context) async {
+    GoogleSignIn _googleSignIn = GoogleSignIn();
+    try {
+      var result = await _googleSignIn.signIn();
+      if (result == null) {
+        return;
+      }
+      // ignore: use_build_context_synchronously
+      Functions.showLoaderDialog(context);
+      final userData = await result.authentication;
+      final credential = GoogleAuthProvider.credential(
+          accessToken: userData.accessToken, idToken: userData.idToken);
+      FirebaseAuth.instance.signInWithCredential(credential).then((value) {
+        var id = value.user!.uid;
+
+        var user = FirebaseAuth.instance.currentUser!;
+
+        context.pop();
+        UserModel userModel = UserModel(
+          id: id,
+          username: user.email!.split('@')[0],
+          email: user.email!,
+          isBand: false,
+        );
+
+        if (user != null) {
+          var ref =
+              FirebaseFirestore.instance.collection("users").doc(userModel.id);
+          ref.get().then((value) {
+            if (!value.exists) {
+              ref.set(userModel.toMap());
+            }
+            context.pushAndRemoveUntil(child: const Dashboard());
+          });
+        } else {
+          context.pushAndRemoveUntil(child: const SignIn());
+        }
+      }).catchError((error) {
+        context.pop();
+        Functions.showSnackBar(context, error.message!);
+      });
+    } catch (error) {}
   }
 }

@@ -10,7 +10,10 @@ class TextFieldWidget extends StatelessWidget {
       required this.errorText,
       this.isPass = false,
       this.suffixWidget,
-      this.validator})
+      this.validator,
+      this.enableBorder = true,
+      this.enable = true,
+      this.maxLength})
       : super(key: key);
 
   final TextEditingController controller;
@@ -19,10 +22,15 @@ class TextFieldWidget extends StatelessWidget {
   final bool isPass;
   final Widget? suffixWidget;
   final String? Function(String?)? validator;
+  final bool enableBorder;
+  final bool enable;
+  final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLength: maxLength,
+      enabled: enable,
       obscureText: isPass,
       controller: controller,
       style: AppTextStyles.popins(
@@ -42,9 +50,11 @@ class TextFieldWidget extends StatelessWidget {
       decoration: InputDecoration(
         suffixIcon: suffixWidget,
         hintText: hint,
-        enabledBorder: buildOutlineInputBorder(),
-        focusedBorder: buildOutlineInputBorder(),
-        errorBorder: errorBorder(),
+        enabledBorder:
+            enableBorder ? buildOutlineInputBorder() : InputBorder.none,
+        focusedBorder:
+            enableBorder ? buildOutlineInputBorder() : InputBorder.none,
+        errorBorder: enableBorder ? errorBorder() : InputBorder.none,
         focusedErrorBorder: errorBorder(),
         hintStyle: AppTextStyles.popins(
           style: const TextStyle(

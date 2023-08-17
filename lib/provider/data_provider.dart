@@ -50,4 +50,12 @@ class DataProvider extends ChangeNotifier {
   cancelStreams() {
     userSubscriptions?.cancel();
   }
+
+  updateUser(UserModel userModel) {
+    try {
+      db.collection("users").doc(userModel.id!).update(userModel.toMap());
+    } on FirebaseException catch (e) {
+      print(e);
+    }
+  }
 }
