@@ -51,6 +51,7 @@ class PlayerWidget extends StatelessWidget {
                         Expanded(
                           child: SizedBox(
                             height: 30,
+                            width: 30,
                             child: Marquee(
                               text: title,
                               style: const TextStyle(

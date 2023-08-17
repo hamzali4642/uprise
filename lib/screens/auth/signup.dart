@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:uprise/generated/assets.dart';
@@ -7,7 +6,6 @@ import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/screens/auth/auth_service/auth_service.dart';
-import 'package:uprise/screens/dashboard.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
@@ -222,7 +220,7 @@ class _SignUpState extends State<SignUp> {
                 return "Password is required";
               }
               if (val.length < 8) {
-                return "Passgword must be atleast 8 characters";
+                return "Password must be atleast 8 characters";
               }
               return null;
             },

@@ -199,7 +199,9 @@ class _UserProfileState extends State<UserProfile> {
   Widget btn(String str, BuildContext context, Widget widget) {
     return InkWell(
       onTap: () {
-        FirebaseAuth.instance.signOut();
+        if (widget is SignIn) {
+          FirebaseAuth.instance.signOut();
+        }
         context.push(child: widget);
       },
       child: Text(
