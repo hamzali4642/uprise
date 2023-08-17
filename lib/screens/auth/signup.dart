@@ -354,14 +354,20 @@ class _SignUpState extends State<SignUp> {
             if (password.text != cPassword.text) {
               Functions.showSnackBar(context, "Please match the password");
             } else {
-              UserModel userModel = UserModel(
-                username: username.text,
-                email: email.text,
-                isBand: registerBandArtist,
-                bandName: registerBandArtist ? brandName.text : null,
-              );
+              if(await validUserName()){
+                UserModel userModel = UserModel(
+                  username: username.text,
+                  email: email.text,
+                  isBand: registerBandArtist,
+                  bandName: registerBandArtist ? brandName.text : null,
+                );
+                await AuthService.signUp(context, userModel, password.text);
+              }else{
+                Functions.showSnackBar(context, "This username is already taken by another user.");
+              }
 
-              await AuthService.signUp(context, userModel, password.text);
+
+
             }
           }
         },
@@ -394,5 +400,11 @@ class _SignUpState extends State<SignUp> {
       width: 8,
       color: Colors.white.withOpacity(0.7),
     );
+  }
+
+
+  Future<bool> validUserName() async {
+    var docs  = await FirebaseFirestore.instance.collection("users").where("username",isEqualTo: username.text).get();
+    return docs.docs.isEmpty;
   }
 }

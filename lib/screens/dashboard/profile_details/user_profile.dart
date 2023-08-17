@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
@@ -168,10 +169,14 @@ class _UserProfileState extends State<UserProfile> {
             border: Border.all(color: Colors.white, width: 0.2),
             shape: BoxShape.circle,
           ),
-          child: const ClipOval(
-            child: Image(
-              image: AssetImage(Assets.imagesUsers),
-            ),
+          child: Stack(
+            children: [
+              const ClipOval(
+                child: Image(
+                  image: AssetImage(Assets.imagesUsers),
+                ),
+              ),
+            ],
           ),
         ),
         const SizedBox(width: 20),
