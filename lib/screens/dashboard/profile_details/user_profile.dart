@@ -6,6 +6,7 @@ import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/profile_details/change_password.dart';
+import 'package:uprise/screens/dashboard/profile_details/instruments.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_details.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
@@ -151,7 +152,7 @@ class _UserProfileState extends State<UserProfile> {
                     if(FirebaseAuth.instance.currentUser!.providerData.where((element) => element.providerId == "password").isNotEmpty)
                       btn("Change Password", context,  ChangePassword(email: value.userModel!.email,)),
                     const SizedBox(height: 10),
-                    btn("Instruments interested in", context,  ChangePassword(email: value.userModel!.email)),
+                    btn("Instruments interested in", context,  const Instruments()),
 
                     const SizedBox(
                       height: 10,
