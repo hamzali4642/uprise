@@ -120,9 +120,9 @@ class _ProfileDetailsState extends State<ProfileDetails>
             border: Border.all(color: Colors.white, width: 0.2),
             shape: BoxShape.circle,
           ),
-          child: const ClipOval(
+          child: ClipOval(
             child: Image(
-              image: AssetImage(Assets.imagesUsers),
+              image: AssetImage(provider.userModel?.avatar == null ? Assets.imagesUsers : provider.userModel!.avatar!),
             ),
           ),
         ),

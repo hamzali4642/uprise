@@ -11,6 +11,7 @@ import '../../../generated/assets.dart';
 import '../../../helpers/colors.dart';
 import '../../../helpers/constants.dart';
 import '../../auth/signin.dart';
+import 'avatars.dart';
 
 typedef UserCallBack = void Function(bool);
 
@@ -31,10 +32,13 @@ class _UserProfileState extends State<UserProfile> {
   TextEditingController phone = TextEditingController();
   TextEditingController description = TextEditingController();
 
+
+  late DataProvider provider;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Consumer<DataProvider>(builder: (ctx, value, child) {
+        provider = value;
         facebook.text = value.userModel!.facebook ?? "";
         instagram.text = value.userModel!.instagram ?? "";
         twitter.text = value.userModel!.twitter ?? "";
@@ -171,24 +175,30 @@ class _UserProfileState extends State<UserProfile> {
           ),
           child: Stack(
             children: [
-              const ClipOval(
+              ClipOval(
                 child: Image(
-                  image: AssetImage(Assets.imagesUsers),
+                  image: AssetImage(provider.userModel?.avatar == null ? Assets.imagesUsers : provider.userModel!.avatar!),
                 ),
               ),
               if (widget.isEdit)
                 Positioned(
                   right: 0,
                   bottom: 0,
-                  child: Container(
-                    padding: EdgeInsets.all(6,),
-                    decoration: BoxDecoration(
-                      color: CColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: SvgPicture.asset(
-                      Assets.imagesEdit,
-                      color: CColors.Black,
+                  child: InkWell(
+                    onTap: (){
+
+                      context.push(child: Avatars());
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(6,),
+                      decoration: BoxDecoration(
+                        color: CColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: SvgPicture.asset(
+                        Assets.imagesEdit,
+                        color: CColors.Black,
+                      ),
                     ),
                   ),
                 ),

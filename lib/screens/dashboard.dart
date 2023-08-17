@@ -88,12 +88,12 @@ class _DashboardState extends State<Dashboard> {
             onTap: () {
               provider.selectedIndex = 3;
             },
-            child: const SizedBox(
+            child: SizedBox(
               height: 40,
               width: 40,
               child: ClipOval(
                 child: Image(
-                  image: AssetImage(Assets.imagesUsers),
+                  image: AssetImage(dataProvider.userModel?.avatar == null ? Assets.imagesUsers : dataProvider.userModel!.avatar!),
                 ),
               ),
             ),
