@@ -3,18 +3,19 @@ import '../helpers/colors.dart';
 import '../helpers/textstyles.dart';
 
 class TextFieldWidget extends StatelessWidget {
-  const TextFieldWidget(
-      {Key? key,
-      required this.controller,
-      required this.hint,
-      required this.errorText,
-      this.isPass = false,
-      this.suffixWidget,
-      this.validator,
-      this.enableBorder = true,
-      this.enable = true,
-      this.maxLength})
-      : super(key: key);
+  const TextFieldWidget({
+    Key? key,
+    required this.controller,
+    required this.hint,
+    required this.errorText,
+    this.isPass = false,
+    this.suffixWidget,
+    this.validator,
+    this.enableBorder = true,
+    this.enable = true,
+    this.maxLength,
+    this.onChange,
+  }) : super(key: key);
 
   final TextEditingController controller;
   final String hint;
@@ -22,6 +23,7 @@ class TextFieldWidget extends StatelessWidget {
   final bool isPass;
   final Widget? suffixWidget;
   final String? Function(String?)? validator;
+  final Function(String)? onChange;
   final bool enableBorder;
   final bool enable;
   final int? maxLength;
@@ -30,6 +32,7 @@ class TextFieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       maxLength: maxLength,
+      onChanged: onChange,
       enabled: enable,
       obscureText: isPass,
       controller: controller,

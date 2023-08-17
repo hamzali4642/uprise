@@ -52,7 +52,9 @@ class _RadioPreferencesState extends State<RadioPreferences> {
               controller: controller,
               hint: "Manually Enter Location",
               errorText: "errorText",
+              onChange: (value){
 
+              },
             ),
             SizedBox(
               height: 10,
