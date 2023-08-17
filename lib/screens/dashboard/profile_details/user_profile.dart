@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
-import 'package:uprise/screens/dashboard/profile_details/change_password.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_details.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
@@ -142,13 +141,13 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                     const SizedBox(height: 50),
                   ] else ...[
-                    btn("Change Password", context, const ChangePassword()),
+                    btn("Change Password", context),
                     const SizedBox(height: 10),
-                    btn("Instruments interested in", context, const SignIn()),
+                    btn("Instruments interested in", context),
                     const SizedBox(
                       height: 10,
                     ),
-                    btn("Logout", context, const SignIn()),
+                    btn("Logout", context),
                   ]
                 ],
               ),
@@ -177,6 +176,22 @@ class _UserProfileState extends State<UserProfile> {
                   image: AssetImage(Assets.imagesUsers),
                 ),
               ),
+              if (widget.isEdit)
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(6,),
+                    decoration: BoxDecoration(
+                      color: CColors.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: SvgPicture.asset(
+                      Assets.imagesEdit,
+                      color: CColors.Black,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -201,11 +216,13 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Widget btn(String str, BuildContext context, Widget widget) {
+  Widget btn(String str, BuildContext context) {
     return InkWell(
       onTap: () {
-        FirebaseAuth.instance.signOut();
-        context.push(child: widget);
+        if (str == "Logout") {
+          FirebaseAuth.instance.signOut();
+          context.pushAndRemoveUntil(child: const SignIn());
+        }
       },
       child: Text(
         str,
