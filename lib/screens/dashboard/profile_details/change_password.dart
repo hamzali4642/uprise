@@ -102,6 +102,8 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                             Functions.showSnackBar(
                                 context, e.message ?? "Unable to change");
+
+
                           }
                         }
                       }
