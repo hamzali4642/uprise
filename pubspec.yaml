@@ -54,6 +54,8 @@ dependencies:
   email_validator: ^2.1.17
   http: ^1.1.0
   syncfusion_flutter_charts: ^22.2.9
+  shared_preferences: ^2.2.0
+  just_audio: ^0.9.34
 
 
 dev_dependencies:

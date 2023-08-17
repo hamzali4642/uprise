@@ -66,6 +66,7 @@ class Assets {
   static const String imagesLocationIcon = 'assets/images/locationIcon.png';
   static const String imagesLocationOn = 'assets/images/location_on.svg';
   static const String imagesLogo = 'assets/images/logo.png';
+  static const String imagesLogoText = 'assets/images/logoText.png';
   static const String imagesMiniPlayer = 'assets/images/miniPlayer.png';
   static const String imagesMoreFeedIllustration = 'assets/images/More_feed_illustration.png';
   static const String imagesMusicDefaultImg = 'assets/images/music_default_img.png';

@@ -1,8 +1,7 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/screens/auth/onboarding_screen.dart';
 import 'package:uprise/screens/auth/signin.dart';
@@ -21,13 +20,26 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
+    checkScreen();
+  }
 
-    Timer(
-        const Duration(seconds: 1),
-        () => context.pushAndRemoveUntil(
+  checkScreen() async {
+    Timer(const Duration(seconds: 1), () async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool check = prefs.getBool("onboard") ?? true;
+
+      if (check) {
+        prefs.setBool("onboard", false);
+        // ignore: use_build_context_synchronously
+        context.pushAndRemoveUntil(child: const OnboardingScreen());
+      } else {
+        // ignore: use_build_context_synchronously
+        context.pushAndRemoveUntil(
             child: FirebaseAuth.instance.currentUser == null
                 ? const SignIn()
-                : const Dashboard()));
+                : const Dashboard());
+      }
+    });
   }
 
   @override
@@ -35,7 +47,7 @@ class _SplashState extends State<Splash> {
     return const Scaffold(
       body: Center(
           child: CustomAssetImage(
-        path: Assets.imagesLogo,
+        path: Assets.imagesLogoText,
         width: 200,
         height: 200,
       )),

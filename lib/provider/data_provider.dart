@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:uprise/helpers/data_state.dart';
 import 'package:uprise/models/user_model.dart';
-
-import '../models/genre_model.dart';
+import '../models/song_model.dart';
 
 class DataProvider extends ChangeNotifier {
   DataProvider() {
@@ -17,9 +17,20 @@ class DataProvider extends ChangeNotifier {
 
   UserModel? userModel;
 
+  List<SongModel> songs = [];
+
   DataStates profileState = DataStates.waiting;
+  DataStates songsState = DataStates.waiting;
 
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? userSubscriptions;
+  StreamSubscription<Duration>? duration;
+
+  AudioPlayer audioPlayer = AudioPlayer();
+  int total = 1;
+  String time = "00:00";
+  bool isDisposed = false;
+  bool isPlaying = false;
+  double completed = 0;
 
   authStream() {
     FirebaseAuth.instance.authStateChanges().listen((user) {
@@ -28,6 +39,7 @@ class DataProvider extends ChangeNotifier {
       } else {
         getUserData();
         getGenres();
+        getSongs();
       }
     });
   }
@@ -50,19 +62,52 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
+  getSongs() async {
+    QuerySnapshot querySnapshot = await db.collection("Songs").get();
+
+    songs = querySnapshot.docs
+        .map((doc) => SongModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
+
+    songsState = DataStates.success;
+  }
+
   List<String> genres = [];
-  void getGenres(){
-    FirebaseFirestore.instance.collection("genre").doc("genre").get().then((value){
+
+  void getGenres() {
+    FirebaseFirestore.instance
+        .collection("genre")
+        .doc("genre")
+        .get()
+        .then((value) {
       var genres = value.data()!["genre"] ?? <String>[];
       this.genres = List.generate(genres.length, (index) => genres[index]);
-
 
       notifyListeners();
     });
   }
-  
-  cancelStreams() {
-    userSubscriptions?.cancel();
+
+  initializePlayer(String url) {
+    audioPlayer.setUrl(url);
+    audioPlayer.play();
+    isPlaying = true;
+    total = audioPlayer.duration?.inSeconds ?? 0;
+
+    duration = audioPlayer.bufferedPositionStream.listen((event) async {
+      completed = event.inSeconds / total;
+
+      String minutes = (event.inSeconds ~/ 60).toString();
+      String seconds = (event.inSeconds % 60).toString().padLeft(2, '0');
+      time = '${minutes.padLeft(2, '0')}:$seconds';
+
+      if (!isDisposed) {
+        notifyListeners();
+      }
+    });
+
+    audioPlayer.playingStream.listen((event) {
+      print(event);
+    });
   }
 
   updateUser(UserModel userModel) {
@@ -81,4 +126,19 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
+  pause() async {
+    await audioPlayer.pause();
+    isPlaying = false;
+  }
+
+  stop() async {
+    await audioPlayer.stop();
+    isPlaying = false;
+  }
+
+  cancelStreams() {
+    duration?.cancel();
+    isDisposed = true;
+    userSubscriptions?.cancel();
+  }
 }
