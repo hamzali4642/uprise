@@ -24,43 +24,41 @@ class _RadioDetailsState extends State<RadioDetails> {
       builder: (context, provider, child) {
         dataProvider = provider;
         return Scaffold(
-          body: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                headerWidget(),
-                const SizedBox(
-                  height: 10,
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              headerWidget(),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Constants.horizontalPadding,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Constants.horizontalPadding,
+                child: Text(
+                  widget.name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeights.bold,
                   ),
-                  child: Text(
-                    widget.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeights.bold,
+                ),
+              ),
+              Builder(
+                builder: (context) {
+                  var songs = dataProvider.songs.where((element) => element.city == widget.name).toList();
+                  return Expanded(
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (ctx, i) {
+                        return SongWidget(song: songs[i]);
+                      },
+                      itemCount: songs.length,
                     ),
-                  ),
-                ),
-                Builder(
-                  builder: (context) {
-                    var songs = dataProvider.songs.where((element) => element.city == widget.name).toList();
-                    return Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (ctx, i) {
-                          return SongWidget(song: songs[i]);
-                        },
-                        itemCount: songs.length,
-                      ),
-                    );
-                  }
-                ),
-              ],
-            ),
+                  );
+                }
+              ),
+            ],
           ),
         );
       }
