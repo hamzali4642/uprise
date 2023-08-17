@@ -70,6 +70,7 @@ flutter:
   assets:
      - assets/images/
      - assets/avatar/
+     - assets/instruments/
   fonts:
     - family: Oswald
       fonts:

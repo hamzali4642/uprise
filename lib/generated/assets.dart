@@ -176,4 +176,36 @@ class Assets {
   static const String imagesUsers = 'assets/images/users.png';
   static const String imagesViewprofile = 'assets/images/viewprofile.svg';
 
+
+  static const String instrumentsInstrument1 = 'assets/instruments/Instrument_1.png';
+  static const String instrumentsInstrument10 = 'assets/instruments/Instrument_10.png';
+  static const String instrumentsInstrument11 = 'assets/instruments/Instrument_11.png';
+  static const String instrumentsInstrument12 = 'assets/instruments/Instrument_12.png';
+  static const String instrumentsInstrument13 = 'assets/instruments/Instrument_13.png';
+  static const String instrumentsInstrument14 = 'assets/instruments/Instrument_14.png';
+  static const String instrumentsInstrument15 = 'assets/instruments/Instrument_15.png';
+  static const String instrumentsInstrument16 = 'assets/instruments/Instrument_16.png';
+  static const String instrumentsInstrument17 = 'assets/instruments/Instrument_17.png';
+  static const String instrumentsInstrument18 = 'assets/instruments/Instrument_18.png';
+  static const String instrumentsInstrument19 = 'assets/instruments/Instrument_19.png';
+  static const String instrumentsInstrument2 = 'assets/instruments/Instrument_2.png';
+  static const String instrumentsInstrument20 = 'assets/instruments/Instrument_20.png';
+  static const String instrumentsInstrument21 = 'assets/instruments/Instrument_21.png';
+  static const String instrumentsInstrument22 = 'assets/instruments/Instrument_22.png';
+  static const String instrumentsInstrument23 = 'assets/instruments/Instrument_23.png';
+  static const String instrumentsInstrument24 = 'assets/instruments/Instrument_24.png';
+  static const String instrumentsInstrument25 = 'assets/instruments/Instrument_25.png';
+  static const String instrumentsInstrument26 = 'assets/instruments/Instrument_26.png';
+  static const String instrumentsInstrument27 = 'assets/instruments/Instrument_27.png';
+  static const String instrumentsInstrument28 = 'assets/instruments/Instrument_28.png';
+  static const String instrumentsInstrument29 = 'assets/instruments/Instrument_29.png';
+  static const String instrumentsInstrument3 = 'assets/instruments/Instrument_3.png';
+  static const String instrumentsInstrument30 = 'assets/instruments/Instrument_30.png';
+  static const String instrumentsInstrument4 = 'assets/instruments/Instrument_4.png';
+  static const String instrumentsInstrument5 = 'assets/instruments/Instrument_5.png';
+  static const String instrumentsInstrument6 = 'assets/instruments/Instrument_6.png';
+  static const String instrumentsInstrument7 = 'assets/instruments/Instrument_7.png';
+  static const String instrumentsInstrument8 = 'assets/instruments/Instrument_8.png';
+  static const String instrumentsInstrument9 = 'assets/instruments/Instrument_9.png';
+
 }
