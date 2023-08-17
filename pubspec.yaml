@@ -51,6 +51,8 @@ dependencies:
   flutter_svg: ^2.0.7
   table_calendar: ^3.0.9
   marquee: ^2.2.3
+  email_validator: ^2.1.17
+
 
 dev_dependencies:
   flutter_test:

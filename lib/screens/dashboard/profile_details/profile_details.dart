@@ -24,76 +24,90 @@ class _ProfileDetailsState extends State<ProfileDetails>
 
   late DataProvider provider;
 
+  bool editProfile = false;
+
   @override
   void initState() {
     super.initState();
     controller = TabController(length: 3, vsync: this);
   }
 
-  List<Widget> tabBarViews = [
-    const UserProfile(),
-    const ProfileCalendar(),
-    const Favorites(),
-  ];
+  late List<Widget> tabBarViews;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
-     provider = value;
+      provider = value;
+      tabBarViews = [
+        UserProfile(
+          callBack: (value) {
+            setState(() {
+              editProfile = value;
+            });
+          },
+          isEdit: editProfile,
+        ),
+        const ProfileCalendar(),
+        const Favorites(),
+      ];
       return Scaffold(
-        body:
-          details(),
+        body: details(),
       );
     });
   }
 
   Widget details() {
     if (provider.profileState == DataStates.waiting) {
-      return const Center(child: CircularProgressIndicator(),);
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
     }
     if (provider.profileState == DataStates.fail) {
-      return const Center(child: Text("Something Went wrong",style: TextStyle(color: Colors.white)),);
+      return const Center(
+        child:
+            Text("Something Went wrong", style: TextStyle(color: Colors.white)),
+      );
     }
 
     return Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-                left: Constants.horizontalPadding,
-                right: Constants.horizontalPadding),
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-                headerWidget(),
-                const SizedBox(height: 30),
-              ],
-            ),
-          ),
-          TabBar(
-            physics: const NeverScrollableScrollPhysics(),
-            indicatorColor: Colors.white,
-            isScrollable: false,
-            unselectedLabelColor: CColors.textColor,
-            labelColor: CColors.primary,
-            indicator: const UnderlineTabIndicator(
-              borderSide: BorderSide(width: 3.0, color: CColors.primary),
-            ),
-            tabs: [
-              buildText("Profile"),
-              buildText("Calendar"),
-              buildText("Favorites"),
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+              left: Constants.horizontalPadding,
+              right: Constants.horizontalPadding),
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
+              headerWidget(),
+              const SizedBox(height: 30),
             ],
+          ),
+        ),
+        TabBar(
+          physics: const NeverScrollableScrollPhysics(),
+          indicatorColor: Colors.white,
+          isScrollable: false,
+          unselectedLabelColor: CColors.textColor,
+          labelColor: CColors.primary,
+          indicator: const UnderlineTabIndicator(
+            borderSide: BorderSide(width: 3.0, color: CColors.primary),
+          ),
+          tabs: [
+            buildText("Profile"),
+            buildText("Calendar"),
+            buildText("Favorites"),
+          ],
+          controller: controller,
+        ),
+        Expanded(
+          child: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
             controller: controller,
+            children: tabBarViews,
           ),
-          Expanded(
-            child: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: controller,
-              children: tabBarViews,
-            ),
-          ),
-        ],
-      );
+        ),
+      ],
+    );
   }
 
   Widget headerWidget() {
@@ -116,10 +130,23 @@ class _ProfileDetailsState extends State<ProfileDetails>
         Expanded(
           child: headerTitle(provider.userModel!.username),
         ),
-        SvgPicture.asset(
-          Assets.imagesEdit, // Replace with your SVG asset path
-          width: 20, // Adjust the width as needed
-          height: 20, // Adjust the height as needed
+        if(!editProfile)
+        InkWell(
+          onTap: () {
+            setState(() {
+              editProfile = true;
+            });
+          },
+          child: Container(
+            height: 30,
+            width: 30,
+            alignment: Alignment.center,
+            child: SvgPicture.asset(
+              Assets.imagesEdit,
+              width: 20,
+              height: 20,
+            ),
+          ),
         ),
       ],
     );
@@ -140,9 +167,9 @@ class _ProfileDetailsState extends State<ProfileDetails>
 }
 
 Widget headerTitle(String name) {
-  return  Text(
+  return Text(
     name,
-    style: TextStyle(
+    style: const TextStyle(
         fontSize: 25, color: Colors.white, fontWeight: FontWeights.medium),
   );
 }

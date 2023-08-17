@@ -5,13 +5,23 @@ class UserModel {
   late bool isBand;
   String? bandName;
   String? phone;
+  String? facebook;
+  String? instagram;
+  String? twitter;
+  String? description;
 
-  UserModel(
-      {required this.username,
-      required this.email,
-      required this.isBand,
-      this.bandName,
-      this.phone});
+  UserModel({
+    this.id,
+    required this.username,
+    required this.email,
+    required this.isBand,
+    this.bandName,
+    this.phone,
+    this.facebook,
+    this.instagram,
+    this.twitter,
+    this.description,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -21,6 +31,10 @@ class UserModel {
       "isBand": isBand,
       "bandName": bandName,
       "phone": phone,
+      "facebook": facebook,
+      "instagram": instagram,
+      "twitter": twitter,
+      "description" : description
     };
   }
 
@@ -31,5 +45,9 @@ class UserModel {
     isBand = data["isBand"];
     bandName = data["bandName"];
     phone = data["phone"];
+    facebook = data["facebook"];
+    instagram = data["instagram"];
+    twitter = data["twitter"];
+    description = data["description"];
   }
 }

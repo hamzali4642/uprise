@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/colors.dart';
@@ -63,7 +64,9 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  GoogleLogin(onTap: () {}),
+                  GoogleLogin(onTap: () {
+                    AuthService.googleLogin(context);
+                  }),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -198,14 +201,31 @@ class _SignUpState extends State<SignUp> {
           header("Email"),
           const SizedBox(height: 2),
           TextFieldWidget(
-            errorText: "Email is required",
-            controller: email,
-            hint: "Enter your email",
-          ),
+              errorText: "Email is required",
+              controller: email,
+              hint: "Enter your email",
+              validator: (val) {
+                if (val!.isEmpty) {
+                  return "Email or username is required";
+                }
+                if (!EmailValidator.validate(val)) {
+                  return "Please write valid email";
+                }
+                return null;
+              }),
           const SizedBox(height: 30),
           header("Password"),
           const SizedBox(height: 2),
           TextFieldWidget(
+            validator: (val) {
+              if (val!.isEmpty) {
+                return "Password is required";
+              }
+              if (val.length < 8) {
+                return "Passgword must be atleast 8 characters";
+              }
+              return null;
+            },
             suffixWidget: GestureDetector(
               onTap: () {
                 setState(() {
@@ -247,6 +267,15 @@ class _SignUpState extends State<SignUp> {
             errorText: "Confirm Password must be atleast 8 characters",
             controller: cPassword,
             hint: "Enter your confirm password",
+            validator: (val) {
+              if (val!.isEmpty) {
+                return "Confirm Password is required";
+              }
+              if (val.length < 8) {
+                return "Password must be atleast 8 characters";
+              }
+              return null;
+            },
           ),
           if (registerBandArtist) ...[
             const SizedBox(height: 30),
@@ -364,29 +393,6 @@ class _SignUpState extends State<SignUp> {
       height: 1,
       width: 8,
       color: Colors.white.withOpacity(0.7),
-    );
-  }
-
-  Widget googleSignIn() {
-    return Container(
-      height: 60,
-      width: double.infinity,
-      decoration: BoxDecoration(border: Border.all(color: CColors.primary)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CustomAssetImage(
-              width: 20, height: 20, path: Assets.imagesGoogleIcon),
-          const SizedBox(width: 6),
-          Text(
-            "Continue with Google",
-            style: AppTextStyles.popins(
-              style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeights.medium),
-            ),
-          )
-        ],
-      ),
     );
   }
 }
