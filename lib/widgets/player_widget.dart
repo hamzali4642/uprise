@@ -22,8 +22,7 @@ class PlayerWidget extends StatelessWidget {
 
       String imageUrl = value.songs.first.posterUrl;
       String songUrl = value.songs.first.songUrl;
-
-      print(value.audioState);
+      String title = value.songs.first.title;
 
 
       return Container(
@@ -53,7 +52,7 @@ class PlayerWidget extends StatelessWidget {
                           child: SizedBox(
                             height: 30,
                             child: Marquee(
-                              text: 'Some sample text that takes some space.',
+                              text: title,
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
