@@ -79,7 +79,8 @@ class Assets {
   static const String imagesOnDemandMusic = 'assets/images/onDemandMusic.png';
   static const String imagesOrText = 'assets/images/orText.svg';
   static const String imagesPause = 'assets/images/pause.svg';
-  static const String imagesPlayBtn = 'assets/images/playBtn.svg';
+  static const String imagesPauseBtn = 'assets/images/pauseBtn.png';
+  static const String imagesPlayBtn = 'assets/images/playBtn.png';
   static const String imagesPromoPost = 'assets/images/promoPost.png';
   static const String imagesPromoPost1 = 'assets/images/promoPost1.png';
   static const String imagesRadio = 'assets/images/radio.png';

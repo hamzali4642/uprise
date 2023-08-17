@@ -7,6 +7,7 @@ import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/data_state.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:uprise/widgets/custom_asset_image.dart';
 import '../helpers/colors.dart';
 
 class PlayerWidget extends StatelessWidget {
@@ -21,6 +22,9 @@ class PlayerWidget extends StatelessWidget {
 
       String imageUrl = value.songs.first.posterUrl;
       String songUrl = value.songs.first.songUrl;
+
+      print(value.audioState);
+
 
       return Container(
         margin: const EdgeInsets.symmetric(
@@ -73,32 +77,54 @@ class PlayerWidget extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () {
-                            if (value.isPlaying) {
-                              value.stop();
-                            } else {
-                              value.initializePlayer(songUrl);
+                            switch (value.audioState) {
+                              case "stopped":
+                                value.initializePlayer(songUrl);
+                                break;
+                              case "pause":
+                                value.play();
+                                break;
+                              case "playing":
+                                value.pause();
+                                break;
+                              default:
+                                value.stop();
+                                break;
                             }
+
                           },
-                          child: SvgPicture.asset(
-                            Assets.imagesPlayBtn,
-                            width: 30,
+                          child: Container(
+                            height: 22,
+                            width: 22,
+                            alignment: Alignment.center,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: CColors.primary,
+                            ),
+                            child: CustomAssetImage(
+                              path: (value.audioState != "playing")
+                                  ? Assets.imagesPlayBtn
+                                  : Assets.imagesPauseBtn,
+                              height: 9,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         SvgPicture.asset(
                           Assets.imagesDisableNext,
                           width: 30,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
-                        Icon(
+                        const Icon(
                           Icons.favorite,
                           color: Colors.red,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                       ],
@@ -111,14 +137,16 @@ class PlayerWidget extends StatelessWidget {
                       ),
                     ),
                     ProgressBar(
-                      progress: const Duration(milliseconds: 1000),
-                      buffered: const Duration(milliseconds: 2000),
-                      total: const Duration(milliseconds: 5000),
+                      progress: value.completed,
+                      buffered: value.bufferedTime!,
+                      total: value.total,
                       timeLabelTextStyle: const TextStyle(
                         color: CColors.primary,
                         fontSize: 10,
                       ),
                       onSeek: (duration) {
+
+                        value.seek(duration);
                         print('User selected a new time: $duration');
                       },
                     ),
