@@ -96,12 +96,15 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
+
+  List<String> cities = [];
   getSongs() async {
     QuerySnapshot querySnapshot = await db.collection("Songs").get();
 
     songs = querySnapshot.docs
         .map((doc) => SongModel.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
+
 
     songsState = DataStates.success;
   }

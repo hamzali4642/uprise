@@ -38,7 +38,6 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       child: Consumer<DataProvider>(builder: (ctx, value, child) {
         provider = value;
@@ -148,15 +147,26 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                     const SizedBox(height: 50),
                   ] else ...[
-                    if(FirebaseAuth.instance.currentUser!.providerData.where((element) => element.providerId == "password").isNotEmpty)
-                      btn("Change Password", context,  ChangePassword(email: value.userModel!.email,)),
+                    if (FirebaseAuth.instance.currentUser!.providerData
+                        .where((element) => element.providerId == "password")
+                        .isNotEmpty)
+                      btn(
+                          "Change Password",
+                          context,
+                          ChangePassword(
+                            email: value.userModel!.email,
+                          )),
                     const SizedBox(height: 10),
-                    btn("Instruments interested in", context,  ChangePassword(email: value.userModel!.email)),
-
+                    btn("Instruments interested in", context,
+                        ChangePassword(email: value.userModel!.email)),
                     const SizedBox(
                       height: 10,
                     ),
-                    btn("Logout", context, const SignIn()),
+                    btn(
+                      "Logout",
+                      context,
+                      const SignIn(),
+                    ),
                   ]
                 ],
               ),
@@ -238,12 +248,10 @@ class _UserProfileState extends State<UserProfile> {
     return InkWell(
       onTap: () async {
         if (widget is SignIn) {
-
           await FirebaseAuth.instance.signOut();
           var p = Provider.of<DashboardProvider>(context, listen: false);
           p.selectedIndex = 0;
           p.homeSelected = "Feed";
-
         }
         context.push(child: widget);
       },
