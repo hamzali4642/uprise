@@ -17,10 +17,16 @@ class Avatars extends StatefulWidget {
 class _AvatarsState extends State<Avatars> {
   String? selected;
 
+  bool checked = false;
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(
       builder: (context, value, child) {
+
+        if(!checked){
+          selected = value.userModel?.avatar;
+          checked = true;
+        }
         return Scaffold(
           appBar: AppBar(
             title: const Text(

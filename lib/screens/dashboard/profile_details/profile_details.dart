@@ -122,7 +122,9 @@ class _ProfileDetailsState extends State<ProfileDetails>
           ),
           child: ClipOval(
             child: Image(
-              image: AssetImage(provider.userModel?.avatar == null ? Assets.imagesUsers : provider.userModel!.avatar!),
+              image: AssetImage(provider.userModel?.avatar == null
+                  ? Assets.imagesUsers
+                  : provider.userModel!.avatar!),
             ),
           ),
         ),
@@ -130,24 +132,24 @@ class _ProfileDetailsState extends State<ProfileDetails>
         Expanded(
           child: headerTitle(provider.userModel!.username),
         ),
-        if(!editProfile)
-        InkWell(
-          onTap: () {
-            setState(() {
-              editProfile = true;
-            });
-          },
-          child: Container(
-            height: 30,
-            width: 30,
-            alignment: Alignment.center,
-            child: SvgPicture.asset(
-              Assets.imagesEdit,
-              width: 20,
-              height: 20,
+        if (!editProfile)
+          InkWell(
+            onTap: () {
+              setState(() {
+                editProfile = true;
+              });
+            },
+            child: Container(
+              height: 30,
+              width: 30,
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                Assets.imagesEdit,
+                width: 20,
+                height: 20,
+              ),
             ),
           ),
-        ),
       ],
     );
   }
@@ -164,12 +166,25 @@ class _ProfileDetailsState extends State<ProfileDetails>
       ),
     );
   }
-}
 
-Widget headerTitle(String name) {
-  return Text(
-    name,
-    style: const TextStyle(
-        fontSize: 25, color: Colors.white, fontWeight: FontWeights.medium),
-  );
+  Widget headerTitle(String name) {
+    return Row(
+      children: [
+        Text(
+          name,
+          style: const TextStyle(
+              fontSize: 25,
+              color: Colors.white,
+              fontWeight: FontWeights.medium),
+        ),
+        SizedBox(width: 10,),
+        if (provider.userModel!.instrument != null)
+          Image(
+            image: AssetImage(
+                "assets/instruments/Instrument_${provider.userModel!.instrument! + 1}.png"),
+            width: 30,
+          ),
+      ],
+    );
+  }
 }

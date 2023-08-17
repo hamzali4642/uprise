@@ -360,4 +360,25 @@ class _UserProfileState extends State<UserProfile> {
       ],
     );
   }
+
+  Widget headerTitle(String name) {
+    return Row(
+      children: [
+        Text(
+          name,
+          style: const TextStyle(
+              fontSize: 25,
+              color: Colors.white,
+              fontWeight: FontWeights.medium),
+        ),
+        SizedBox(width: 10,),
+        if (provider.userModel!.instrument != null)
+          Image(
+            image: AssetImage(
+                "assets/instruments/Instrument_${provider.userModel!.instrument! + 1}.png"),
+            width: 30,
+          ),
+      ],
+    );
+  }
 }
