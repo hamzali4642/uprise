@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
@@ -6,7 +7,9 @@ import '../../../helpers/colors.dart';
 import '../../../helpers/functions.dart';
 
 class ChangePassword extends StatefulWidget {
-  const ChangePassword({Key? key}) : super(key: key);
+  const ChangePassword({Key? key, required this.email}) : super(key: key);
+
+  final String email;
 
   @override
   State<ChangePassword> createState() => _ChangePasswordState();
@@ -72,12 +75,35 @@ class _ChangePasswordState extends State<ChangePassword> {
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         if (newPassword.text != confirmPassword.text) {
                           Functions.showSnackBar(
                               context, "Please match the password");
-                        } else {}
+                        } else {
+                          try {
+                            Functions.showLoaderDialog(context);
+                            await FirebaseAuth.instance.currentUser
+                                ?.reauthenticateWithCredential(
+                              EmailAuthProvider.credential(
+                                email: widget.email,
+                                password: currentPassword.text,
+                              ),
+                            );
+
+                            FirebaseAuth.instance.currentUser
+                                ?.updatePassword(newPassword.text);
+
+                            context.pop();
+                            context.pop();
+                          } on FirebaseAuthException catch (e) {
+                            print(e);
+                            context.pop();
+
+                            Functions.showSnackBar(
+                                context, e.message ?? "Unable to change");
+                          }
+                        }
                       }
                     },
                     child: const Text("Update"),
@@ -143,7 +169,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       errorText: "",
       validator: (val) {
         if (val!.isEmpty) {
-          return "Password is required";
+          return errorMsg;
         }
         if (val.length < 8) {
           return "Password must be atleast 8 characters";
