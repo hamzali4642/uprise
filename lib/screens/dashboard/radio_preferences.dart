@@ -86,16 +86,9 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                       onChange: (value) async {
                         if (value.trim().isEmpty) {
                           responses = [];
-                        }else
-                        if (type == "City") {
+                        }else{
                           responses = await autoCompleteCity(value);
                           responses = responses.toSet().toList();
-                        } else {
-                          responses = usStates
-                              .where((element) => element
-                                  .toLowerCase()
-                                  .contains(value.toLowerCase()))
-                              .toList();
                         }
 
 
@@ -201,13 +194,10 @@ class _RadioPreferencesState extends State<RadioPreferences> {
         for (var response in responses)
           InkWell(
             onTap: () {
-              if (type == "City") {
-                city.text = response;
-              } else if (type == "State") {
-                state.text = response;
-              }
-
+              city.text = response.split(",")[0];
+              state.text = response.split(",")[1];
               responses = [];
+              FocusScope.of(context).unfocus();
               setState(() {});
             },
             child: Container(
@@ -240,59 +230,6 @@ class _RadioPreferencesState extends State<RadioPreferences> {
     );
   }
 
-  List<String> usStates = [
-    'Alabama',
-    'Alaska',
-    'Arizona',
-    'Arkansas',
-    'California',
-    'Colorado',
-    'Connecticut',
-    'Delaware',
-    'Florida',
-    'Georgia',
-    'Hawaii',
-    'Idaho',
-    'Illinois',
-    'Indiana',
-    'Iowa',
-    'Kansas',
-    'Kentucky',
-    'Louisiana',
-    'Maine',
-    'Maryland',
-    'Massachusetts',
-    'Michigan',
-    'Minnesota',
-    'Mississippi',
-    'Missouri',
-    'Montana',
-    'Nebraska',
-    'Nevada',
-    'New Hampshire',
-    'New Jersey',
-    'New Mexico',
-    'New York',
-    'North Carolina',
-    'North Dakota',
-    'Ohio',
-    'Oklahoma',
-    'Oregon',
-    'Pennsylvania',
-    'Rhode Island',
-    'South Carolina',
-    'South Dakota',
-    'Tennessee',
-    'Texas',
-    'Utah',
-    'Vermont',
-    'Virginia',
-    'Washington',
-    'West Virginia',
-    'Wisconsin',
-    'Wyoming'
-  ];
-
   Future<List<String>> autoCompleteCity(String input) async {
     final response = await http.get(Uri.parse(
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(${type == "City" ? "cities" : "states"})&components=country:us&key=${Constants.mapKey}'));
@@ -304,7 +241,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
       List<String> citySuggestions = [];
       for (var prediction in predictions) {
         citySuggestions
-            .add(prediction['description'].toString().split(",").first);
+            .add(prediction['description']);
       }
 
       return citySuggestions;

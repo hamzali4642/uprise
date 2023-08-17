@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/widgets/songs_widget.dart';
+import 'package:uprise/widgets/textfield_widget.dart';
 
 import '../../helpers/constants.dart';
 import '../../widgets/band_widget.dart';
@@ -16,6 +17,8 @@ class Discovery extends StatefulWidget {
 }
 
 class _DiscoveryState extends State<Discovery> {
+
+  var controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,6 +27,8 @@ class _DiscoveryState extends State<Discovery> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            TextFieldWidget(controller: controller, hint: "Search", errorText: "",),
             HeadingWidget(
               text: "Popular Brands",
             ),
