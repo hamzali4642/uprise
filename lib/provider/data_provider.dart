@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:uprise/helpers/data_state.dart';
 import 'package:uprise/models/user_model.dart';
 
+import '../models/genre_model.dart';
+
 class DataProvider extends ChangeNotifier {
   DataProvider() {
     authStream();
@@ -25,6 +27,7 @@ class DataProvider extends ChangeNotifier {
         cancelStreams();
       } else {
         getUserData();
+        getGenres();
       }
     });
   }
@@ -47,6 +50,15 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
+  List<GenreModel> genres = [];
+  void getGenres(){
+    FirebaseFirestore.instance.collection("Genre").get().then((value){
+      var docs = value.docs.where((element) => element.exists).toList();
+      genres = List.generate(docs.length, (index) => GenreModel.fromMap(docs[index].data()));
+      notifyListeners();
+    });
+  }
+  
   cancelStreams() {
     userSubscriptions?.cancel();
   }

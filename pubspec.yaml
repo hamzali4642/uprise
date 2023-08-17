@@ -52,6 +52,7 @@ dependencies:
   table_calendar: ^3.0.9
   marquee: ^2.2.3
   email_validator: ^2.1.17
+  http: ^1.1.0
   syncfusion_flutter_charts: ^22.2.9
 
 

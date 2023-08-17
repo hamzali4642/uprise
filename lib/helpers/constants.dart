@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'colors.dart';
@@ -11,6 +13,10 @@ class Constants {
   static const homePadding = 10.0;
   static const horizontalPadding = 20.0;
   static const boxRadius = 20.0;
+
+  static String mapKey = Platform.isAndroid
+      ? "AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk"
+      : "AIzaSyCct6Mn9T-U4-wclBHsL7mx2hp1JII8kkA";
 
   static List<BoxShadow> shadow() {
     return const [

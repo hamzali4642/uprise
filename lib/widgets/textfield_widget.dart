@@ -57,6 +57,7 @@ class TextFieldWidget extends StatelessWidget {
             enableBorder ? buildOutlineInputBorder() : InputBorder.none,
         focusedBorder:
             enableBorder ? buildOutlineInputBorder() : InputBorder.none,
+        disabledBorder: buildOutlineInputBorder(),
         errorBorder: enableBorder ? errorBorder() : InputBorder.none,
         focusedErrorBorder: errorBorder(),
         hintStyle: AppTextStyles.popins(
