@@ -198,7 +198,7 @@ class _DashboardState extends State<Dashboard> {
         BottomNavItem(index: 1, isSelected: false),
         BottomNavItem(
             index: 2,
-            title: "Socializing",
+            title: "Discovery",
             iconData: Icons.flag_outlined,
             isSelected: provider.selectedIndex == 2),
       ],

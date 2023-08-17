@@ -58,14 +58,16 @@ class _StatisticsState extends State<Statistics> {
   }
 
   Widget usersWidget() {
+    var artists = provider.users.where((element) => element.isBand).length;
+    var listeners = provider.users.where((element) => !element.isBand).length;
     List<_PieData> pieData = [
       _PieData(
         "",
-        provider.users.where((element) => element.isBand).length,
+        artists,
       ),
       _PieData(
         "",
-        provider.users.where((element) => !element.isBand).length,
+        listeners,
       ),
     ];
     return Container(
@@ -101,14 +103,14 @@ class _StatisticsState extends State<Statistics> {
                       xValueMapper: (_PieData data, _) => data.xData,
                       yValueMapper: (_PieData data, _) => data.yData,
                       dataLabelMapper: (_PieData data, _) => data.text,
-                      dataLabelSettings: DataLabelSettings(isVisible: false)),
+                      dataLabelSettings: const DataLabelSettings(isVisible: false)),
                 ]),
               ),
               Expanded(
                 child: Column(
                   children: [
-                    pieDetailsWidget("2 Artists", Colors.blue.shade800),
-                    pieDetailsWidget("10 Listeners", Colors.blue),
+                    pieDetailsWidget("$artists Artists", Colors.blue.shade800),
+                    pieDetailsWidget("$listeners Listeners", Colors.blue),
                   ],
                 ),
               ),

@@ -66,12 +66,27 @@ class _UserProfileState extends State<UserProfile> {
               IntrinsicHeight(
                 child: Row(
                   children: [
-                    Expanded(child: followDetails()),
+                    Expanded(child: followDetails("Followers", "0")),
                     Container(
                       width: 1,
                       color: CColors.textColor.withOpacity(0.13),
                     ),
-                    Expanded(child: followDetails()),
+                    Expanded(child: followDetails("Following", "0")),
+                    Container(
+                      width: 1,
+                      color: CColors.textColor.withOpacity(0.13),
+                    ),
+                    Expanded(child: followDetails("Total Hours", "0")),
+                    Container(
+                      width: 1,
+                      color: CColors.textColor.withOpacity(0.13),
+                    ),
+                    Expanded(child: followDetails("Song Blast", "0")),
+                    Container(
+                      width: 1,
+                      color: CColors.textColor.withOpacity(0.13),
+                    ),
+                    Expanded(child: followDetails("Song Listen", "0")),
                   ],
                 ),
               ),
@@ -224,21 +239,21 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Widget followDetails() {
-    return const Padding(
-      padding: EdgeInsets.only(top: 20, bottom: 20),
+  Widget followDetails(String title, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, bottom: 20),
       child: Column(
         children: [
           Text(
-            "0",
-            style: TextStyle(
+            text,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 15,
               fontWeight: FontWeights.bold,
             ),
           ),
           Text(
-            "Followers",
+            title,
             style: TextStyle(
               color: Colors.white,
               fontSize: 15,
