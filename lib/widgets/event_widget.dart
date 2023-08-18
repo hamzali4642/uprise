@@ -75,7 +75,7 @@ class EventWidget extends StatelessWidget {
                     ),
                   ),
                   itemWidget(
-                    eventModel.venue,
+                    eventModel.venue ,
                     Icons.location_pin,
                   ),
                   itemWidget(
