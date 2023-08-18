@@ -66,6 +66,7 @@ class _FeedWidgetState extends State<FeedWidget> {
                 height: 10,
               ),
               Image(
+                height: 140,
                 image: NetworkImage(
                   song == null ? event!.posterUrl : song!.posterUrl,
                 ),

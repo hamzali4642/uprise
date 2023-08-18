@@ -170,6 +170,7 @@ class _DashboardState extends State<Dashboard> {
           Row(
             children: [
               const Image(
+                height: 27,
                 image: AssetImage(
                   Assets.imagesRadio,
                 ),
@@ -182,7 +183,8 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   child: Text(
                     dataProvider.userModel?.city ?? "",
-                    style: AppTextStyles.message(color: Colors.white),
+                    style: AppTextStyles.message(color: Colors.white,fontSize: 15),
+
                   ),
                 ),
               ),
@@ -191,7 +193,7 @@ class _DashboardState extends State<Dashboard> {
                   context.push(child: const RadioPreferences());
                 },
                 color: Colors.white,
-                icon: Icon(
+                icon: const Icon(
                   Icons.edit,
                 ),
               ),

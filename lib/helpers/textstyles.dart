@@ -47,11 +47,11 @@ class AppTextStyles {
     );
   }
 
-  static TextStyle? message({required Color color}) {
+  static TextStyle? message({required Color color,double fontSize = 16}) {
     return TextStyle(
       color: color,
       fontWeight: FontWeights.light,
-      fontSize: 16,
+      fontSize: fontSize,
     );
   }
 

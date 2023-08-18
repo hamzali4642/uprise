@@ -23,7 +23,7 @@ class ChipWidget extends StatelessWidget {
         style: AppTextStyles.popins(
           style: const TextStyle(
             color: CColors.primary,
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: FontWeights.medium,
           )
         ),

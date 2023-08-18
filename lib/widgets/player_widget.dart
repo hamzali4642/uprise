@@ -8,6 +8,7 @@ import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/data_state.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
+import 'package:utility_extensions/extensions/font_utilities.dart';
 import '../helpers/colors.dart';
 
 class PlayerWidget extends StatelessWidget {
@@ -62,9 +63,9 @@ class PlayerWidget extends StatelessWidget {
                             child: Marquee(
                               text: "${value.currentSong!.title}      " ,
                               style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeights.normal,
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: 18,
                               ),
 
                               scrollAxis: Axis.horizontal,
@@ -83,7 +84,7 @@ class PlayerWidget extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(
-                          width: 30,
+                          width: 60,
                         ),
                         InkWell(
                           onTap: () {
@@ -120,14 +121,14 @@ class PlayerWidget extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(
-                          width: 10,
+                          width: 17,
                         ),
                         SvgPicture.asset(
                           Assets.imagesDisableNext,
                           width: 30,
                         ),
                         const SizedBox(
-                          width: 10,
+                          width: 17,
                         ),
                         const Icon(
                           Icons.favorite,
@@ -145,7 +146,12 @@ class PlayerWidget extends StatelessWidget {
                         fontSize: 10,
                       ),
                     ),
+                    const SizedBox(height: 5),
                     ProgressBar(
+                      thumbRadius: 5,
+                      barHeight: 2,
+                      baseBarColor: CColors.placeholderTextColor,
+                      bufferedBarColor: CColors.placeholderTextColor,
                       progress: value.completed,
                       buffered: value.bufferedTime!,
                       total: value.total,
@@ -158,6 +164,8 @@ class PlayerWidget extends StatelessWidget {
                         print('User selected a new time: $duration');
                       },
                     ),
+                    const SizedBox(height: 2),
+
                   ],
                 ),
               ),
