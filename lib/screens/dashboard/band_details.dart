@@ -8,6 +8,7 @@ import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/event_widget.dart';
+import 'package:uprise/widgets/player_widget.dart';
 import 'package:uprise/widgets/songs_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
@@ -59,46 +60,51 @@ class _BandDetailsState extends State<BandDetails>
           ),
           centerTitle: false,
         ),
-        body: Container(
-          child: CustomScrollView(
-            slivers: [
-              const Image(
-                image: NetworkImage(
-                  Constants.demoCoverImage,
-                ),
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ).toSliver,
-              brandInfoWidget().toSliver,
-              memberWidget().toSliver,
-              songsWidget().toSliver,
-              TabBar(
-                controller: controller,
-                labelColor: CColors.primary,
-                unselectedLabelColor: CColors.textColor,
-                labelStyle: const TextStyle(
-                  color: CColors.primary,
-                ),
-                unselectedLabelStyle: const TextStyle(
-                  color: CColors.textColor,
-                ),
-                tabs: const [
-                  Tab(
-                    child: Text(
-                      "Gallery",
+        body: Column(
+          children: [
+            Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  const Image(
+                    image: NetworkImage(
+                      Constants.demoCoverImage,
                     ),
-                  ),
-                  Tab(
-                    child: Text(
-                      "Events",
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ).toSliver,
+                  brandInfoWidget().toSliver,
+                  memberWidget().toSliver,
+                  songsWidget().toSliver,
+                  TabBar(
+                    controller: controller,
+                    labelColor: CColors.primary,
+                    unselectedLabelColor: CColors.textColor,
+                    labelStyle: const TextStyle(
+                      color: CColors.primary,
                     ),
-                  ),
+                    unselectedLabelStyle: const TextStyle(
+                      color: CColors.textColor,
+                    ),
+                    tabs: const [
+                      Tab(
+                        child: Text(
+                          "Gallery",
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          "Events",
+                        ),
+                      ),
+                    ],
+                  ).toSliver,
+                  controller.index == 0 ? galleryWidget() : eventsWidget(),
                 ],
-              ).toSliver,
-              controller.index == 0 ? galleryWidget() : eventsWidget(),
-            ],
-          ),
+              ),
+            ),
+            PlayerWidget(),
+          ],
         ),
       );
     });
@@ -149,68 +155,73 @@ class _BandDetailsState extends State<BandDetails>
               ],
             ),
           ),
-          Builder(
-            builder: (context) {
-              var uid = FirebaseAuth.instance.currentUser!.uid;
-              var isFollowed = widget.band.followers.contains(uid);
-              return TextButton(
-                onPressed: () {
-                  var my = FirebaseFirestore.instance.collection("users").doc(uid);
-                  var other = FirebaseFirestore.instance.collection("users").doc(widget.band.id);
-                  if(isFollowed){
-                    my.update({
-                    "following" : FieldValue.arrayRemove([other.id]) });
-                    other.update({
-                      "followers" : FieldValue.arrayRemove([my.id]) });
+          Builder(builder: (context) {
+            var uid = FirebaseAuth.instance.currentUser!.uid;
+            var isFollowed = widget.band.followers.contains(uid);
+            return TextButton(
+              onPressed: () {
+                var my =
+                    FirebaseFirestore.instance.collection("users").doc(uid);
+                var other = FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(widget.band.id);
+                if (isFollowed) {
+                  my.update({
+                    "following": FieldValue.arrayRemove([other.id])
+                  });
+                  other.update({
+                    "followers": FieldValue.arrayRemove([my.id])
+                  });
 
-                    widget.band.followers.remove(my.id);
-                    dataProvider.userModel!.following.remove(my.id);
+                  widget.band.followers.remove(my.id);
+                  dataProvider.userModel!.following.remove(my.id);
 
-                    dataProvider.notifyListeners();
-                  }else{
-                    my.update({
-                      "following" : FieldValue.arrayUnion([other.id]) });
-                    other.update({
-                      "followers" : FieldValue.arrayUnion([my.id]) });
+                  dataProvider.notifyListeners();
+                } else {
+                  my.update({
+                    "following": FieldValue.arrayUnion([other.id])
+                  });
+                  other.update({
+                    "followers": FieldValue.arrayUnion([my.id])
+                  });
 
-                    widget.band.followers.add(my.id);
-                    dataProvider.userModel!.following.add(my.id);
+                  widget.band.followers.add(my.id);
+                  dataProvider.userModel!.following.add(my.id);
 
-                    dataProvider.notifyListeners();
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 5,
+                  dataProvider.notifyListeners();
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    20,
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      20,
+                  color: CColors.calendarBtnBg,
+                ),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      Assets.imagesBlackUserAdd,
+                      color: Colors.white,
                     ),
-                    color: CColors.calendarBtnBg,
-                  ),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        Assets.imagesBlackUserAdd,
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      isFollowed ? "Unfollow" : "Follow",
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        isFollowed ? "Unfollow" : "Follow",
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              );
-            }
-          ),
+              ),
+            );
+          }),
         ],
       ),
     );

@@ -454,13 +454,13 @@ class _StatisticsState extends State<Statistics> {
       decoration: const BoxDecoration(
         color: CColors.statisticsBgColor,
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const HeadingWidget(
+          HeadingWidget(
             text: "Popular Artist",
           ),
-          const SizedBox(
+          SizedBox(
             height: 20,
           ),
           Row(
@@ -496,7 +496,7 @@ class _StatisticsState extends State<Statistics> {
   Widget popularArtistPerGenreWidget() {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: Constants.horizontalPadding,
+        horizontal: Constants.horizontalPadding + 30,
         vertical: 10,
       ),
       decoration: const BoxDecoration(
@@ -514,11 +514,11 @@ class _StatisticsState extends State<Statistics> {
           GridView(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.8,
-              crossAxisSpacing: 10,
+              crossAxisSpacing: 60,
               mainAxisSpacing: 10,
             ),
             children: [
