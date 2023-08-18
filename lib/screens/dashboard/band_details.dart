@@ -149,7 +149,7 @@ class _BandDetailsState extends State<BandDetails>
           TextButton(
             onPressed: () {},
             child: Container(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: 15,
                 vertical: 5,
               ),
@@ -165,10 +165,10 @@ class _BandDetailsState extends State<BandDetails>
                     Assets.imagesBlackUserAdd,
                     color: Colors.white,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  Text(
+                  const Text(
                     "Unfollow",
                     style: TextStyle(
                       color: Colors.white,
@@ -214,7 +214,7 @@ class _BandDetailsState extends State<BandDetails>
           );
         },
         separatorBuilder: (ctx, i) {
-          return SizedBox(
+          return const SizedBox(
             width: 10,
           );
         },
@@ -278,7 +278,7 @@ class _BandDetailsState extends State<BandDetails>
 
   Widget galleryWidget() {
     return SliverPadding(
-      padding: EdgeInsets.symmetric(horizontal: Constants.horizontalPadding, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: Constants.horizontalPadding, vertical: 15),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (ctx, i) {
@@ -294,7 +294,7 @@ class _BandDetailsState extends State<BandDetails>
           },
           childCount: 5,
         ),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           childAspectRatio: 1,
           mainAxisSpacing: 10,
