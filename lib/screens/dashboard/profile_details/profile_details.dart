@@ -46,12 +46,19 @@ class _ProfileDetailsState extends State<ProfileDetails>
 
   late List<Widget> tabBarViews;
 
+  int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
       provider = value;
       tabBarViews = [
         UserProfile(
+          callBack1: (val){
+            setState(() {
+              currentIndex = val;
+            });
+          },
           callBack: (value) {
             setState(() {
               editProfile = value;
@@ -59,8 +66,18 @@ class _ProfileDetailsState extends State<ProfileDetails>
           },
           isEdit: editProfile,
         ),
-        const ProfileCalendar(),
-        const Favorites(),
+         ProfileCalendar(
+          callBack: (val){
+            setState(() {
+              currentIndex = val;
+            });
+          },
+        ),
+         Favorites(callBack: (val){
+           setState(() {
+             currentIndex = val;
+           });
+         },),
       ];
       return Scaffold(
         body: details(),
@@ -145,7 +162,7 @@ class _ProfileDetailsState extends State<ProfileDetails>
         Expanded(
           child: headerTitle(provider.userModel!.username),
         ),
-        if (!editProfile)
+        if (!editProfile && currentIndex == 0 )
           InkWell(
             onTap: () {
               setState(() {

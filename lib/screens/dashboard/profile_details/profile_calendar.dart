@@ -4,8 +4,12 @@ import 'package:utility_extensions/extensions/font_utilities.dart';
 
 import '../../../helpers/colors.dart';
 
+typedef UserCallBack = void Function(int);
+
 class ProfileCalendar extends StatefulWidget {
-  const ProfileCalendar({Key? key}) : super(key: key);
+  const ProfileCalendar({Key? key, required this.callBack}) : super(key: key);
+
+  final UserCallBack callBack;
 
   @override
   State<ProfileCalendar> createState() => _ProfileCalendarState();
@@ -14,6 +18,16 @@ class ProfileCalendar extends StatefulWidget {
 class _ProfileCalendarState extends State<ProfileCalendar> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(milliseconds: 20), (){
+      widget.callBack(1);
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {

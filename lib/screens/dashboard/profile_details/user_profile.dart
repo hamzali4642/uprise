@@ -18,11 +18,15 @@ import 'avatars.dart';
 
 typedef UserCallBack = void Function(bool);
 
+typedef UserCallBack1 = void Function(int);
+
+
 class UserProfile extends StatefulWidget {
-  const UserProfile({Key? key, required this.isEdit, required this.callBack})
+  const UserProfile({Key? key, required this.isEdit, required this.callBack, required this.callBack1})
       : super(key: key);
   final bool isEdit;
   final UserCallBack callBack;
+  final UserCallBack1 callBack1;
 
   @override
   State<UserProfile> createState() => _UserProfileState();
@@ -36,6 +40,15 @@ class _UserProfileState extends State<UserProfile> {
   TextEditingController description = TextEditingController();
 
   late DataProvider provider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(milliseconds: 20), (){
+      widget.callBack1(0);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

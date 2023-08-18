@@ -5,9 +5,32 @@ import '../../../helpers/colors.dart';
 import '../../../helpers/constants.dart';
 import '../../../widgets/custom_asset_image.dart';
 
-class Favorites extends StatelessWidget {
-  const Favorites({Key? key}) : super(key: key);
 
+typedef UserCallBack = void Function(int);
+
+
+class Favorites extends StatefulWidget {
+  const Favorites({Key? key, required this.callBack}) : super(key: key);
+
+
+  final UserCallBack callBack;
+
+  @override
+  State<Favorites> createState() => _FavoritesState();
+}
+
+class _FavoritesState extends State<Favorites> {
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(milliseconds: 20), (){
+      widget.callBack(2);
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
