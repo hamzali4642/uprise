@@ -131,6 +131,7 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           PopupMenuButton(
+            color: Colors.black,
             child: const Icon(
               Icons.more_vert,
               color: Colors.white,

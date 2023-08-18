@@ -41,7 +41,7 @@ class Constants {
   static PopupMenuItem returnMenu(String value, String text) {
     return PopupMenuItem(
       value: '/$value',
-      child: Text(text),
+      child: Text(text, style: const TextStyle(color: CColors.primary),),
     );
   }
 
