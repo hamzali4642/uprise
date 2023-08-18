@@ -15,7 +15,7 @@ class BandWidget extends StatelessWidget {
     return InkWell(
       onTap: (){
         context.push(
-          child: BandDetails(),
+          child: BandDetails(band: band,),
         );
       },
       child: Column(

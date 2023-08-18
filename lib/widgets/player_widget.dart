@@ -16,25 +16,23 @@ class PlayerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
-
-
-
       if (value.songsState == DataStates.waiting) {
         return const Center(child: CircularProgressIndicator());
       }
 
-
-      if(value.songsState == DataStates.success){
-        Future.delayed(const Duration(milliseconds: 10),).then((v){
+      if (value.songsState == DataStates.success) {
+        Future.delayed(
+          const Duration(milliseconds: 10),
+        ).then((v) {
           value.currentSong ??= value.songs.first;
         });
       }
 
-
-      if (value.currentSong ==null) {
+      if (value.currentSong == null) {
         return const Center(child: CircularProgressIndicator());
       }
 
+      print(value.currentSong!.title);
 
       return Container(
         margin: const EdgeInsets.symmetric( vertical: 10),
@@ -61,23 +59,25 @@ class PlayerWidget extends StatelessWidget {
                         Expanded(
                           child: SizedBox(
                             height: 30,
-                            width: 30,
                             child: Marquee(
-                              text: value.currentSong!.title,
+                              text: "${value.currentSong!.title}      " ,
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 20),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+
                               scrollAxis: Axis.horizontal,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              blankSpace: 20.0,
+                              blankSpace: 10.0,
                               velocity: 50.0,
                               pauseAfterRound: const Duration(seconds: 1),
                               startPadding: 10.0,
                               accelerationDuration: const Duration(seconds: 3),
                               accelerationCurve: Curves.linear,
-                              decelerationDuration:
-                                  const Duration(milliseconds: 500),
+                              decelerationDuration: const Duration(
+                                milliseconds: 500,
+                              ),
                               decelerationCurve: Curves.easeOut,
                             ),
                           ),
@@ -101,7 +101,6 @@ class PlayerWidget extends StatelessWidget {
                                 value.stop();
                                 break;
                             }
-
                           },
                           child: Container(
                             height: 22,
@@ -155,7 +154,6 @@ class PlayerWidget extends StatelessWidget {
                         fontSize: 10,
                       ),
                       onSeek: (duration) {
-
                         value.seek(duration);
                         print('User selected a new time: $duration');
                       },
