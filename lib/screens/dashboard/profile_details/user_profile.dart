@@ -113,6 +113,7 @@ class _UserProfileState extends State<UserProfile> {
                   const Text(
                     "SOCIAL PLATFORMS",
                     style: TextStyle(
+                      fontSize: 12,
                       color: CColors.textColor,
                     ),
                   ),
@@ -179,7 +180,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget header(DataProvider value) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
           height: 70,
@@ -203,7 +204,7 @@ class _UserProfileState extends State<UserProfile> {
                   bottom: 0,
                   child: InkWell(
                     onTap: () {
-                      context.push(child: Avatars());
+                      context.push(child: const Avatars());
                     },
                     child: Container(
                       padding: EdgeInsets.all(
@@ -270,9 +271,10 @@ class _UserProfileState extends State<UserProfile> {
           str,
           style: const TextStyle(
             color: CColors.Grey,
+            fontSize: 12
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         if (widget.isEdit)
           SizedBox(
             height: widget.isEdit ? null : 5,
@@ -310,15 +312,15 @@ class _UserProfileState extends State<UserProfile> {
             text,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 15,
+              fontSize: 12,
               fontWeight: FontWeights.bold,
             ),
           ),
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
-              fontSize: 15,
+              fontSize: 12,
               fontWeight: FontWeights.normal,
             ),
           ),
@@ -363,15 +365,16 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget headerTitle(String name) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           name,
           style: const TextStyle(
-              fontSize: 25,
+              fontSize: 22,
               color: Colors.white,
               fontWeight: FontWeights.medium),
         ),
-        SizedBox(width: 10,),
+        const SizedBox(width: 10,),
         if (provider.userModel!.instrument != null)
           Image(
             image: AssetImage(

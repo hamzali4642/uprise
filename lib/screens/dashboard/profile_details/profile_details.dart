@@ -95,6 +95,7 @@ class _ProfileDetailsState extends State<ProfileDetails>
             ],
           ),
         ),
+        const SizedBox(height: 20),
         TabBar(
           physics: const NeverScrollableScrollPhysics(),
           indicatorColor: Colors.white,
@@ -185,7 +186,7 @@ class _ProfileDetailsState extends State<ProfileDetails>
         Text(
           name,
           style: const TextStyle(
-              fontSize: 25,
+              fontSize: 20,
               color: Colors.white,
               fontWeight: FontWeights.medium),
         ),
