@@ -14,17 +14,20 @@ class RadioWidget extends StatelessWidget {
 
   final String name;
   final int index;
+
   @override
   Widget build(BuildContext context) {
-
     return AspectRatio(
       aspectRatio: 1,
       child: InkWell(
-        onTap: (){
-          context.push(child: RadioDetails(name: name,index: index,));
+        onTap: () {
+          context.push(
+              child: RadioDetails(
+            name: name,
+            index: index,
+          ));
         },
         child: Container(
-
           decoration: BoxDecoration(
             color: Constants.colors[index % Constants.colors.length],
           ),
@@ -43,11 +46,15 @@ class RadioWidget extends StatelessWidget {
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: 10,
+                bottom: 22,
                 child: Text(
                   name,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.clickable(color: Colors.white),
+                  style: AppTextStyles.clickable(
+                    fontSize: 15,
+                    weight: FontWeights.normal,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

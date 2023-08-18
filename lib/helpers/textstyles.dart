@@ -16,11 +16,11 @@ class AppTextStyles {
   }
 
   static TextStyle? clickable(
-      {Color color = CColors.primary, FontWeight weight = FontWeights.medium}) {
+      {Color color = CColors.primary, FontWeight weight = FontWeights.medium, double fontSize = 18}) {
     return TextStyle(
       color: color,
       fontWeight: weight,
-      fontSize: 18,
+      fontSize: fontSize,
     );
   }
 
@@ -55,11 +55,11 @@ class AppTextStyles {
     );
   }
 
-  static TextStyle? title({required Color color}) {
+  static TextStyle? title({required Color color, double fontSize = 24,FontWeight fontWeight = FontWeights.bold}) {
     return TextStyle(
       color: color,
-      fontWeight: FontWeights.bold,
-      fontSize: 24,
+      fontWeight: fontWeight,
+      fontSize: fontSize,
     );
   }
 }
