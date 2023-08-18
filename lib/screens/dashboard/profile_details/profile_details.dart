@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/data_state.dart';
+import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_calendar.dart';
 import 'package:uprise/screens/dashboard/profile_details/user_profile.dart';
@@ -12,7 +13,9 @@ import '../../../generated/assets.dart';
 import 'favorites.dart';
 
 class ProfileDetails extends StatefulWidget {
-  const ProfileDetails({Key? key}) : super(key: key);
+  const ProfileDetails({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<ProfileDetails> createState() => _ProfileDetailsState();
@@ -26,10 +29,19 @@ class _ProfileDetailsState extends State<ProfileDetails>
 
   bool editProfile = false;
 
+  late DashboardProvider dashboardProvider;
+
   @override
   void initState() {
     super.initState();
     controller = TabController(length: 3, vsync: this);
+
+    dashboardProvider = context.read<DashboardProvider>();
+
+    if (dashboardProvider.isFavourites) {
+      controller.animateTo(2);
+      dashboardProvider.isFavourites = false;
+    }
   }
 
   late List<Widget> tabBarViews;
@@ -177,7 +189,9 @@ class _ProfileDetailsState extends State<ProfileDetails>
               color: Colors.white,
               fontWeight: FontWeights.medium),
         ),
-        SizedBox(width: 10,),
+        const SizedBox(
+          width: 10,
+        ),
         if (provider.userModel!.instrument != null)
           Image(
             image: AssetImage(
