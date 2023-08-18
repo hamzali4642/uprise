@@ -16,13 +16,25 @@ class PlayerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
+
+
+
       if (value.songsState == DataStates.waiting) {
         return const Center(child: CircularProgressIndicator());
       }
 
 
+      if(value.songsState == DataStates.success){
+        Future.delayed(const Duration(milliseconds: 10),).then((v){
+          value.currentSong ??= value.songs.first;
+        });
+      }
 
-      value.currentSong ??= value.songs.first;
+
+      if (value.currentSong ==null) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
 
       return Container(
         margin: const EdgeInsets.symmetric(
