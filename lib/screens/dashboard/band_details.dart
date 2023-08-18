@@ -16,6 +16,7 @@ class BandDetails extends StatefulWidget {
   const BandDetails({super.key, required this.band});
 
   final UserModel band;
+
   @override
   State<BandDetails> createState() => _BandDetailsState();
 }
@@ -38,68 +39,67 @@ class _BandDetailsState extends State<BandDetails>
   }
 
   late DataProvider dataProvider;
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataProvider>(
-      builder: (context, value, child) {
-        dataProvider = value;
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: CColors.transparentColor,
-            title: const Text(
-              "Band Details",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeights.bold,
-              ),
-            ),
-            centerTitle: false,
-          ),
-          body: Container(
-            child: CustomScrollView(
-              slivers: [
-                const Image(
-                  image: NetworkImage(
-                    Constants.demoCoverImage,
-                  ),
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ).toSliver,
-                brandInfoWidget().toSliver,
-                memberWidget().toSliver,
-                songsWidget().toSliver,
-                TabBar(
-                  controller: controller,
-                  labelColor: CColors.primary,
-                  unselectedLabelColor: CColors.textColor,
-                  labelStyle: const TextStyle(
-                    color: CColors.primary,
-                  ),
-                  unselectedLabelStyle: const TextStyle(
-                    color: CColors.textColor,
-                  ),
-                  tabs: const [
-                    Tab(
-                      child: Text(
-                        "Gallery",
-                      ),
-                    ),
-                    Tab(
-                      child: Text(
-                        "Events",
-                      ),
-                    ),
-                  ],
-                ).toSliver,
-                controller.index == 0 ? galleryWidget() : eventsWidget(),
-              ],
+    return Consumer<DataProvider>(builder: (context, value, child) {
+      dataProvider = value;
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: CColors.transparentColor,
+          title: const Text(
+            "Band Details",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeights.bold,
             ),
           ),
-        );
-      }
-    );
+          centerTitle: false,
+        ),
+        body: Container(
+          child: CustomScrollView(
+            slivers: [
+              const Image(
+                image: NetworkImage(
+                  Constants.demoCoverImage,
+                ),
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ).toSliver,
+              brandInfoWidget().toSliver,
+              memberWidget().toSliver,
+              songsWidget().toSliver,
+              TabBar(
+                controller: controller,
+                labelColor: CColors.primary,
+                unselectedLabelColor: CColors.textColor,
+                labelStyle: const TextStyle(
+                  color: CColors.primary,
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  color: CColors.textColor,
+                ),
+                tabs: const [
+                  Tab(
+                    child: Text(
+                      "Gallery",
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      "Events",
+                    ),
+                  ),
+                ],
+              ).toSliver,
+              controller.index == 0 ? galleryWidget() : eventsWidget(),
+            ],
+          ),
+        ),
+      );
+    });
   }
 
   Widget brandInfoWidget() {
@@ -110,11 +110,11 @@ class _BandDetailsState extends State<BandDetails>
       ),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Brand Name:",
                   style: TextStyle(
                     color: CColors.textColor,
@@ -122,21 +122,21 @@ class _BandDetailsState extends State<BandDetails>
                     fontWeight: FontWeights.medium,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Text(
-                  "gytes",
-                  style: TextStyle(
+                  widget.band.username,
+                  style: const TextStyle(
                     color: CColors.White,
                     fontSize: 16,
                     fontWeight: FontWeights.bold,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text(
+                const Text(
                   "Members",
                   style: TextStyle(
                     color: CColors.textColor,
@@ -170,7 +170,7 @@ class _BandDetailsState extends State<BandDetails>
                     width: 10,
                   ),
                   const Text(
-                    "Unfollow",
+                    "Follow",
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -193,18 +193,23 @@ class _BandDetailsState extends State<BandDetails>
           horizontal: Constants.horizontalPadding,
         ),
         itemBuilder: (ctx, i) {
-          return const Column(
+          return Column(
             children: [
               SizedBox(
                 width: 80,
                 height: 80,
                 child: ClipOval(
-                    child: Image(
-                  image: NetworkImage(Constants.demoImage),
-                )),
+                  child: Image(
+                    image: AssetImage(
+                      widget.band.avatar == null
+                          ? Assets.imagesUsers
+                          : widget.band.avatar!,
+                    ),
+                  ),
+                ),
               ),
               Text(
-                "Gytes",
+                widget.band.username,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -219,13 +224,15 @@ class _BandDetailsState extends State<BandDetails>
             width: 10,
           );
         },
-        itemCount: 2,
+        itemCount: 1,
       ),
     );
   }
 
   Widget songsWidget() {
-    var songs = dataProvider.songs.where((element) => element.bandId == widget.band.id).toList();
+    var songs = dataProvider.songs
+        .where((element) => element.bandId == widget.band.id)
+        .toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -253,7 +260,9 @@ class _BandDetailsState extends State<BandDetails>
             ),
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
-              return SongsWidget(song: songs[i],);
+              return SongsWidget(
+                song: songs[i],
+              );
             },
             separatorBuilder: (ctx, i) {
               return SizedBox(
@@ -268,24 +277,30 @@ class _BandDetailsState extends State<BandDetails>
   }
 
   Widget eventsWidget() {
-
     Widget? check = stateCheck(dataProvider.eventState, dataProvider.events);
 
-    return check != null ? check.toSliver : SliverList(
-      delegate: SliverChildBuilderDelegate((ctx, i) {
-        return EventWidget(eventModel: dataProvider.events[i],);
-      }, childCount: dataProvider.events.length),
-    );
+    return check != null
+        ? check.toSliver
+        : SliverList(
+            delegate: SliverChildBuilderDelegate((ctx, i) {
+              return EventWidget(
+                eventModel: dataProvider.events[i],
+              );
+            }, childCount: dataProvider.events.length),
+          );
   }
 
   Widget galleryWidget() {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: Constants.horizontalPadding, vertical: 15),
+      padding: const EdgeInsets.symmetric(
+          horizontal: Constants.horizontalPadding, vertical: 15),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (ctx, i) {
             return ClipRRect(
-              borderRadius: BorderRadius.circular(10,),
+              borderRadius: BorderRadius.circular(
+                10,
+              ),
               child: const Image(
                 image: NetworkImage(
                   Constants.demoCoverImage,
@@ -297,11 +312,10 @@ class _BandDetailsState extends State<BandDetails>
           childCount: 5,
         ),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 1,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10
-        ),
+            crossAxisCount: 3,
+            childAspectRatio: 1,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10),
       ),
     );
   }
