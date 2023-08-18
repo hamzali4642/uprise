@@ -33,7 +33,7 @@ class HomeChipWidget extends StatelessWidget {
               style: AppTextStyles.popins(
                 style: TextStyle(
                   color: isSelected ? CColors.primary : Colors.white,
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: FontWeights.medium,
                 )
               ),
