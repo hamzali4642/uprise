@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/event_widget.dart';
 import 'package:uprise/widgets/songs_widget.dart';
@@ -13,8 +14,9 @@ import '../../helpers/colors.dart';
 import '../../widgets/state_check.dart';
 
 class BandDetails extends StatefulWidget {
-  const BandDetails({super.key});
+  const BandDetails({super.key, required this.band});
 
+  final UserModel band;
   @override
   State<BandDetails> createState() => _BandDetailsState();
 }
