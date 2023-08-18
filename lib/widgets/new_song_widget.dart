@@ -16,19 +16,21 @@ class NewSongWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
+          const SizedBox(
             height: 150,
             width: 150,
-            child: const Image(
+            child: Image(
               image: NetworkImage(Constants.demoCoverImage,),
               fit: BoxFit.cover,
             ),
           ),
 
+          const SizedBox(height: 7),
           const Text("Simple Plan - I'm just a kid",
             style: TextStyle(
               color: Colors.white,
-              fontSize: 12,
+              fontSize: 11,
+              fontWeight: FontWeights.light
             ),
           ),
 
@@ -39,7 +41,7 @@ class NewSongWidget extends StatelessWidget {
               const Expanded(
                 child: Text("Jen-Band",
                   style: TextStyle(
-                    color: CColors.textColor,
+                    color: CColors.Grey,
                     fontSize: 12,
                     fontWeight: FontWeights.light
                   ),

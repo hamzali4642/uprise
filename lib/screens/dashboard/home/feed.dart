@@ -87,20 +87,20 @@ class _FeedState extends State<Feed> {
         const HeadingWidget(
           text: "New Releases",
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
-        Container(
+        SizedBox(
           height: 200,
           width: double.infinity,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
-              return NewSongWidget();
+              return const NewSongWidget();
             },
             itemCount: 4,
             separatorBuilder: (ctx, i) {
-              return SizedBox(
+              return const SizedBox(
                 width: 20,
               );
             },
