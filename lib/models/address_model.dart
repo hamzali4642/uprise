@@ -6,6 +6,7 @@ class AddressModel {
   String city = "";
   String postalCode = "";
   String country = "";
+  String state = "";
 
   AddressModel({
     required this.latitude,
@@ -14,6 +15,7 @@ class AddressModel {
     required this.city,
     required this.postalCode,
     required this.country,
+    required this.state,
   });
 
   AddressModel.fromMap(Map<String, dynamic> data) {
@@ -23,6 +25,7 @@ class AddressModel {
     city = data["city"];
     postalCode = data["postalCode"];
     country = data["country"];
+    state = data["state"];
   }
 
   Map<String, dynamic> toMap() {
@@ -33,6 +36,7 @@ class AddressModel {
       "city": city,
       "postalCode": postalCode,
       "country": country,
+      "state": state,
     };
   }
 }

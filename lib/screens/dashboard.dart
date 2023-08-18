@@ -326,9 +326,17 @@ class _DashboardState extends State<Dashboard> {
       onTap: () {
         provider.showOverlay = !provider.showOverlay;
       },
-      child: const Image(
-        image: AssetImage(Assets.imagesUpriseRadiyoIcon),
-        width: 70,
+      child: Container(
+        margin: EdgeInsets.only(top: 3),
+
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.black,
+        ),
+        child: const Image(
+          image: AssetImage(Assets.imagesUpriseRadiyoIcon),
+          width: 60,
+        ),
       ),
     );
   }
