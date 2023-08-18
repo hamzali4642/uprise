@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:uprise/screens/popular_songs.dart';
 import 'package:uprise/widgets/songs_widget.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
+import 'package:utility_extensions/utility_extensions.dart';
 
 import '../../helpers/constants.dart';
 import '../../widgets/band_widget.dart';
@@ -60,19 +62,24 @@ class _DiscoveryState extends State<Discovery> {
                       height: 20,
                     ),
                     popularRadioWidget(),
-                    const Row(
+                    Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: HeadingWidget(
                             text: "Popular Songs",
                           ),
                         ),
-                        Text("See all",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeights.normal
-                        ),)
+                        InkWell(
+                          onTap: (){
+                            context.push(child: const PopularSongs());
+                          },
+                          child: const Text("See all",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeights.normal
+                          ),),
+                        )
                       ],
                     ),
                     const SizedBox(
