@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -147,37 +149,67 @@ class _BandDetailsState extends State<BandDetails>
               ],
             ),
           ),
-          TextButton(
-            onPressed: () {},
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 5,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                  20,
-                ),
-                color: CColors.calendarBtnBg,
-              ),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    Assets.imagesBlackUserAdd,
-                    color: Colors.white,
+          Builder(
+            builder: (context) {
+              var uid = FirebaseAuth.instance.currentUser!.uid;
+              var isFollowed = widget.band.followers.contains(uid);
+              return TextButton(
+                onPressed: () {
+                  var my = FirebaseFirestore.instance.collection("users").doc(uid);
+                  var other = FirebaseFirestore.instance.collection("users").doc(widget.band.id);
+                  if(isFollowed){
+                    my.update({
+                    "following" : FieldValue.arrayRemove([other.id]) });
+                    other.update({
+                      "followers" : FieldValue.arrayRemove([my.id]) });
+
+                    widget.band.followers.remove(my.id);
+                    dataProvider.userModel!.following.remove(my.id);
+
+                    dataProvider.notifyListeners();
+                  }else{
+                    my.update({
+                      "following" : FieldValue.arrayUnion([other.id]) });
+                    other.update({
+                      "followers" : FieldValue.arrayUnion([my.id]) });
+
+                    widget.band.followers.add(my.id);
+                    dataProvider.userModel!.following.add(my.id);
+
+                    dataProvider.notifyListeners();
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 5,
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Text(
-                    "Follow",
-                    style: TextStyle(
-                      color: Colors.white,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      20,
                     ),
+                    color: CColors.calendarBtnBg,
                   ),
-                ],
-              ),
-            ),
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        Assets.imagesBlackUserAdd,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        isFollowed ? "Unfollow" : "Follow",
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
           ),
         ],
       ),
