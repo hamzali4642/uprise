@@ -21,7 +21,7 @@ class Favorites extends StatelessWidget {
             const Text(
               "Your Favorites Songs list",
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 14,
                 color: CColors.textColor,
               ),
             ),
@@ -38,36 +38,37 @@ class Favorites extends StatelessWidget {
   }
 
   Widget songWidget() {
-    return  Column(
+    return  const Column(
       children: [
         Row(
           children: [
-            CustomAssetImage(height: 50, path: Assets.imagesMiniPlayer),
-            const SizedBox(width: 20),
-            const Expanded(
+            CustomAssetImage(height: 50,width: 50, path: Assets.imagesMiniPlayer, fit: BoxFit.cover,),
+            SizedBox(width: 20),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     "Over_the_Horizon",
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                    style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
+                  SizedBox(height: 3),
                   Text(
                     "the infidels",
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                    style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.favorite,
               color: CColors.error,
             )
           ],
         ),
-        const SizedBox(height: 10),
-        const Divider(color: CColors.textColor),
+        SizedBox(height: 10),
+        Divider(color: CColors.textColor),
       ],
     );
   }
