@@ -60,7 +60,7 @@ class _InstrumentsState extends State<Instruments> {
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3, // Number of columns
-                    mainAxisSpacing: 50.0, // Vertical spacing between items
+                    mainAxisSpacing: 15.0, // Vertical spacing between items
                     crossAxisSpacing: 50.0,
                     childAspectRatio: 0.7// Horizontal spacing between items
                   ),
@@ -70,21 +70,27 @@ class _InstrumentsState extends State<Instruments> {
                   },
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Align(
                 alignment: Alignment.center,
-                child: ElevatedButton(
-                  onPressed: () {
-                    value.updateUserPref({
-                      "instrument": selectedIndex,
-                    });
+                child: SizedBox(
+                  width: 100,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                    ),
+                    onPressed: () {
+                      value.updateUserPref({
+                        "instrument": selectedIndex,
+                      });
 
-                    context.pop();
-                  },
-                  child: Text(
-                    "Save",
+                      context.pop();
+                    },
+                    child: const Text(
+                      "Save",
+                    ),
                   ),
                 ),
               ),
@@ -126,12 +132,11 @@ class _InstrumentsState extends State<Instruments> {
                   ),
                 ),
                 if(selectedIndex == index)
-                Positioned.fill(
-
+                const Positioned.fill(
                   child: Align(
                     alignment: Alignment.topRight,
                     child: Padding(
-                      padding: const EdgeInsets.all(4.0),
+                      padding: EdgeInsets.all(4.0),
                       child: Icon(
                         Icons.check_circle,
                         color: CColors.primary,
@@ -144,9 +149,11 @@ class _InstrumentsState extends State<Instruments> {
             ),
 
           ),
-          SizedBox(height: 10,),
+          const SizedBox(height: 10,),
           Text(instruments[index],
-            style: TextStyle(
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeights.normal,
               color: Colors.white,
             ),
           ),

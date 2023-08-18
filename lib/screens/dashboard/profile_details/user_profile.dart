@@ -80,10 +80,16 @@ class _UserProfileState extends State<UserProfile> {
                       color: CColors.textColor.withOpacity(0.13),
                     ),
                     Expanded(child: followDetails("Following", provider.userModel!.following.length.toString())),
-                    Container(
-                      width: 1,
-                      color: CColors.textColor.withOpacity(0.13),
-                    ),
+                  ],
+                ),
+              ),
+              Container(
+                height: 1,
+                color: CColors.textColor.withOpacity(0.13),
+              ),
+              IntrinsicHeight(
+                child: Row(
+                  children: [
                     Expanded(child: followDetails("Total Hours", "0")),
                     Container(
                       width: 1,
