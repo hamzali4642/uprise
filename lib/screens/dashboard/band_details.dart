@@ -10,6 +10,7 @@ import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
 import '../../helpers/colors.dart';
+import '../../widgets/state_check.dart';
 
 class BandDetails extends StatefulWidget {
   const BandDetails({super.key});
@@ -265,10 +266,13 @@ class _BandDetailsState extends State<BandDetails>
   }
 
   Widget eventsWidget() {
-    return SliverList(
+
+    Widget? check = stateCheck(dataProvider.eventState, dataProvider.events);
+
+    return check != null ? check.toSliver : SliverList(
       delegate: SliverChildBuilderDelegate((ctx, i) {
-        return EventWidget();
-      }, childCount: 5),
+        return EventWidget(eventModel: dataProvider.events[i],);
+      }, childCount: dataProvider.events.length),
     );
   }
 
