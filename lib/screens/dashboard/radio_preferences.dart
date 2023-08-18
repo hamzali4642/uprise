@@ -7,10 +7,12 @@ import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard.dart';
+import 'package:uprise/screens/select_location.dart';
 import 'package:uprise/widgets/genere_tile_widget.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:http/http.dart' as http;
+import 'package:utility_extensions/utility_extensions.dart';
 
 import '../../helpers/colors.dart';
 import '../../provider/dashboard_provider.dart';
@@ -91,10 +93,15 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                           responses = await autoCompleteCity(value);
                           responses = responses.toSet().toList();
                         }
-
-
                         setState(() {});
                       },
+                      suffixWidget: IconButton(
+                        onPressed: (){
+                          context.push(child: SelectLocation());
+                        },
+                        color: CColors.White,
+                        icon: Icon(Icons.map,),
+                      ),
                     ),
                     suggestionsWidget(),
                     SizedBox(

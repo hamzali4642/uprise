@@ -8,6 +8,7 @@ import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/profile_details/profile_calendar.dart';
 import 'package:uprise/screens/dashboard/profile_details/user_profile.dart';
+import 'package:utility_extensions/extensions/context_extensions.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import '../../../generated/assets.dart';
 import 'favorites.dart';
@@ -54,7 +55,7 @@ class _ProfileDetailsState extends State<ProfileDetails>
       provider = value;
       tabBarViews = [
         UserProfile(
-          callBack1: (val){
+          callBack1: (val) {
             setState(() {
               currentIndex = val;
             });
@@ -66,18 +67,20 @@ class _ProfileDetailsState extends State<ProfileDetails>
           },
           isEdit: editProfile,
         ),
-         ProfileCalendar(
-          callBack: (val){
+        ProfileCalendar(
+          callBack: (val) {
             setState(() {
               currentIndex = val;
             });
           },
         ),
-         Favorites(callBack: (val){
-           setState(() {
-             currentIndex = val;
-           });
-         },),
+        Favorites(
+          callBack: (val) {
+            setState(() {
+              currentIndex = val;
+            });
+          },
+        ),
       ];
       return Scaffold(
         body: details(),
@@ -106,9 +109,8 @@ class _ProfileDetailsState extends State<ProfileDetails>
               right: Constants.horizontalPadding),
           child: Column(
             children: [
-              const SizedBox(height: 40),
               headerWidget(),
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
             ],
           ),
         ),
@@ -141,46 +143,54 @@ class _ProfileDetailsState extends State<ProfileDetails>
   }
 
   Widget headerWidget() {
-    return Row(
-      children: [
-        Container(
-          height: 30,
-          width: 30,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.white, width: 0.2),
-            shape: BoxShape.circle,
-          ),
-          child: ClipOval(
-            child: Image(
-              image: AssetImage(provider.userModel?.avatar == null
-                  ? Assets.imagesUsers
-                  : provider.userModel!.avatar!),
+    return Container(
+      padding: EdgeInsets.only(
+        top: context.topPadding + 10,
+        bottom: 10,
+      ),
+      child: Row(
+        children: [
+          Container(
+
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white, width: 0.2),
+              shape: BoxShape.circle,
             ),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: headerTitle(provider.userModel!.username),
-        ),
-        if (!editProfile && currentIndex == 0 )
-          InkWell(
-            onTap: () {
-              setState(() {
-                editProfile = true;
-              });
-            },
-            child: Container(
-              height: 30,
-              width: 30,
-              alignment: Alignment.center,
-              child: SvgPicture.asset(
-                Assets.imagesEdit,
-                width: 20,
-                height: 20,
+            child: ClipOval(
+              child: Image(
+                image: AssetImage(provider.userModel?.avatar == null
+                    ? Assets.imagesUsers
+                    : provider.userModel!.avatar!),
               ),
             ),
           ),
-      ],
+          const SizedBox(width: 10),
+          Expanded(
+            child: headerTitle(provider.userModel!.username),
+          ),
+          if (!editProfile && currentIndex == 0)
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  editProfile = true;
+                });
+              },
+              child: Container(
+
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5,),
+                decoration: BoxDecoration(
+                  border: Border.all(color: CColors.White, width: 1,),
+                  borderRadius: BorderRadius.circular(20,),
+                ),
+                child: const Text("Edit", style: TextStyle(
+                  color: Colors.white
+                ),),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -219,4 +229,6 @@ class _ProfileDetailsState extends State<ProfileDetails>
       ],
     );
   }
+
+
 }

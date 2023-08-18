@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
@@ -15,6 +18,8 @@ import '../generated/assets.dart';
 import '../helpers/colors.dart';
 import '../helpers/textstyles.dart';
 import '../widgets/bottom_nav.dart';
+import '../widgets/textfield_widget.dart';
+import 'package:http/http.dart' as http;
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -28,12 +33,33 @@ class _DashboardState extends State<Dashboard> {
 
   late DataProvider dataProvider;
 
+  final RefreshController _refreshController =
+  RefreshController(initialRefresh: false);
+
+
+  void _onRefresh() async{
+    provider.selectedIndex = 3;
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async{
+    _refreshController.loadComplete();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, p, child) {
       dataProvider = p;
       return Consumer<DashboardProvider>(builder: (context, value, child) {
         provider = value;
+
+        if (city.text.isEmpty) {
+          city.text = dataProvider.userModel?.city ?? "";
+        }
+        if (state.text.isEmpty) {
+          state.text = dataProvider.userModel?.state ?? "";
+        }
         return Scaffold(
           floatingActionButton: provider.showOverlay
               ? InkWell(
@@ -56,19 +82,30 @@ class _DashboardState extends State<Dashboard> {
                   floatingActionButtonLocation:
                       FloatingActionButtonLocation.centerDocked,
                   bottomNavigationBar: bottomNavigationWidget(),
-                  body: Column(
-                    children: [
-                      if (provider.selectedIndex == 0 ||
-                          provider.selectedIndex == 2) ...[
-                        headerWidget(),
-                        locationWidget(),
-                        if(provider.selectedIndex != 2)...[
-                          const PlayerWidget(),
-                          const Divider(color: CColors.textColor,thickness: 0.4,),
-                        ]
+                  body: SmartRefresher(
+                    controller: _refreshController,
+                    onRefresh: _onRefresh,
+                    onLoading: _onLoading,
+                    enablePullDown: provider.selectedIndex == 0 || provider.selectedIndex == 2 ? true : false,
+                    header: WaterDropHeader(),
+                    child: Column(
+                      children: [
+                        if (provider.selectedIndex == 0 ||
+                            provider.selectedIndex == 2) ...[
+                          headerWidget(),
+                          locationWidget(),
+                          if (provider.selectedIndex != 2) ...[
+                            const PlayerWidget(),
+                            const Divider(
+                              color: CColors.textColor,
+                              thickness: 0.4,
+                            ),
+                          ]
+                        ],
+                        Expanded(
+                            child: provider.pages[provider.selectedIndex]!),
                       ],
-                      Expanded(child: provider.pages[provider.selectedIndex]!),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -79,6 +116,8 @@ class _DashboardState extends State<Dashboard> {
       });
     });
   }
+
+  bool isEditing = false;
 
   Widget headerWidget() {
     return Container(
@@ -106,7 +145,6 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ),
-
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -149,7 +187,7 @@ class _DashboardState extends State<Dashboard> {
                 provider.selectedIndex = 3;
               } else if (value == "/instruments") {
                 context.push(child: const Instruments());
-              }else if (value == "/favourites") {
+              } else if (value == "/favourites") {
                 provider.isFavourites = true;
                 provider.selectedIndex = 3;
               }
@@ -187,14 +225,17 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   child: Text(
                     dataProvider.userModel?.city ?? "",
-                    style: AppTextStyles.message(color: Colors.white,fontSize: 15),
-
+                    style: AppTextStyles.message(
+                        color: Colors.white, fontSize: 15),
                   ),
                 ),
               ),
               IconButton(
                 onPressed: () {
-                  context.push(child: const RadioPreferences());
+                  setState(() {
+                    isEditing = !isEditing;
+                  });
+                  // context.push(child: const RadioPreferences());
                 },
                 color: Colors.white,
                 icon: const Icon(
@@ -203,6 +244,68 @@ class _DashboardState extends State<Dashboard> {
               ),
             ],
           ),
+          if (isEditing) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      radioWidget(),
+                      TextFieldWidget(
+                        controller: type == "City"
+                            ? city
+                            : type == "State"
+                                ? state
+                                : country,
+                        hint: "Manually Enter Location",
+                        errorText: "errorText",
+                        enable: type != "Country",
+                        onChange: (value) async {
+                          if (value.trim().isEmpty) {
+                            responses = [];
+                          } else {
+                            responses = await autoCompleteCity(value);
+                            responses = responses.toSet().toList();
+                          }
+
+                          setState(() {});
+                        },
+                      ),
+                      suggestionsWidget(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        dataProvider.updateUserPref({
+                          "city": city.text,
+                          "country": country.text,
+                          "state": state.text,
+                        });
+
+                        isEditing = !isEditing;
+                        setState(() {});
+                      },
+                      color: Colors.white,
+                      icon: Icon(Icons.check_circle),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        context.push(child: RadioPreferences());
+                      },
+                      color: Colors.white,
+                      icon: Icon(Icons.more_horiz),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -336,5 +439,111 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
     );
+  }
+
+  String type = "City";
+
+  Widget radioWidget() {
+    return Row(
+      children: [
+        radioButtonItem("City"),
+        radioButtonItem("State"),
+        radioButtonItem("Country"),
+      ],
+    );
+  }
+
+  Widget radioButtonItem(String text) {
+    return Expanded(
+      child: Row(
+        children: [
+          Radio(
+            value: text,
+            groupValue: type,
+            onChanged: (value) {
+              setState(
+                () {
+                  type = text;
+                  responses = [];
+                },
+              );
+            },
+          ),
+          Text(
+            text,
+            style: TextStyle(
+              color: CColors.White,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<String> responses = [];
+
+  Widget suggestionsWidget() {
+    return Column(
+      children: [
+        for (var response in responses)
+          InkWell(
+            onTap: () {
+              city.text = response.split(",")[0];
+              state.text = response.split(",")[1];
+              responses = [];
+              FocusScope.of(context).unfocus();
+              setState(() {});
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: CColors.screenContainer,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      response,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                    height: 1,
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  var city = TextEditingController();
+  var state = TextEditingController();
+  var country = TextEditingController(text: "USA");
+
+  Future<List<String>> autoCompleteCity(String input) async {
+    final response = await http.get(Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(${type == "City" ? "cities" : "states"})&components=country:us&key=${Constants.mapKey}'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final predictions = data['predictions'] as List<dynamic>;
+
+      List<String> citySuggestions = [];
+      for (var prediction in predictions) {
+        citySuggestions.add(prediction['description']);
+      }
+
+      return citySuggestions;
+    } else {
+      throw Exception('Failed to load city suggestions');
+    }
   }
 }
