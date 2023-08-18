@@ -63,6 +63,8 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
+
+
   void getUserData() {
     userSubscriptions = db
         .collection("users")
@@ -125,8 +127,8 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
-  initializePlayer(String url) async {
-    audioPlayer.setUrl(url);
+  initializePlayer() async {
+    audioPlayer.setUrl(currentSong!.songUrl);
     await audioPlayer.play();
     audioState = "playing";
     isPlaying = true;
@@ -154,6 +156,17 @@ class DataProvider extends ChangeNotifier {
       print(e);
     }
   }
+
+
+  SongModel? _currentSong;
+
+  SongModel? get currentSong => _currentSong;
+
+  set currentSong(SongModel? value) {
+    _currentSong = value;
+    notifyListeners();
+  }
+
 
   pause() async {
     await audioPlayer.pause();

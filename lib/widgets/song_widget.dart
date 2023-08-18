@@ -19,9 +19,9 @@ class SongWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-
-        Provider.of<DataProvider>(context,listen: false).initializePlayer(song.songUrl);
-
+        var p = Provider.of<DataProvider>(context,listen: false);
+        p.currentSong = song;
+        p.initializePlayer();
       },
       child: Container(
         margin: const EdgeInsets.symmetric(

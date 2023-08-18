@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/event_widget.dart';
 import 'package:uprise/widgets/songs_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
@@ -33,62 +35,68 @@ class _BandDetailsState extends State<BandDetails>
     });
   }
 
+  late DataProvider dataProvider;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: CColors.transparentColor,
-        title: const Text(
-          "Band Details",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeights.bold,
+    return Consumer<DataProvider>(
+      builder: (context, value, child) {
+        dataProvider = value;
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: CColors.transparentColor,
+            title: const Text(
+              "Band Details",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeights.bold,
+              ),
+            ),
+            centerTitle: false,
           ),
-        ),
-        centerTitle: false,
-      ),
-      body: Container(
-        child: CustomScrollView(
-          slivers: [
-            const Image(
-              image: NetworkImage(
-                Constants.demoCoverImage,
-              ),
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ).toSliver,
-            brandInfoWidget().toSliver,
-            memberWidget().toSliver,
-            songsWidget().toSliver,
-            TabBar(
-              controller: controller,
-              labelColor: CColors.primary,
-              unselectedLabelColor: CColors.textColor,
-              labelStyle: const TextStyle(
-                color: CColors.primary,
-              ),
-              unselectedLabelStyle: const TextStyle(
-                color: CColors.textColor,
-              ),
-              tabs: const [
-                Tab(
-                  child: Text(
-                    "Gallery",
+          body: Container(
+            child: CustomScrollView(
+              slivers: [
+                const Image(
+                  image: NetworkImage(
+                    Constants.demoCoverImage,
                   ),
-                ),
-                Tab(
-                  child: Text(
-                    "Events",
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ).toSliver,
+                brandInfoWidget().toSliver,
+                memberWidget().toSliver,
+                songsWidget().toSliver,
+                TabBar(
+                  controller: controller,
+                  labelColor: CColors.primary,
+                  unselectedLabelColor: CColors.textColor,
+                  labelStyle: const TextStyle(
+                    color: CColors.primary,
                   ),
-                ),
+                  unselectedLabelStyle: const TextStyle(
+                    color: CColors.textColor,
+                  ),
+                  tabs: const [
+                    Tab(
+                      child: Text(
+                        "Gallery",
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        "Events",
+                      ),
+                    ),
+                  ],
+                ).toSliver,
+                controller.index == 0 ? galleryWidget() : eventsWidget(),
               ],
-            ).toSliver,
-            controller.index == 0 ? galleryWidget() : eventsWidget(),
-          ],
-        ),
-      ),
+            ),
+          ),
+        );
+      }
     );
   }
 
@@ -242,14 +250,14 @@ class _BandDetailsState extends State<BandDetails>
             ),
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
-              return SongsWidget();
+              return SongsWidget(song: dataProvider.songs[i],);
             },
             separatorBuilder: (ctx, i) {
               return SizedBox(
                 width: 10,
               );
             },
-            itemCount: 4,
+            itemCount: dataProvider.songs.length,
           ),
         )
       ],

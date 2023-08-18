@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/textstyles.dart';
+import 'package:uprise/models/user_model.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
 import '../screens/dashboard/band_details.dart';
 
 class BandWidget extends StatelessWidget {
-  const BandWidget({super.key});
+  const BandWidget({super.key, required this.band});
 
+  final UserModel band;
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -32,7 +34,7 @@ class BandWidget extends StatelessWidget {
           ),
           const SizedBox(height: 10,),
           Text(
-            "title",
+            band.username,
             style: AppTextStyles.clickable(color: Colors.white),
           ),
         ],

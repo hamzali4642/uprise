@@ -20,10 +20,9 @@ class PlayerWidget extends StatelessWidget {
         return const Center(child: CircularProgressIndicator());
       }
 
-      String imageUrl = value.songs.first.posterUrl;
-      String songUrl = value.songs.first.songUrl;
-      String title = value.songs.first.title;
 
+
+      value.currentSong ??= value.songs.first;
 
       return Container(
         margin: const EdgeInsets.symmetric(
@@ -32,7 +31,7 @@ class PlayerWidget extends StatelessWidget {
           children: [
             Image(
               image: NetworkImage(
-                imageUrl,
+                value.currentSong!.posterUrl,
               ),
               fit: BoxFit.cover,
               height: 80,
@@ -53,7 +52,7 @@ class PlayerWidget extends StatelessWidget {
                             height: 30,
                             width: 30,
                             child: Marquee(
-                              text: title,
+                              text: value.currentSong!.title,
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
@@ -79,7 +78,7 @@ class PlayerWidget extends StatelessWidget {
                           onTap: () {
                             switch (value.audioState) {
                               case "stopped":
-                                value.initializePlayer(songUrl);
+                                value.initializePlayer();
                                 break;
                               case "pause":
                                 value.play();

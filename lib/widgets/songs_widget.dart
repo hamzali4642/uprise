@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/textstyles.dart';
+import 'package:uprise/models/song_model.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
+import '../provider/data_provider.dart';
 import '../screens/dashboard/band_details.dart';
 
 class SongsWidget extends StatelessWidget {
-  const SongsWidget({super.key, this.fromCarousel = false});
+  const SongsWidget({super.key, this.fromCarousel = false, required this.song});
 
   final bool fromCarousel;
 
+  final SongModel song;
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: null,
+      onTap: (){
+        var p = Provider.of<DataProvider>(context,listen: false);
+        p.currentSong = song;
+        p.initializePlayer();
+
+      },
       child: Column(
         children: [
           fromCarousel
@@ -30,7 +39,7 @@ class SongsWidget extends StatelessWidget {
             height: 10,
           ),
           Text(
-            "title",
+            song.title,
             style: AppTextStyles.clickable(color: Colors.white),
           ),
         ],
@@ -43,9 +52,9 @@ class SongsWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(
         10,
       ),
-      child: const Image(
+      child: Image(
         image: NetworkImage(
-          Constants.demoCoverImage,
+          song.posterUrl,
         ),
         fit: BoxFit.cover,
       ),
