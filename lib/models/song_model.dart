@@ -5,6 +5,7 @@ class SongModel {
   late String genre;
   late String posterUrl;
   late String songUrl;
+  late String bandId;
   late DateTime createdAt;
   late DateTime updatedAt;
 
@@ -25,6 +26,7 @@ class SongModel {
       "title": title,
       "city": city,
       "genre": genre,
+      "bandId": bandId,
       "posterUrl": posterUrl,
       "songUrl": songUrl,
       "createdAt": createdAt.millisecondsSinceEpoch,
@@ -36,6 +38,7 @@ class SongModel {
     id = data["id"];
     title = data["title"];
     city = data["city"];
+    bandId = data["bandId"];
     genre = data["genre"];
     posterUrl = data["posterUrl"];
     songUrl = data["songUrl"];

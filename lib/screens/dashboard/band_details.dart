@@ -7,7 +7,6 @@ import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/event_widget.dart';
 import 'package:uprise/widgets/songs_widget.dart';
-import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
 import '../../helpers/colors.dart';
@@ -226,6 +225,7 @@ class _BandDetailsState extends State<BandDetails>
   }
 
   Widget songsWidget() {
+    var songs = dataProvider.songs.where((element) => element.bandId == widget.band.id).toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -234,7 +234,7 @@ class _BandDetailsState extends State<BandDetails>
             horizontal: Constants.horizontalPadding,
           ),
           child: Text(
-            "Members",
+            "Songs",
             style: TextStyle(
               color: CColors.textColor,
               fontSize: 16,
@@ -253,14 +253,14 @@ class _BandDetailsState extends State<BandDetails>
             ),
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
-              return SongsWidget(song: dataProvider.songs[i],);
+              return SongsWidget(song: songs[i],);
             },
             separatorBuilder: (ctx, i) {
               return SizedBox(
                 width: 10,
               );
             },
-            itemCount: dataProvider.songs.length,
+            itemCount: songs.length,
           ),
         )
       ],

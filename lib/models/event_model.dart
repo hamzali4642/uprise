@@ -2,6 +2,7 @@ class EventModel {
   String? id;
   late String name;
   late String venue;
+  late String bandId;
   late String description;
   late String posterUrl;
   late DateTime startDate;
@@ -21,6 +22,7 @@ class EventModel {
       "id": id,
       "name": name,
       "venue": venue,
+      "bandId" : bandId,
       "posterUrl": posterUrl,
       "startDate": startDate.millisecondsSinceEpoch,
       "endDate": endDate.millisecondsSinceEpoch,
@@ -32,6 +34,7 @@ class EventModel {
     id = data["id"];
     name = data["name"];
     venue = data["venue"];
+    bandId = data["bandId"];
     posterUrl = data["posterUrl"];
     startDate = DateTime.fromMillisecondsSinceEpoch(data["startDate"]);
     endDate = DateTime.fromMillisecondsSinceEpoch(data["endDate"]);
