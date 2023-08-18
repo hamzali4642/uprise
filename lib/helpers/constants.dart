@@ -26,6 +26,18 @@ class Constants {
     returnMenu("logout", "Logout"),
   ];
 
+  static List<Color> colors = [
+    const Color(0xff7E4C11),
+    const Color(0xff7DA0B3),
+    const Color(0xff7A5791),
+    const Color(0xff931A07),
+    const Color(0xffDF5B11),
+    const Color(0xff8F3C6A),
+    const Color(0xff2B138D),
+    const Color(0xff3B8B70),
+    const Color(0xffA8433B),
+  ];
+
   static PopupMenuItem returnMenu(String value, String text) {
     return PopupMenuItem(
       value: '/$value',

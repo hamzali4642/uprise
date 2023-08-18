@@ -10,8 +10,9 @@ import 'package:uprise/widgets/song_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
 class RadioDetails extends StatefulWidget {
-  const RadioDetails({super.key, required this.name});
+  const RadioDetails({super.key, required this.name, required this.index});
   final String name;
+  final int index;
   @override
   State<RadioDetails> createState() => _RadioDetailsState();
 }
@@ -70,7 +71,7 @@ class _RadioDetailsState extends State<RadioDetails> {
       width: double.infinity,
       margin: EdgeInsets.only(top: context.topPadding),
       decoration: BoxDecoration(
-        color: Functions.generateColorFromString(widget.name),
+        color: Constants.colors[widget.index % Constants.colors.length],
       ),
       child: Stack(
         children: [

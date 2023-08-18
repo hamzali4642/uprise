@@ -12,7 +12,7 @@ class Home extends StatelessWidget {
     return Consumer<DashboardProvider>(
       builder: (context, provider, child) {
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: Constants.horizontalPadding, vertical: 10),
+          padding: const EdgeInsets.symmetric( vertical: 10),
           child: Column(
             children: [
               selectionWidget(),
