@@ -61,7 +61,7 @@ class PlayerWidget extends StatelessWidget {
                           child: SizedBox(
                             height: 30,
                             child: Marquee(
-                              text: "${value.currentSong!.title}      " ,
+                              text: "${value.currentSong!.title}            " ,
                               style: const TextStyle(
                                 fontWeight: FontWeights.normal,
                                 color: Colors.white,
