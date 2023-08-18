@@ -35,8 +35,7 @@ class PlayerWidget extends StatelessWidget {
       print(value.currentSong!.title);
 
       return Container(
-        margin: const EdgeInsets.symmetric(
-            horizontal: Constants.horizontalPadding, vertical: 10),
+        margin: const EdgeInsets.symmetric( vertical: 10),
         child: Row(
           children: [
             Image(

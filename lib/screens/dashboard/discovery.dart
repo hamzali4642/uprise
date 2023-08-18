@@ -92,7 +92,7 @@ class _DiscoveryState extends State<Discovery> {
       itemBuilder: (ctx, i, j) {
         return Align(
           alignment: Alignment.topCenter,
-          child: RadioWidget(name: cities[i],),
+          child: RadioWidget(name: cities[i],index: i,),
         );
       },
       options: CarouselOptions(

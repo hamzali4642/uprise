@@ -136,7 +136,6 @@ class DataProvider extends ChangeNotifier {
         .then((value) {
       var genres = value.data()!["genre"] ?? <String>[];
       this.genres = List.generate(genres.length, (index) => genres[index]);
-
       notifyListeners();
     });
   }
@@ -162,7 +161,6 @@ class DataProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    // total = audioPlayer.duration?.inSeconds ?? 0;
   }
 
   updateUser(UserModel userModel) {

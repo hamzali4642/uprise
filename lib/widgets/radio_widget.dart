@@ -10,9 +10,10 @@ import 'package:utility_extensions/utility_extensions.dart';
 import '../helpers/colors.dart';
 
 class RadioWidget extends StatelessWidget {
-  const RadioWidget({super.key, required this.name});
+  const RadioWidget({super.key, required this.name, required this.index});
 
   final String name;
+  final int index;
   @override
   Widget build(BuildContext context) {
 
@@ -20,16 +21,15 @@ class RadioWidget extends StatelessWidget {
       aspectRatio: 1,
       child: InkWell(
         onTap: (){
-          context.push(child: RadioDetails(name: name,));
+          context.push(child: RadioDetails(name: name,index: index,));
         },
         child: Container(
 
           decoration: BoxDecoration(
-            color: Functions.generateColorFromString(name),
+            color: Constants.colors[index % Constants.colors.length],
           ),
           child: Stack(
             children: [
-
               Positioned(
                 left: 0,
                 right: 0,

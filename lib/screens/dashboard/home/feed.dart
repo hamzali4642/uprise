@@ -61,6 +61,7 @@ class _FeedState extends State<Feed> {
                 return SizedBox(width: 1,);
               }
               return RadioWidget(
+                index: i,
                 name: dataProvider.cities[i - 1],
               );
             },

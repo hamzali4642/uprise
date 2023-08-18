@@ -63,6 +63,7 @@ class _DashboardState extends State<Dashboard> {
                         headerWidget(),
                         locationWidget(),
                         const PlayerWidget(),
+                        const Divider(color: CColors.textColor,thickness: 0.4,),
                       ],
                       Expanded(child: provider.pages[provider.selectedIndex]!),
                     ],
