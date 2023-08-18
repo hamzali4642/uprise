@@ -45,10 +45,10 @@ class _FeedState extends State<Feed> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        HeadingWidget(
+        const HeadingWidget(
           text: "Recommended Radio Stations",
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Container(
@@ -81,6 +81,10 @@ class _FeedState extends State<Feed> {
   }
 
   Widget newReleasesWidget() {
+    var songs = dataProvider.songs.where((element) => dataProvider.userModel!.selectedGenres.contains(element.genre)).toList();
+    if(songs.isEmpty){
+      return const SizedBox();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -96,9 +100,9 @@ class _FeedState extends State<Feed> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
-              return const NewSongWidget();
+              return NewSongWidget(song: songs[i],);
             },
-            itemCount: 4,
+            itemCount: songs.length,
             separatorBuilder: (ctx, i) {
               return const SizedBox(
                 width: 20,
