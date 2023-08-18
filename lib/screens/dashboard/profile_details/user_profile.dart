@@ -74,12 +74,12 @@ class _UserProfileState extends State<UserProfile> {
               IntrinsicHeight(
                 child: Row(
                   children: [
-                    Expanded(child: followDetails("Followers", "0")),
+                    Expanded(child: followDetails("Followers",  provider.userModel!.followers.length.toString())),
                     Container(
                       width: 1,
                       color: CColors.textColor.withOpacity(0.13),
                     ),
-                    Expanded(child: followDetails("Following", "0")),
+                    Expanded(child: followDetails("Following", provider.userModel!.following.length.toString())),
                     Container(
                       width: 1,
                       color: CColors.textColor.withOpacity(0.13),

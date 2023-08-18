@@ -16,6 +16,8 @@ class UserModel {
   late String country;
 
   List<String> selectedGenres = [];
+  List<String> followers = [];
+  List<String> following = [];
 
   UserModel({
     this.id,
@@ -65,5 +67,15 @@ class UserModel {
     List selectedGenres = data["selectedGenres"] ?? [];
     this.selectedGenres =
         List.generate(selectedGenres.length, (index) => selectedGenres[index]);
+
+
+    List followers = data["followers"] ?? [];
+    this.followers =
+        List.generate(followers.length, (index) => followers[index]);
+
+
+    List following = data["following"] ?? [];
+    this.following =
+        List.generate(following.length, (index) => following[index]);
   }
 }
