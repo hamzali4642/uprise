@@ -14,14 +14,14 @@ class SongsWidget extends StatelessWidget {
   final bool fromCarousel;
 
   final SongModel song;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        var p = Provider.of<DataProvider>(context,listen: false);
+      onTap: () {
+        var p = Provider.of<DataProvider>(context, listen: false);
         p.currentSong = song;
         p.initializePlayer();
-
       },
       child: Column(
         children: [
@@ -30,7 +30,7 @@ class SongsWidget extends StatelessWidget {
                   aspectRatio: 1,
                   child: imageWidget(),
                 )
-              : Container(
+              : SizedBox(
                   width: 150,
                   height: 150,
                   child: imageWidget(),
@@ -50,7 +50,7 @@ class SongsWidget extends StatelessWidget {
   Widget imageWidget() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(
-        10,
+        4,
       ),
       child: Image(
         image: NetworkImage(

@@ -133,6 +133,7 @@ class PlayerWidget extends StatelessWidget {
                         const Icon(
                           Icons.favorite,
                           color: Colors.red,
+                          size: 30,
                         ),
                         const SizedBox(
                           width: 10,

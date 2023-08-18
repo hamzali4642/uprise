@@ -62,8 +62,10 @@ class _DashboardState extends State<Dashboard> {
                           provider.selectedIndex == 2) ...[
                         headerWidget(),
                         locationWidget(),
-                        const PlayerWidget(),
-                        const Divider(color: CColors.textColor,thickness: 0.4,),
+                        if(provider.selectedIndex != 2)...[
+                          const PlayerWidget(),
+                          const Divider(color: CColors.textColor,thickness: 0.4,),
+                        ]
                       ],
                       Expanded(child: provider.pages[provider.selectedIndex]!),
                     ],
@@ -104,6 +106,7 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ),
+
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -120,7 +123,7 @@ class _DashboardState extends State<Dashboard> {
                   style: AppTextStyles.popins(
                       style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: FontWeights.bold,
                   )),
                 ),

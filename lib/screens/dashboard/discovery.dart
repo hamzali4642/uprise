@@ -5,10 +5,12 @@ import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/songs_widget.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
+import 'package:utility_extensions/extensions/font_utilities.dart';
 
 import '../../helpers/constants.dart';
 import '../../widgets/band_widget.dart';
 import '../../widgets/heading_widget.dart';
+import '../../widgets/player_widget.dart';
 import '../../widgets/radio_widget.dart';
 
 class Discovery extends StatefulWidget {
@@ -29,41 +31,60 @@ class _DiscoveryState extends State<Discovery> {
       return Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: Constants.horizontalPadding),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFieldWidget(
-                controller: controller,
-                hint: "Search",
-                errorText: "",
-                onChange: (value) {
-                  setState(() {});
-                },
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFieldWidget(
+                      controller: controller,
+                      hint: "Search",
+                      errorText: "",
+                      onChange: (value) {
+                        setState(() {});
+                      },
+                    ),
+                    const HeadingWidget(
+                      text: "Popular Bands",
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    popularBandsWidget(),
+                    const HeadingWidget(
+                      text: "Popular Radio Stations",
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    popularRadioWidget(),
+                    const Row(
+                      children: [
+                        Expanded(
+                          child: HeadingWidget(
+                            text: "Popular Songs",
+                          ),
+                        ),
+                        Text("See all",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeights.normal
+                        ),)
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    popularSongsWidget(),
+                  ],
+                ),
               ),
-              const HeadingWidget(
-                text: "Popular Bands",
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              popularBandsWidget(),
-              const HeadingWidget(
-                text: "Popular Radio Stations",
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              popularRadioWidget(),
-              const HeadingWidget(
-                text: "Popular Songs",
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              popularSongsWidget(),
-            ],
-          ),
+            ),
+            const PlayerWidget(),
+          ],
         ),
       );
     });

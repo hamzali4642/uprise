@@ -10,12 +10,15 @@ class BandWidget extends StatelessWidget {
   const BandWidget({super.key, required this.band});
 
   final UserModel band;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         context.push(
-          child: BandDetails(band: band,),
+          child: BandDetails(
+            band: band,
+          ),
         );
       },
       child: Column(
@@ -23,7 +26,9 @@ class BandWidget extends StatelessWidget {
           AspectRatio(
             aspectRatio: 1,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10,),
+              borderRadius: BorderRadius.circular(
+                4,
+              ),
               child: const Image(
                 image: NetworkImage(
                   Constants.demoCoverImage,
@@ -32,10 +37,13 @@ class BandWidget extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 15,
+          ),
           Text(
             band.username,
-            style: AppTextStyles.clickable(color: Colors.white),
+            style: AppTextStyles.clickable(
+                color: Colors.white, fontSize: 14, weight: FontWeights.normal),
           ),
         ],
       ),
