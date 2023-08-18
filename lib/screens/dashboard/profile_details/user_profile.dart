@@ -158,10 +158,10 @@ class _UserProfileState extends State<UserProfile> {
                           ChangePassword(
                             email: value.userModel!.email,
                           )),
-                    const SizedBox(height: 10),
-                    btn("Instruments interested in", context, Instruments()),
+                    const SizedBox(height: 13),
+                    btn("Instruments interested in", context, const Instruments()),
                     const SizedBox(
-                      height: 10,
+                      height: 13,
                     ),
                     btn(
                       "Logout",
@@ -258,7 +258,7 @@ class _UserProfileState extends State<UserProfile> {
       },
       child: Text(
         str,
-        style: const TextStyle(color: Colors.white, fontSize: 18),
+        style: const TextStyle(color: Colors.white, fontSize: 16),
       ),
     );
   }
@@ -274,7 +274,6 @@ class _UserProfileState extends State<UserProfile> {
             fontSize: 12
           ),
         ),
-        const SizedBox(height: 10),
         if (widget.isEdit)
           SizedBox(
             height: widget.isEdit ? null : 5,
@@ -296,9 +295,14 @@ class _UserProfileState extends State<UserProfile> {
               fontWeight: FontWeight.bold,
             ),
           ),
-        const Divider(
-          color: CColors.Grey,
-        ),
+        Container(
+          height: 0.3,
+          width: double.infinity,
+          color: CColors.placeholder,
+        )
+        // const Divider(
+        //   color: CColors.Grey,
+        // ),
       ],
     );
   }
