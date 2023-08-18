@@ -102,8 +102,7 @@ class _DashboardState extends State<Dashboard> {
                             ),
                           ]
                         ],
-                        Expanded(
-                            child: provider.pages[provider.selectedIndex]!),
+                        Expanded(child: provider.pages[provider.selectedIndex]!),
                       ],
                     ),
                   ),
