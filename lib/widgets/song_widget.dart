@@ -18,10 +18,9 @@ class SongWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-
-        Provider.of<DataProvider>(context,listen: false).initializePlayer(song.songUrl);
-
+      onTap: () {
+        Provider.of<DataProvider>(context, listen: false)
+            .initializePlayer(song.songUrl);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(
@@ -59,11 +58,15 @@ class SongWidget extends StatelessWidget {
                                     color: Colors.white,
                                     fontSize: 20),
                               ),
-                              SizedBox(height: 10,),
+                              SizedBox(
+                                height: 10,
+                              ),
                               Row(
                                 children: [
                                   SvgPicture.asset(Assets.imagesBandVector),
-                                  SizedBox(width: 10,),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
                                   const Text(
                                     "Gytes",
                                     style: TextStyle(
@@ -89,7 +92,6 @@ class SongWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-
                   ],
                 ),
               ),

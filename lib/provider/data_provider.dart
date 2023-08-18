@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:uprise/helpers/data_state.dart';
 import 'package:uprise/models/user_model.dart';
+import '../models/event_model.dart';
 import '../models/song_model.dart';
 
 class DataProvider extends ChangeNotifier {
@@ -35,9 +36,16 @@ class DataProvider extends ChangeNotifier {
   UserModel? userModel;
 
   List<SongModel> songs = [];
+  List<EventModel> events = [];
+  List<String> genres = [];
+  List<UserModel> users = [];
+  List<String> cities = [];
+
+
 
   DataStates profileState = DataStates.waiting;
   DataStates songsState = DataStates.waiting;
+  DataStates eventState = DataStates.waiting;
 
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? userSubscriptions;
   StreamSubscription<Duration>? duration;
@@ -59,6 +67,7 @@ class DataProvider extends ChangeNotifier {
         getUsers();
         getGenres();
         getSongs();
+        getEvents();
       }
     });
   }
@@ -81,7 +90,6 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
-  List<UserModel> users = [];
 
   void getUsers() {
     db.collection("users").get().then((snapshot) {
@@ -97,7 +105,6 @@ class DataProvider extends ChangeNotifier {
   }
 
 
-  List<String> cities = [];
   getSongs() async {
     QuerySnapshot querySnapshot = await db.collection("Songs").get();
 
@@ -110,7 +117,14 @@ class DataProvider extends ChangeNotifier {
     songsState = DataStates.success;
   }
 
-  List<String> genres = [];
+  getEvents() async {
+    QuerySnapshot querySnapshot = await db.collection("events").get();
+
+    events = querySnapshot.docs
+        .map((doc) => EventModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
+    eventState = DataStates.success;
+  }
 
   void getGenres() {
     FirebaseFirestore.instance
@@ -163,12 +177,10 @@ class DataProvider extends ChangeNotifier {
   }
 
   seek(Duration duration) async {
-
     completed = duration;
     audioPlayer.seek(duration);
 
     notifyListeners();
-
   }
 
   play() async {
@@ -191,5 +203,3 @@ class DataProvider extends ChangeNotifier {
     userSubscriptions?.cancel();
   }
 }
-
-
