@@ -25,6 +25,8 @@ class DashboardProvider with ChangeNotifier {
 
   ];
 
+  bool isFavourites = false;
+
   String _homeSelected = "Feed";
 
   String get homeSelected => _homeSelected;

@@ -172,6 +172,7 @@ class DataProvider extends ChangeNotifier {
   }
 
 
+
   SongModel? _currentSong;
 
   SongModel? get currentSong => _currentSong;

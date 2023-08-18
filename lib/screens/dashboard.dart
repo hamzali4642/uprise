@@ -6,6 +6,7 @@ import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/auth/signin.dart';
+import 'package:uprise/screens/dashboard/profile_details/instruments.dart';
 import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
 import 'package:uprise/widgets/player_widget.dart';
@@ -131,19 +132,22 @@ class _DashboardState extends State<Dashboard> {
               color: Colors.white,
             ),
             onSelected: (value) async {
-              print(value);
               if (value == "/logout") {
                 await FirebaseAuth.instance.signOut();
                 provider.selectedIndex = 0;
                 provider.homeSelected = "Feed";
+                // ignore: use_build_context_synchronously
                 context.push(child: const SignIn());
               } else if (value == "/discovery") {
                 provider.selectedIndex = 2;
-              }
-              else if (value == "/profile") {
+              } else if (value == "/profile") {
+                provider.selectedIndex = 3;
+              } else if (value == "/instruments") {
+                context.push(child: const Instruments());
+              }else if (value == "/favourites") {
+                provider.isFavourites = true;
                 provider.selectedIndex = 3;
               }
-
             },
             itemBuilder: (BuildContext bc) {
               return Constants.menuItem;
@@ -156,7 +160,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget locationWidget() {
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: Constants.horizontalPadding,
       ),
       child: Column(
