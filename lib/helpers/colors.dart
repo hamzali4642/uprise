@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CColors{
-  static const Color primary = Color(0xffD8FC2C);
+  static const Color primary = Color.fromRGBO(220, 247, 99, 1);
   static const Color bandslineStrokeColor= Color.fromRGBO(255, 208, 70, 1,);
   static const Color eventsLineStrokeColor= Color.fromRGBO(220, 247, 99, 1);
   static const Color indicationCircle= Color(0xffe0e0e0);
