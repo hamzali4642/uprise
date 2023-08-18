@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_geocoding/google_geocoding.dart' as gc;
@@ -15,17 +16,15 @@ import '../models/address_model.dart';
 class SelectLocation extends StatefulWidget {
   Color primary;
 
-  SelectLocation({Key? key, this.primary = CColors.primary}) : super(key: key);
+  SelectLocation({Key? key, this.primary = CColors.primary, this.lat, this.long}) : super(key: key);
 
+  double? lat, long;
   @override
   State<SelectLocation> createState() => _SelectLocationState();
 }
 
 class _SelectLocationState extends State<SelectLocation> {
-  CameraPosition position = const CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+  late CameraPosition position;
 
   GoogleMapController? _controller;
 
@@ -40,7 +39,11 @@ class _SelectLocationState extends State<SelectLocation> {
 
   @override
   void initState() {
-    // _determinePosition();
+    position = CameraPosition(
+      target: LatLng(widget.lat ?? 37.42796133580664, widget.long ?? -122.085749655962),
+      zoom: 14.4746,
+    );
+    _loadMapStyles();
     super.initState();
   }
 
@@ -57,6 +60,7 @@ class _SelectLocationState extends State<SelectLocation> {
       body: Stack(
         children: [
           GoogleMap(
+
             zoomControlsEnabled: false,
             myLocationEnabled: true,
             onCameraIdle: () {
@@ -73,8 +77,10 @@ class _SelectLocationState extends State<SelectLocation> {
             },
             mapType: MapType.normal,
             initialCameraPosition: position,
-            onMapCreated: (GoogleMapController controller) {
+            onMapCreated: (GoogleMapController controller) async {
               _controller = controller;
+              _darkMapStyle  = await rootBundle.loadString('assets/map/map.json');
+              _controller!.setMapStyle(_darkMapStyle);
             },
             markers: Set<Marker>.of(markers.values),
           ),
@@ -148,7 +154,7 @@ class _SelectLocationState extends State<SelectLocation> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: widget.primary,
-                  padding: EdgeInsets.symmetric(vertical: height * 0.025),
+                  padding: EdgeInsets.symmetric(vertical: 5),
                   shape: const StadiumBorder(),
                 ),
                 onPressed: () {
@@ -158,15 +164,24 @@ class _SelectLocationState extends State<SelectLocation> {
                       "Please select the location",
                     );
                   } else {
-                    AddressModel model = AddressModel(
-                      latitude: latLng!.latitude,
-                      longitude: latLng!.longitude,
-                      country: country,
-                      city: city,
-                      postalCode: postalCode,
-                      address: searchResults,
-                    );
-                    Navigator.of(context).pop(model);
+                    if(country == "USA" || country == "United States"){
+                      AddressModel model = AddressModel(
+                        latitude: latLng!.latitude,
+                        longitude: latLng!.longitude,
+                        country: country,
+                        city: city,
+                        postalCode: postalCode,
+                        address: searchResults,
+                        state: state,
+                      );
+                      Navigator.of(context).pop(model);
+                    }else{
+                      Functions.showSnackBar(
+                        context,
+                        "Please select the location from USA",
+                      );
+                    }
+
                   }
                 },
                 child: const Text(
@@ -298,5 +313,11 @@ class _SelectLocationState extends State<SelectLocation> {
         _controller!.animateCamera(CameraUpdate.newLatLng(position));
       }
     }
+  }
+
+  late String _darkMapStyle;
+  Future _loadMapStyles() async {
+
+
   }
 }

@@ -10,11 +10,11 @@ import 'package:uprise/screens/dashboard.dart';
 import 'package:uprise/screens/select_location.dart';
 import 'package:uprise/widgets/genere_tile_widget.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
-import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:http/http.dart' as http;
 import 'package:utility_extensions/utility_extensions.dart';
 
 import '../../helpers/colors.dart';
+import '../../models/address_model.dart';
 import '../../provider/dashboard_provider.dart';
 
 class RadioPreferences extends StatefulWidget {
@@ -29,6 +29,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
   var state = TextEditingController();
   var country = TextEditingController(text: "USA");
 
+  double? latitude, longitude;
   late DataProvider dataProvider;
   late DashboardProvider dashboardProvider;
 
@@ -45,6 +46,8 @@ class _RadioPreferencesState extends State<RadioPreferences> {
             dashboardProvider.selectedGenres = dataProvider.userModel!.selectedGenres;
             city.text = dataProvider.userModel!.city;
             state.text = dataProvider.userModel!.state;
+            latitude = dataProvider.userModel!.latitude;
+            longitude = dataProvider.userModel!.longitude;
             check = false;
           }
           return Scaffold(
@@ -96,8 +99,14 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                         setState(() {});
                       },
                       suffixWidget: IconButton(
-                        onPressed: (){
-                          context.push(child: SelectLocation());
+                        onPressed: () async {
+                          var model = await context.push(child: SelectLocation(lat: latitude, long: longitude,));
+                          if(model is AddressModel){
+                            city.text = model.city;
+                            state.text = model.state;
+                            latitude = model.latitude;
+                            longitude = model.longitude;
+                          }
                         },
                         color: CColors.White,
                         icon: Icon(Icons.map,),
@@ -138,6 +147,8 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                             "city" : city.text,
                             "country" : country.text,
                             "state" : state.text,
+                            "latitude" : latitude,
+                            "longitude" : longitude,
                           });
                         },
                         child: Text(
@@ -205,6 +216,8 @@ class _RadioPreferencesState extends State<RadioPreferences> {
               city.text = response.split(",")[0];
               state.text = response.split(",")[1];
               responses = [];
+              longitude = null;
+              latitude = null;
               FocusScope.of(context).unfocus();
               setState(() {});
             },

@@ -15,50 +15,54 @@ class CustomBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: context.bottomPadding + 50,
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              color: Color(0xff3b3b2c),
-              height: 20,
-            ),
-          ),
-          Positioned(
+    return AspectRatio(
+      aspectRatio: 6.25,
+      child: Container(
 
-            left: 0,
-            right: 0,
-            child: Image(
-              image: AssetImage(
-                Assets.imagesURTabBase,
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: Color(0xff3b3b2c),
+                height: 20,
               ),
             ),
-          ),
-          Positioned(
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
+            Container(
+              color: Colors.black,
+              child: Image(
+                image: AssetImage(
+                  Assets.imagesURTabBase,
+                ),
 
-              padding: EdgeInsets.only(
-                bottom: context.bottomPadding,
-              ),
-              child: Row(
-                children: [
-                  for (var item in items)
-                    itemWidget(
-                      item,
-                    ),
-                ],
+                fit: BoxFit.fitHeight,
               ),
             ),
-          ),
-        ],
+            Positioned(
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+
+
+                padding: EdgeInsets.only(
+                  bottom: context.bottomPadding,
+                ),
+                child: Row(
+                  children: [
+                    for (var item in items)
+                      itemWidget(
+                        item,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -76,14 +80,11 @@ class CustomBottomNavigation extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: 10,),
-              Expanded(
-                child: Icon(
-                  item.iconData,
-                  size: 24,
-                  color: item.isSelected ? Colors.white : Colors.white60,
-                ),
+              Icon(
+                item.iconData,
+                size: 24,
+                color: item.isSelected ? Colors.white : Colors.white60,
               ),
-              SizedBox(height: 10,),
               Text(
                 item.title ?? "",
                 maxLines: 1,

@@ -175,8 +175,6 @@ class Assets {
   static const String imagesUserAdd = 'assets/images/user-add.svg';
   static const String imagesUsers = 'assets/images/users.png';
   static const String imagesViewprofile = 'assets/images/viewprofile.svg';
-
-
   static const String instrumentsInstrument1 = 'assets/instruments/Instrument_1.png';
   static const String instrumentsInstrument10 = 'assets/instruments/Instrument_10.png';
   static const String instrumentsInstrument11 = 'assets/instruments/Instrument_11.png';
@@ -207,5 +205,6 @@ class Assets {
   static const String instrumentsInstrument7 = 'assets/instruments/Instrument_7.png';
   static const String instrumentsInstrument8 = 'assets/instruments/Instrument_8.png';
   static const String instrumentsInstrument9 = 'assets/instruments/Instrument_9.png';
+  static const String mapMap = 'assets/map/map.json';
 
 }

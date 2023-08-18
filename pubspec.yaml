@@ -61,7 +61,6 @@ dependencies:
   pull_to_refresh: ^2.0.0
   flutter_google_places: ^0.3.0
   google_geocoding: ^0.2.0
-  google_maps: ^6.2.0
   google_api_headers: ^1.5.0+1
   google_maps_flutter: ^2.2.3
 
@@ -79,6 +78,7 @@ flutter:
      - assets/images/
      - assets/avatar/
      - assets/instruments/
+     - assets/map/
   fonts:
     - family: Oswald
       fonts:

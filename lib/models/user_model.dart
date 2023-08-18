@@ -17,6 +17,7 @@ class UserModel {
   late String state;
   late String country;
 
+  double? latitude, longitude;
   List<String> selectedGenres = [];
   List<String> followers = [];
   List<String> following = [];
@@ -46,7 +47,7 @@ class UserModel {
       "facebook": facebook,
       "instagram": instagram,
       "twitter": twitter,
-      "description": description
+      "description": description,
     };
   }
 
@@ -66,6 +67,8 @@ class UserModel {
     country = data["country"] ?? "";
     avatar = data["avatar"];
     instrument = data["instrument"];
+    latitude = data["latitude"];
+    longitude = data["longitude"];
 
     List selectedGenres = data["selectedGenres"] ?? [];
     this.selectedGenres =
