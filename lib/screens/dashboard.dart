@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:uprise/screens/auth/signin.dart';
 import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
 import 'package:uprise/widgets/player_widget.dart';
@@ -24,54 +26,54 @@ class _DashboardState extends State<Dashboard> {
   late DashboardProvider provider;
 
   late DataProvider dataProvider;
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataProvider>(
-      builder: (context, p, child) {
-        dataProvider = p;
-        return Consumer<DashboardProvider>(builder: (context, value, child) {
-          provider = value;
-          return Scaffold(
-            floatingActionButton: provider.showOverlay
-                ? InkWell(
-                    onTap: () {
-                      provider.showOverlay = !provider.showOverlay;
-                    },
-                    child: SvgPicture.asset(
-                      Assets.imagesClose,
-                      width: iconSize,
-                    ),
-                  )
-                : null,
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            body: Stack(
-              children: [
-                Positioned.fill(
-                  child: Scaffold(
-                    floatingActionButton: fabWidget(),
-                    floatingActionButtonLocation:
-                        FloatingActionButtonLocation.centerDocked,
-                    bottomNavigationBar: bottomNavigationWidget(),
-                    body: Column(
-                      children: [
-                        if (provider.selectedIndex == 0 ||
-                            provider.selectedIndex == 2) ...[
-                          headerWidget(),
-                          locationWidget(),
-                          const PlayerWidget(),
-                        ],
-                        Expanded(child: provider.pages[provider.selectedIndex]!),
+    return Consumer<DataProvider>(builder: (context, p, child) {
+      dataProvider = p;
+      return Consumer<DashboardProvider>(builder: (context, value, child) {
+        provider = value;
+        return Scaffold(
+          floatingActionButton: provider.showOverlay
+              ? InkWell(
+                  onTap: () {
+                    provider.showOverlay = !provider.showOverlay;
+                  },
+                  child: SvgPicture.asset(
+                    Assets.imagesClose,
+                    width: iconSize,
+                  ),
+                )
+              : null,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: Scaffold(
+                  floatingActionButton: fabWidget(),
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.centerDocked,
+                  bottomNavigationBar: bottomNavigationWidget(),
+                  body: Column(
+                    children: [
+                      if (provider.selectedIndex == 0 ||
+                          provider.selectedIndex == 2) ...[
+                        headerWidget(),
+                        locationWidget(),
+                        const PlayerWidget(),
                       ],
-                    ),
+                      Expanded(child: provider.pages[provider.selectedIndex]!),
+                    ],
                   ),
                 ),
-                if (provider.showOverlay) overlayWidget(),
-              ],
-            ),
-          );
-        });
-      }
-    );
+              ),
+              if (provider.showOverlay) overlayWidget(),
+            ],
+          ),
+        );
+      });
+    });
   }
 
   Widget headerWidget() {
@@ -93,7 +95,9 @@ class _DashboardState extends State<Dashboard> {
               width: 40,
               child: ClipOval(
                 child: Image(
-                  image: AssetImage(dataProvider.userModel?.avatar == null ? Assets.imagesUsers : dataProvider.userModel!.avatar!),
+                  image: AssetImage(dataProvider.userModel?.avatar == null
+                      ? Assets.imagesUsers
+                      : dataProvider.userModel!.avatar!),
                 ),
               ),
             ),
@@ -108,7 +112,9 @@ class _DashboardState extends State<Dashboard> {
                   provider.selectedIndex = 3;
                 },
                 child: Text(
-                  dataProvider.userModel == null ? "" : dataProvider.userModel!.username,
+                  dataProvider.userModel == null
+                      ? ""
+                      : dataProvider.userModel!.username,
                   style: AppTextStyles.popins(
                       style: const TextStyle(
                     color: Colors.white,
@@ -118,6 +124,23 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
             ),
+          ),
+          PopupMenuButton(
+            child: const Icon(
+              Icons.more_vert,
+              color: Colors.white,
+            ),
+            onSelected: (value) async {
+              if (value == "logout") {
+                await FirebaseAuth.instance.signOut();
+                provider.selectedIndex = 0;
+                provider.homeSelected = "Feed";
+                context.push(child: const SignIn());
+              }
+            },
+            itemBuilder: (BuildContext bc) {
+              return Constants.menuItem;
+            },
           ),
         ],
       ),
@@ -166,8 +189,10 @@ class _DashboardState extends State<Dashboard> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                for(var genre in dataProvider.userModel?.selectedGenres ?? [])
-                  ChipWidget(text: genre,),
+                for (var genre in dataProvider.userModel?.selectedGenres ?? [])
+                  ChipWidget(
+                    text: genre,
+                  ),
               ],
             ),
           ),
@@ -219,10 +244,15 @@ class _DashboardState extends State<Dashboard> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            overlayItemWidget("Skip", "Blast", Assets.imagesSkip, Assets.imagesBlast, 20.0),
-            overlayItemWidget("Report", "Unfollow", Assets.imagesReport, Assets.imagesUnFollow, 90.0),
-            overlayItemWidget("Downvote", "Upvote", Assets.imagesDownvote, Assets.imagesUpvote, 130.0),
-            SizedBox(height: context.bottomPadding + 40,),
+            overlayItemWidget(
+                "Skip", "Blast", Assets.imagesSkip, Assets.imagesBlast, 20.0),
+            overlayItemWidget("Report", "Unfollow", Assets.imagesReport,
+                Assets.imagesUnFollow, 90.0),
+            overlayItemWidget("Downvote", "Upvote", Assets.imagesDownvote,
+                Assets.imagesUpvote, 130.0),
+            SizedBox(
+              height: context.bottomPadding + 40,
+            ),
           ],
         ),
       ),
@@ -230,6 +260,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   var iconSize = 40.0;
+
   Widget overlayItemWidget(
     String text1,
     String text2,
@@ -245,26 +276,37 @@ class _DashboardState extends State<Dashboard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(text1,
+                Text(
+                  text1,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                   ),
                 ),
-
-                SizedBox(width: 10,),
-                SvgPicture.asset(image1,),
+                SizedBox(
+                  width: 10,
+                ),
+                SvgPicture.asset(
+                  image1,
+                ),
               ],
             ),
           ),
-          SizedBox(width: margin,),
+          SizedBox(
+            width: margin,
+          ),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SvgPicture.asset(image2,),
-                SizedBox(width: 10,),
-                Text(text2,
+                SvgPicture.asset(
+                  image2,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  text2,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,

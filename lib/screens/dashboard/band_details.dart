@@ -278,7 +278,7 @@ class _BandDetailsState extends State<BandDetails>
 
   Widget galleryWidget() {
     return SliverPadding(
-      padding: EdgeInsets.symmetric(horizontal: Constants.horizontalPadding, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: Constants.horizontalPadding, vertical: 15),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (ctx, i) {
