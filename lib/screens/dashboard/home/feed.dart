@@ -51,14 +51,14 @@ class _FeedState extends State<Feed> {
         const SizedBox(
           height: 10,
         ),
-        Container(
+        SizedBox(
           height: 150,
           width: double.infinity,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
               if(i == 0){
-                return SizedBox(width: 1,);
+                return const SizedBox(width: 1,);
               }
               return RadioWidget(
                 index: i,
@@ -68,7 +68,7 @@ class _FeedState extends State<Feed> {
             itemCount: dataProvider.cities.length + 1,
             separatorBuilder: (ctx, i) {
               if(i == 0){
-                return SizedBox();
+                return const SizedBox();
               }
               return SizedBox(
                 width: 20,

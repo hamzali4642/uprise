@@ -62,9 +62,12 @@ class _DashboardState extends State<Dashboard> {
                           provider.selectedIndex == 2) ...[
                         headerWidget(),
                         locationWidget(),
-                        if(provider.selectedIndex != 2)...[
+                        if (provider.selectedIndex != 2) ...[
                           const PlayerWidget(),
-                          const Divider(color: CColors.textColor,thickness: 0.4,),
+                          const Divider(
+                            color: CColors.textColor,
+                            thickness: 0.4,
+                          ),
                         ]
                       ],
                       Expanded(child: provider.pages[provider.selectedIndex]!),
@@ -106,7 +109,6 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ),
-
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -131,7 +133,7 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           PopupMenuButton(
-            color: Colors.black,
+            color: const Color(0xff242424),
             child: const Icon(
               Icons.more_vert,
               color: Colors.white,
@@ -149,7 +151,7 @@ class _DashboardState extends State<Dashboard> {
                 provider.selectedIndex = 3;
               } else if (value == "/instruments") {
                 context.push(child: const Instruments());
-              }else if (value == "/favourites") {
+              } else if (value == "/favourites") {
                 provider.isFavourites = true;
                 provider.selectedIndex = 3;
               }
@@ -187,8 +189,8 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   child: Text(
                     dataProvider.userModel?.city ?? "",
-                    style: AppTextStyles.message(color: Colors.white,fontSize: 15),
-
+                    style: AppTextStyles.message(
+                        color: Colors.white, fontSize: 15),
                   ),
                 ),
               ),

@@ -158,9 +158,20 @@ class DataProvider extends ChangeNotifier {
     if (audioPlayer.duration != null) {
       total = audioPlayer.duration!;
     }
-
     notifyListeners();
+  }
 
+  String getBandName(String id) {
+    late UserModel userModel;
+
+    for (var user in users) {
+      if (user.id == id) {
+        userModel = user;
+        break;
+      }
+    }
+
+    return userModel.bandName ?? "";
   }
 
   updateUser(UserModel userModel) {

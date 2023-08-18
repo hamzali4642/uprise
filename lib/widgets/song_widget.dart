@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/models/song_model.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:uprise/widgets/player_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 
 import '../helpers/colors.dart';
@@ -18,8 +19,8 @@ class SongWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        var p = Provider.of<DataProvider>(context,listen: false);
+      onTap: () {
+        var p = Provider.of<DataProvider>(context, listen: false);
         p.currentSong = song;
         p.initializePlayer();
       },

@@ -9,6 +9,8 @@ import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/song_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
+import '../../widgets/player_widget.dart';
+
 class RadioDetails extends StatefulWidget {
   const RadioDetails({super.key, required this.name, required this.index});
   final String name;
@@ -40,7 +42,7 @@ class _RadioDetailsState extends State<RadioDetails> {
                   widget.name,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: FontWeights.bold,
                   ),
                 ),
@@ -59,6 +61,9 @@ class _RadioDetailsState extends State<RadioDetails> {
                   );
                 }
               ),
+              const PlayerWidget(),
+              const SizedBox(height: 20),
+
             ],
           ),
         );
@@ -83,8 +88,9 @@ class _RadioDetailsState extends State<RadioDetails> {
           ),
           Positioned.fill(
             left: 0,
+            bottom: 10,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,11 +102,11 @@ class _RadioDetailsState extends State<RadioDetails> {
                     widget.name,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 24,
                       fontWeight: FontWeights.bold,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 24,
                   ),
                 ],
