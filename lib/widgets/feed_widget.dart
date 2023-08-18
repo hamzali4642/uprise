@@ -60,6 +60,7 @@ class _FeedWidgetState extends State<FeedWidget> {
             color: CColors.feedContainerViewColor,
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               profileWidget(),
               const SizedBox(
@@ -83,6 +84,7 @@ class _FeedWidgetState extends State<FeedWidget> {
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
+                      fontFamily: "Oswald",
                       fontWeight: FontWeights.bold,
                     ),
                     children: [
@@ -91,6 +93,7 @@ class _FeedWidgetState extends State<FeedWidget> {
                         style: const TextStyle(
                           color: CColors.primary,
                           fontSize: 12,
+                          fontFamily: "Oswald",
                           fontWeight: FontWeights.bold,
                         ),
                       ),
@@ -105,6 +108,7 @@ class _FeedWidgetState extends State<FeedWidget> {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,
+                        fontFamily: "Oswald",
                         fontWeight: FontWeights.bold,
                       ),
                       children: [
@@ -112,6 +116,7 @@ class _FeedWidgetState extends State<FeedWidget> {
                           text: song!.title,
                           style: const TextStyle(
                             color: CColors.primary,
+                            fontFamily: "Oswald",
                             fontSize: 12,
                             fontWeight: FontWeights.bold,
                           ),
