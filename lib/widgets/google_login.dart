@@ -17,9 +17,9 @@ class GoogleLogin extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: 60,
+        height: 50,
         width: double.infinity,
-        decoration: BoxDecoration(border: Border.all(color: CColors.primary)),
+        decoration: BoxDecoration(border: Border.all(color: CColors.primary, width: 0.8)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -30,7 +30,8 @@ class GoogleLogin extends StatelessWidget {
               "Continue with Google",
               style: AppTextStyles.popins(
                 style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeights.medium),
+                    color: Colors.white, fontWeight: FontWeights.normal,
+                fontSize: 12),
               ),
             )
           ],

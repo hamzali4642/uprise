@@ -203,7 +203,7 @@ class _SignInState extends State<SignIn> {
   Widget loginButton() {
     return SizedBox(
       width: 125,
-      height: 45,
+      height: 40,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
         onPressed: () {
@@ -214,8 +214,13 @@ class _SignInState extends State<SignIn> {
         child: Text(
           "Login",
           style: AppTextStyles.popins(
-              style: const TextStyle(
-                  color: Colors.black, fontWeight: FontWeights.medium)),
+            style: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeights.normal,
+              fontSize: 14
+
+            ),
+          ),
         ),
       ),
     );
@@ -228,7 +233,7 @@ class _SignInState extends State<SignIn> {
         style: const TextStyle(
           fontSize: 15,
           color: Colors.white,
-          fontWeight: FontWeights.bold,
+          fontWeight: FontWeights.medium,
         ),
       ),
     );

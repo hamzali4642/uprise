@@ -70,7 +70,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 const SizedBox(height: 40),
                 SizedBox(
                   width: 120,
-                  height: 45,
+                  height: 40,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),

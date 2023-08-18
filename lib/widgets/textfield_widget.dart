@@ -30,41 +30,46 @@ class TextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      maxLength: maxLength,
-      onChanged: onChange,
-      enabled: enable,
-      obscureText: isPass,
-      controller: controller,
-      style: AppTextStyles.popins(
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      validator: validator ??
-          (value) {
-            if (value!.isEmpty) {
-              return errorText;
-            }
-            return null;
-          },
-      decoration: InputDecoration(
-        suffixIcon: suffixWidget,
-        hintText: hint,
-        enabledBorder:
-            enableBorder ? buildOutlineInputBorder() : InputBorder.none,
-        focusedBorder:
-            enableBorder ? buildOutlineInputBorder() : InputBorder.none,
-        disabledBorder: buildOutlineInputBorder(),
-        errorBorder: enableBorder ? errorBorder() : InputBorder.none,
-        focusedErrorBorder: errorBorder(),
-        hintStyle: AppTextStyles.popins(
+    return Center(
+      child: TextFormField(
+
+        maxLength: maxLength,
+        onChanged: onChange,
+        enabled: enable,
+        obscureText: isPass,
+        controller: controller,
+        style: AppTextStyles.popins(
           style: const TextStyle(
             fontSize: 16,
-            color: CColors.placeholderTextColor,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
+          ),
+        ),
+        validator: validator ??
+            (value) {
+              if (value!.isEmpty) {
+                return errorText;
+              }
+              return null;
+            },
+        decoration: InputDecoration(
+          isDense: true,
+          suffixIcon: suffixWidget,
+          hintText: hint,
+          enabledBorder:
+              enableBorder ? buildOutlineInputBorder() : InputBorder.none,
+          focusedBorder:
+              enableBorder ? buildOutlineInputBorder() : InputBorder.none,
+          disabledBorder: buildOutlineInputBorder(),
+          errorBorder: enableBorder ? errorBorder() : InputBorder.none,
+          focusedErrorBorder: errorBorder(),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
+          hintStyle: AppTextStyles.popins(
+            style: const TextStyle(
+              fontSize: 13,
+              color: CColors.placeholder,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -73,12 +78,14 @@ class TextFieldWidget extends StatelessWidget {
 
   OutlineInputBorder errorBorder() {
     return const OutlineInputBorder(
+      borderRadius: BorderRadius.zero,
       borderSide: BorderSide(color: Colors.red), // Customize error border color
     );
   }
 
   OutlineInputBorder buildOutlineInputBorder() {
     return const OutlineInputBorder(
+      borderRadius: BorderRadius.zero,
       borderSide: BorderSide(
         color: CColors.placeholderTextColor,
       ),

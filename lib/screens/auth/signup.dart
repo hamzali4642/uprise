@@ -117,18 +117,22 @@ class _SignUpState extends State<SignUp> {
                         child: RichText(
                           text: const TextSpan(
                             style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeights.medium,
-                            ),
+                                color: Colors.white,
+                                fontWeight: FontWeights.medium,
+                                fontFamily: 'Oswald'),
                             text: "Agree with ",
                             children: [
                               TextSpan(
                                   text: 'Terms & Conditions ',
-                                  style: TextStyle(color: CColors.primary)),
+                                  style: TextStyle(
+                                      color: CColors.primary,
+                                      decoration: TextDecoration.underline)),
                               TextSpan(text: 'and '),
                               TextSpan(
                                 text: 'Privacy Policy',
-                                style: TextStyle(color: CColors.primary),
+                                style: TextStyle(
+                                    color: CColors.primary,
+                                    decoration: TextDecoration.underline),
                               ),
                             ],
                           ),
@@ -196,7 +200,7 @@ class _SignUpState extends State<SignUp> {
             controller: username,
             hint: "Enter your name",
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           header("Email"),
           const SizedBox(height: 2),
           TextFieldWidget(
@@ -212,7 +216,7 @@ class _SignUpState extends State<SignUp> {
                 }
                 return null;
               }),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           header("Password"),
           const SizedBox(height: 2),
           TextFieldWidget(
@@ -244,7 +248,7 @@ class _SignUpState extends State<SignUp> {
             controller: password,
             hint: "Enter your Password",
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           header("Confirm Password"),
           const SizedBox(height: 2),
           TextFieldWidget(
@@ -277,7 +281,7 @@ class _SignUpState extends State<SignUp> {
             },
           ),
           if (registerBandArtist) ...[
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             header("Band name"),
             const SizedBox(height: 2),
             TextFieldWidget(
@@ -340,7 +344,7 @@ class _SignUpState extends State<SignUp> {
   Widget signUpButton() {
     return SizedBox(
       width: 125,
-      height: 45,
+      height: 40,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
         onPressed: () async {
@@ -353,7 +357,7 @@ class _SignUpState extends State<SignUp> {
             if (password.text != cPassword.text) {
               Functions.showSnackBar(context, "Please match the password");
             } else {
-              if(await validUserName()){
+              if (await validUserName()) {
                 UserModel userModel = UserModel(
                   username: username.text,
                   email: email.text,
@@ -361,12 +365,10 @@ class _SignUpState extends State<SignUp> {
                   bandName: registerBandArtist ? brandName.text : null,
                 );
                 await AuthService.signUp(context, userModel, password.text);
-              }else{
-                Functions.showSnackBar(context, "This username is already taken by another user.");
+              } else {
+                Functions.showSnackBar(
+                    context, "This username is already taken by another user.");
               }
-
-
-
             }
           }
         },
@@ -386,8 +388,8 @@ class _SignUpState extends State<SignUp> {
       style: AppTextStyles.popins(
         style: TextStyle(
           color: color,
-          fontSize: 15,
-          fontWeight: FontWeights.bold,
+          fontSize: 14,
+          fontWeight: FontWeights.medium,
         ),
       ),
     );
@@ -401,9 +403,11 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-
   Future<bool> validUserName() async {
-    var docs  = await FirebaseFirestore.instance.collection("users").where("username",isEqualTo: username.text).get();
+    var docs = await FirebaseFirestore.instance
+        .collection("users")
+        .where("username", isEqualTo: username.text)
+        .get();
     return docs.docs.isEmpty;
   }
 }
