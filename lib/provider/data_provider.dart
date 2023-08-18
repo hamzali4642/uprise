@@ -117,6 +117,7 @@ class DataProvider extends ChangeNotifier {
     var cities = List.generate(songs.length, (index) => songs[index].city);
     this.cities = cities.toSet().toList();
     songsState = DataStates.success;
+    notifyListeners();
   }
 
   getEvents() async {
@@ -126,6 +127,7 @@ class DataProvider extends ChangeNotifier {
         .map((doc) => EventModel.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
     eventState = DataStates.success;
+    notifyListeners();
   }
 
   void getGenres() {
