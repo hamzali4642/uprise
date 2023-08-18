@@ -127,8 +127,9 @@ class _FeedWidgetState extends State<FeedWidget> {
 
   Widget profileWidget() {
     return Row(
+
       children: [
-        ClipOval(
+        const ClipOval(
           child: Image(
             image: AssetImage(
               Assets.imagesUsers,
@@ -146,7 +147,7 @@ class _FeedWidgetState extends State<FeedWidget> {
               children: [
                 Text(
                   band.username,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                   ),
@@ -156,8 +157,9 @@ class _FeedWidgetState extends State<FeedWidget> {
                     DateTime.fromMillisecondsSinceEpoch(widget.post.createdAt),
                   ),
                   style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
+                    color: CColors.placeholder,
+                    fontSize: 10,
+                    fontWeight: FontWeights.light
                   ),
                 ),
               ],

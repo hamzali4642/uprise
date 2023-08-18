@@ -18,46 +18,53 @@ class NewSongWidget extends StatelessWidget {
     return Consumer<DataProvider>(
       builder: (context, value, child) {
         var band = value.users.where((element) => element.id == song.bandId).first;
-        return SizedBox(
-          width: 150,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 150,
-                width: 150,
-                child: Image(
-                  image: NetworkImage(song.posterUrl,),
-                  fit: BoxFit.cover,
+        return InkWell(
+          onTap: (){
+            var p = Provider.of<DataProvider>(context,listen: false);
+            p.currentSong = song;
+            p.initializePlayer();
+          },
+          child: SizedBox(
+            width: 150,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 150,
+                  width: 150,
+                  child: Image(
+                    image: NetworkImage(song.posterUrl,),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 7),
-              Text(song.title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeights.light
+                const SizedBox(height: 7),
+                Text(song.title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeights.light
+                  ),
                 ),
-              ),
 
-              Row(
-                children: [
-                  SvgPicture.asset(Assets.imagesBandVector),
-                  const SizedBox(width: 5,),
-                  Expanded(
-                    child: Text(band.username,
-                      style: const TextStyle(
-                        color: CColors.Grey,
-                        fontSize: 12,
-                        fontWeight: FontWeights.light
+                Row(
+                  children: [
+                    SvgPicture.asset(Assets.imagesBandVector),
+                    const SizedBox(width: 5,),
+                    Expanded(
+                      child: Text(band.username,
+                        style: const TextStyle(
+                          color: CColors.Grey,
+                          fontSize: 12,
+                          fontWeight: FontWeights.light
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
 
-            ],
+              ],
+            ),
           ),
         );
       }
