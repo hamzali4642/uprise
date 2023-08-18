@@ -23,15 +23,17 @@ class _FeedState extends State<Feed> {
       builder: (context, provider, value) {
         dataProvider = provider;
 
+        var posts = dataProvider.posts;
         return CustomScrollView(
           slivers: [
             recommendedRadioWidget().toSliver,
-            FeedWidget().toSliver,
+            if(posts.isNotEmpty)
+              FeedWidget(post: posts[0],).toSliver,
             newReleasesWidget().toSliver,
             SliverList(
               delegate: SliverChildBuilderDelegate((ctx, i) {
-                return FeedWidget();
-              }, childCount: 4),
+                return FeedWidget(post: posts[i + 1],);
+              }, childCount: posts.length - 1),
             ),
           ],
         );

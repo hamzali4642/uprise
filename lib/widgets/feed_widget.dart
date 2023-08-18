@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/models/post_model.dart';
+import 'package:uprise/models/song_model.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 
 import '../helpers/colors.dart';
+import '../models/event_model.dart';
 
-class FeedWidget extends StatelessWidget {
-  const FeedWidget({super.key});
+class FeedWidget extends StatefulWidget {
+  const FeedWidget({super.key, required this.post});
+  final PostModel post;
 
   @override
+  State<FeedWidget> createState() => _FeedWidgetState();
+}
+
+class _FeedWidgetState extends State<FeedWidget> {
+
+  EventModel? event;
+  SongModel? song;
+  @override
   Widget build(BuildContext context) {
+
+    if(widget.post.event != null){
+      event = EventModel.fromMap(widget.post.event!);
+    }
+    if(widget.post.song !=  null){
+      song = SongModel.fromMap(widget.post.song!);
+    }
     return Container(
       margin: const EdgeInsets.symmetric(
         vertical: 15,
@@ -25,9 +44,9 @@ class FeedWidget extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          const Image(
-            image: AssetImage(
-              Assets.imagesEvent,
+          Image(
+            image: NetworkImage(
+              song == null ? event!.posterUrl : song!.posterUrl,
             ),
             fit: BoxFit.cover,
             width: double.infinity,

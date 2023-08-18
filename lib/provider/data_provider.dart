@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:uprise/helpers/data_state.dart';
+import 'package:uprise/models/post_model.dart';
 import 'package:uprise/models/user_model.dart';
 import '../models/event_model.dart';
 import '../models/song_model.dart';
@@ -37,15 +38,15 @@ class DataProvider extends ChangeNotifier {
 
   List<SongModel> songs = [];
   List<EventModel> events = [];
+  List<PostModel> posts = [];
   List<String> genres = [];
   List<UserModel> users = [];
   List<String> cities = [];
 
-
-
   DataStates profileState = DataStates.waiting;
   DataStates songsState = DataStates.waiting;
   DataStates eventState = DataStates.waiting;
+  DataStates postState = DataStates.waiting;
 
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? userSubscriptions;
   StreamSubscription<Duration>? duration;
@@ -68,11 +69,10 @@ class DataProvider extends ChangeNotifier {
         getGenres();
         getSongs();
         getEvents();
+        getPosts();
       }
     });
   }
-
-
 
   void getUserData() {
     userSubscriptions = db
@@ -92,7 +92,6 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
-
   void getUsers() {
     db.collection("users").get().then((snapshot) {
       var docs = snapshot.docs.where((element) => element.exists).toList();
@@ -105,7 +104,6 @@ class DataProvider extends ChangeNotifier {
       notifyListeners();
     });
   }
-
 
   getSongs() async {
     QuerySnapshot querySnapshot = await db.collection("Songs").get();
@@ -141,6 +139,15 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
+  getPosts() async {
+    QuerySnapshot querySnapshot = await db.collection("feed").get();
+
+    posts = querySnapshot.docs
+        .map((doc) => PostModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
+    postState = DataStates.success;
+  }
+
   initializePlayer() async {
     audioPlayer.setUrl(currentSong!.songUrl);
     await audioPlayer.play();
@@ -171,7 +178,6 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-
   SongModel? _currentSong;
 
   SongModel? get currentSong => _currentSong;
@@ -180,7 +186,6 @@ class DataProvider extends ChangeNotifier {
     _currentSong = value;
     notifyListeners();
   }
-
 
   pause() async {
     await audioPlayer.pause();
