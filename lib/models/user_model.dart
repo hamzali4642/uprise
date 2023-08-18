@@ -1,3 +1,5 @@
+import 'calendar_model.dart';
+
 class UserModel {
   String? id;
   late String username;
@@ -18,6 +20,7 @@ class UserModel {
   List<String> selectedGenres = [];
   List<String> followers = [];
   List<String> following = [];
+  List<CalendarModel> calendar = [];
 
   UserModel({
     this.id,
@@ -68,14 +71,20 @@ class UserModel {
     this.selectedGenres =
         List.generate(selectedGenres.length, (index) => selectedGenres[index]);
 
-
     List followers = data["followers"] ?? [];
     this.followers =
         List.generate(followers.length, (index) => followers[index]);
 
-
     List following = data["following"] ?? [];
     this.following =
         List.generate(following.length, (index) => following[index]);
+
+    List calendar = data["calendar"] ?? [];
+    this.calendar = List.generate(
+      calendar.length,
+      (index) => CalendarModel.fromMap(
+        calendar[index],
+      ),
+    );
   }
 }
