@@ -131,12 +131,19 @@ class _DashboardState extends State<Dashboard> {
               color: Colors.white,
             ),
             onSelected: (value) async {
-              if (value == "logout") {
+              print(value);
+              if (value == "/logout") {
                 await FirebaseAuth.instance.signOut();
                 provider.selectedIndex = 0;
                 provider.homeSelected = "Feed";
                 context.push(child: const SignIn());
+              } else if (value == "/discovery") {
+                provider.selectedIndex = 2;
               }
+              else if (value == "/profile") {
+                provider.selectedIndex = 3;
+              }
+
             },
             itemBuilder: (BuildContext bc) {
               return Constants.menuItem;
