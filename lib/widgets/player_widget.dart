@@ -176,9 +176,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         ),
                       ],
                     ),
-                    const Text(
-                      "Gytes",
-                      style: TextStyle(
+                     Text(
+                      dataProvider.getBandName(dataProvider.currentSong!.bandId),
+                      style: const TextStyle(
                         color: CColors.primary,
                         fontSize: 10,
                       ),
