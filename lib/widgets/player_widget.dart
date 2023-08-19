@@ -1,4 +1,6 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:marquee/marquee.dart';
@@ -11,12 +13,20 @@ import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import '../helpers/colors.dart';
 
-class PlayerWidget extends StatelessWidget {
+class PlayerWidget extends StatefulWidget {
   const PlayerWidget({super.key});
+
+  @override
+  State<PlayerWidget> createState() => _PlayerWidgetState();
+}
+
+class _PlayerWidgetState extends State<PlayerWidget> {
+  late DataProvider dataProvider;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
+      dataProvider = value;
       if (value.songsState == DataStates.waiting) {
         return const Center(child: CircularProgressIndicator());
       }
@@ -130,10 +140,36 @@ class PlayerWidget extends StatelessWidget {
                         const SizedBox(
                           width: 17,
                         ),
-                        const Icon(
-                          Icons.favorite,
-                          color: Colors.red,
-                          size: 30,
+                        Builder(
+                          builder: (context) {
+                            bool isFavourite = dataProvider.userModel!.favourites.contains(dataProvider.currentSong!.id);
+                            return InkWell(
+                              onTap: (){
+                                var uid = FirebaseAuth.instance.currentUser!.uid;
+                                var db = FirebaseFirestore.instance;
+                                if(isFavourite){
+                                  db.collection("users").doc(uid).update({
+                                    "favourites" : FieldValue.arrayRemove([dataProvider.currentSong!.id]),
+                                  });
+                                  db.collection("Songs").doc(dataProvider.currentSong!.id).update({
+                                    "favourites" : FieldValue.arrayRemove([uid]),
+                                  });
+                                }else{
+                                  db.collection("users").doc(uid).update({
+                                    "favourites" : FieldValue.arrayUnion([dataProvider.currentSong!.id]),
+                                  });
+                                  db.collection("Songs").doc(dataProvider.currentSong!.id).update({
+                                    "favourites" : FieldValue.arrayUnion([uid]),
+                                  });
+                                }
+                              },
+                              child: Icon(
+                                isFavourite ? Icons.favorite : Icons.favorite_outline_outlined,
+                                color: isFavourite ? Colors.red : CColors.textColor,
+                                size: 30,
+                              ),
+                            );
+                          }
                         ),
                         const SizedBox(
                           width: 10,

@@ -17,10 +17,15 @@ class UserModel {
   late String state;
   late String country;
 
+  late DateTime joinAt;
   double? latitude, longitude;
   List<String> selectedGenres = [];
   List<String> followers = [];
   List<String> following = [];
+  List<String> favourites = [];
+  List<String> blasts = [];
+  List<String> listen = [];
+
   List<CalendarModel> calendar = [];
 
   UserModel({
@@ -69,7 +74,8 @@ class UserModel {
     instrument = data["instrument"];
     latitude = data["latitude"];
     longitude = data["longitude"];
-
+    var joinAt = data["joinAt"];
+    this.joinAt = joinAt == null ? DateTime(2023, 08,19) : DateTime.fromMillisecondsSinceEpoch(joinAt);
     List selectedGenres = data["selectedGenres"] ?? [];
     this.selectedGenres =
         List.generate(selectedGenres.length, (index) => selectedGenres[index]);
@@ -89,5 +95,16 @@ class UserModel {
         calendar[index],
       ),
     );
+
+    List favourites = data["favourites"] ?? [];
+    this.favourites =
+        List.generate(favourites.length, (index) => favourites[index]);
+    List blasts = data["blasts"] ?? [];
+    this.blasts =
+        List.generate(blasts.length, (index) => blasts[index]);
+    List listen = data["listen"] ?? [];
+    this.listen =
+        List.generate(listen.length, (index) => listen[index]);
+
   }
 }
