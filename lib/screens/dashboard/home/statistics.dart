@@ -425,6 +425,9 @@ class _StatisticsState extends State<Statistics> {
   Widget popularArtistWidget() {
     var band = provider.getPopularBand();
 
+    if(band == null){
+      return SizedBox();
+    }
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: Constants.horizontalPadding,
@@ -474,6 +477,9 @@ class _StatisticsState extends State<Statistics> {
   }
 
   Widget popularArtistPerGenreWidget() {
+    if(provider.getPopularArtistByGenre().isEmpty){
+      return SizedBox();
+    }
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: Constants.horizontalPadding + 30,
