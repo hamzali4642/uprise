@@ -423,7 +423,7 @@ class _StatisticsState extends State<Statistics> {
   }
 
   Widget popularArtistWidget() {
-    provider.currentSong;
+    var band = provider.getPopularBand();
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: Constants.horizontalPadding,
@@ -432,35 +432,36 @@ class _StatisticsState extends State<Statistics> {
       decoration: const BoxDecoration(
         color: CColors.statisticsBgColor,
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HeadingWidget(
+          const HeadingWidget(
             text: "Popular Artist",
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Row(
             children: [
               Expanded(
                 child: Text(
-                  "Gytes",
+                  band.bandName!,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeights.medium,
                     fontSize: 16,
                   ),
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: AspectRatio(
                   aspectRatio: 1,
                   child: Image(
                     image: NetworkImage(
-                      Constants.demoImage,
+                      Constants.demoCoverImage,
                     ),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),

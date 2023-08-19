@@ -134,7 +134,7 @@ class _BandDetailsState extends State<BandDetails>
                   height: 10,
                 ),
                 Text(
-                  widget.band.username,
+                  widget.band.bandName!,
                   style: const TextStyle(
                     color: CColors.White,
                     fontSize: 16,
