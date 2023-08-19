@@ -423,6 +423,7 @@ class _StatisticsState extends State<Statistics> {
   }
 
   Widget popularArtistWidget() {
+    provider.currentSong;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: Constants.horizontalPadding,

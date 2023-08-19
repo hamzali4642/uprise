@@ -259,6 +259,10 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
+
+  getPopularBand(){
+
+  }
   SongModel? _currentSong;
 
   SongModel? get currentSong => _currentSong;
