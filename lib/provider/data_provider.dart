@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -194,21 +195,52 @@ class DataProvider extends ChangeNotifier {
     return eventChart;
   }
 
+  HashMap<String, int> getGenrePref() {
+    int total = 0;
 
-  List<PieData> getGenrePref() {
+    HashMap<String, int> values = HashMap<String, int>();
 
-    // PieData(
-    //   "",
-    //   artists,
-    // ),
-    List<PieData> pieData = [];
+    for (var genre in genres) {
+      List userList = users
+          .where((element) => element.selectedGenres.contains(genre))
+          .toList();
 
+      if (userList.isNotEmpty) {
+        values[genre] = userList.length;
+        total += users.length;
+      }
+    }
 
+    for (var entry in values.entries) {
+      String key = entry.key;
+      int value = entry.value;
+      int newValue = ((value / total) * 100).toInt();
+      values[key] = newValue;
+    }
 
+    return values;
+  }
 
+  List<ChartData> getBandsChartData() {
+    List<ChartData> bandChartData = [];
 
+    var now = DateTime.now();
+    DateTime previous = DateTime(now.year, now.month - 5, 1);
+    int index = 0;
+    while (index < 6) {
+      List userList = users
+          .where((element) =>
+              element.isBand &&
+              element.joinAt.year == previous.year &&
+              element.joinAt.month == previous.month)
+          .toList();
 
-    return pieData;
+      bandChartData.add(ChartData(previous, userList.length));
+      index++;
+      previous = DateTime(previous.year, previous.month + 1, 1);
+    }
+
+    return bandChartData;
   }
 
   updateUser(UserModel userModel) {
