@@ -261,8 +261,6 @@ class DataProvider extends ChangeNotifier {
 
   SongModel getSong(String id) {
     SongModel songModel = songs.firstWhere((element) => element.id == id);
-    print(songModel == null);
-
     return songModel;
   }
 
