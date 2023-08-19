@@ -375,7 +375,7 @@ class _DashboardState extends State<Dashboard> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Builder(builder: (context) {
-              bool isBlast = dataProvider.userModel!.favourites
+              bool isBlast = dataProvider.userModel!.blasts
                   .contains(dataProvider.currentSong!.id);
 
               return overlayItemWidget(
@@ -415,14 +415,60 @@ class _DashboardState extends State<Dashboard> {
                 20.0,
               );
             }),
-            overlayItemWidget(
-              "Report",
-              "Unfollow",
-              Assets.imagesReport,
-              Assets.imagesUnFollow,
-              () {},
-              () {},
-              90.0,
+            Builder(
+              builder: (context) {
+                var uid = FirebaseAuth.instance.currentUser!.uid;
+
+                var band = dataProvider.users.where((element) => element.id == dataProvider.currentSong!.bandId).first;
+
+                var isFollowed = band.followers.contains(uid);
+
+
+
+                return overlayItemWidget(
+                  "Report",
+                  isFollowed ? "Unfollow" : "Follow",
+                  Assets.imagesReport,
+                  isFollowed ? Assets.imagesUnFollow : Assets.imagesFollow,
+                  () {},
+                  () {
+
+
+                    var my =
+                    FirebaseFirestore.instance.collection("users").doc(uid);
+                    var other = FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(band.id);
+                    if (isFollowed) {
+                      my.update({
+                        "following": FieldValue.arrayRemove([other.id])
+                      });
+                      other.update({
+                        "followers": FieldValue.arrayRemove([my.id])
+                      });
+
+                      band.followers.remove(my.id);
+                      dataProvider.userModel!.following.remove(my.id);
+
+                      dataProvider.notifyListeners();
+                    } else {
+                      my.update({
+                        "following": FieldValue.arrayUnion([other.id])
+                      });
+                      other.update({
+                        "followers": FieldValue.arrayUnion([my.id])
+                      });
+
+                      band.followers.add(my.id);
+                      dataProvider.userModel!.following.add(my.id);
+
+                      dataProvider.notifyListeners();
+                    }
+
+                  },
+                  90.0,
+                );
+              }
             ),
             overlayItemWidget(
               "Downvote",
