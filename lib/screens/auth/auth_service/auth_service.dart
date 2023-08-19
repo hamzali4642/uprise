@@ -26,6 +26,9 @@ class AuthService {
       DocumentReference doc = userRef.doc(id);
       model.id = id;
       await doc.set(model.toMap());
+      await doc.update({
+        "joinAt" : DateTime.now().millisecondsSinceEpoch,
+      });
       // ignore: use_build_context_synchronously
       context.pushAndRemoveUntil(child: const Dashboard());
     } on FirebaseException catch (e) {
@@ -108,9 +111,12 @@ class AuthService {
         if (user != null) {
           var ref =
               FirebaseFirestore.instance.collection("users").doc(userModel.id);
-          ref.get().then((value) {
+          ref.get().then((value) async {
             if (!value.exists) {
-              ref.set(userModel.toMap());
+              await ref.set(userModel.toMap());
+              await ref.update({
+                "joinAt" : DateTime.now().millisecondsSinceEpoch,
+              });
             }
             context.pushAndRemoveUntil(child: const Dashboard());
           });

@@ -37,16 +37,13 @@ class CustomBottomNavigation extends StatelessWidget {
               bottom: 0,
               left: 0,
               right: 0,
-              child: Container(
-
-                child: Row(
-                  children: [
-                    for (var item in items)
-                      itemWidget(
-                        item,
-                      ),
-                  ],
-                ),
+              child: Row(
+                children: [
+                  for (var item in items)
+                    itemWidget(
+                      item,
+                    ),
+                ],
               ),
             ),
           ],

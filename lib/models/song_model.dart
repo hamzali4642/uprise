@@ -8,6 +8,8 @@ class SongModel {
   late String bandId;
   late DateTime createdAt;
   late DateTime updatedAt;
+  List<String> favourites = [];
+  List<String> blasts = [];
 
   SongModel({
     this.id,
@@ -44,5 +46,13 @@ class SongModel {
     songUrl = data["songUrl"];
     createdAt = DateTime.fromMillisecondsSinceEpoch(data["createdAt"]);
     updatedAt = DateTime.fromMillisecondsSinceEpoch(data["updatedAt"]);
+
+    List favourites = data["favourites"] ?? [];
+    this.favourites =
+        List.generate(favourites.length, (index) => favourites[index]);
+    List blasts = data["blasts"] ?? [];
+    this.blasts =
+        List.generate(blasts.length, (index) => blasts[index]);
+
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -34,18 +35,16 @@ class _DashboardState extends State<Dashboard> {
   late DataProvider dataProvider;
 
   final RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+      RefreshController(initialRefresh: false);
 
-
-  void _onRefresh() async{
+  void _onRefresh() async {
     provider.selectedIndex = 3;
     _refreshController.refreshCompleted();
   }
 
-  void _onLoading() async{
+  void _onLoading() async {
     _refreshController.loadComplete();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +85,10 @@ class _DashboardState extends State<Dashboard> {
                     controller: _refreshController,
                     onRefresh: _onRefresh,
                     onLoading: _onLoading,
-                    enablePullDown: provider.selectedIndex == 0 || provider.selectedIndex == 2 ? true : false,
+                    enablePullDown: provider.selectedIndex == 0 ||
+                            provider.selectedIndex == 2
+                        ? true
+                        : false,
                     header: WaterDropHeader(),
                     child: Column(
                       children: [
@@ -102,7 +104,8 @@ class _DashboardState extends State<Dashboard> {
                             ),
                           ]
                         ],
-                        Expanded(child: provider.pages[provider.selectedIndex]!),
+                        Expanded(
+                            child: provider.pages[provider.selectedIndex]!),
                       ],
                     ),
                   ),
@@ -328,7 +331,6 @@ class _DashboardState extends State<Dashboard> {
       },
       child: Container(
         margin: EdgeInsets.only(top: 3),
-
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.black,
@@ -372,12 +374,65 @@ class _DashboardState extends State<Dashboard> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            Builder(builder: (context) {
+              bool isBlast = dataProvider.userModel!.favourites
+                  .contains(dataProvider.currentSong!.id);
+
+              return overlayItemWidget(
+                "Skip",
+                "Blast",
+                Assets.imagesSkip,
+                isBlast ? Assets.imagesUnBlast : Assets.imagesBlast,
+                () {},
+                () {
+
+                  var uid = FirebaseAuth.instance.currentUser!.uid;
+                  var db = FirebaseFirestore.instance;
+                  if (isBlast) {
+                    db.collection("users").doc(uid).update({
+                      "blasts": FieldValue.arrayRemove(
+                          [dataProvider.currentSong!.id]),
+                    });
+                    db
+                        .collection("Songs")
+                        .doc(dataProvider.currentSong!.id)
+                        .update({
+                      "blasts": FieldValue.arrayRemove([uid]),
+                    });
+                  } else {
+                    db.collection("users").doc(uid).update({
+                      "blasts":
+                          FieldValue.arrayUnion([dataProvider.currentSong!.id]),
+                    });
+                    db
+                        .collection("Songs")
+                        .doc(dataProvider.currentSong!.id)
+                        .update({
+                      "blasts": FieldValue.arrayUnion([uid]),
+                    });
+                  }
+                },
+                20.0,
+              );
+            }),
             overlayItemWidget(
-                "Skip", "Blast", Assets.imagesSkip, Assets.imagesBlast, 20.0),
-            overlayItemWidget("Report", "Unfollow", Assets.imagesReport,
-                Assets.imagesUnFollow, 90.0),
-            overlayItemWidget("Downvote", "Upvote", Assets.imagesDownvote,
-                Assets.imagesUpvote, 130.0),
+              "Report",
+              "Unfollow",
+              Assets.imagesReport,
+              Assets.imagesUnFollow,
+              () {},
+              () {},
+              90.0,
+            ),
+            overlayItemWidget(
+              "Downvote",
+              "Upvote",
+              Assets.imagesDownvote,
+              Assets.imagesUpvote,
+              () {},
+              () {},
+              130.0,
+            ),
             SizedBox(
               height: context.bottomPadding + 40,
             ),
@@ -394,6 +449,8 @@ class _DashboardState extends State<Dashboard> {
     String text2,
     String image1,
     String image2,
+    Function() onTap1,
+    Function() onTap2,
     double margin,
   ) {
     return Container(
@@ -401,46 +458,52 @@ class _DashboardState extends State<Dashboard> {
       child: Row(
         children: [
           Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  text1,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+            child: InkWell(
+              onTap: onTap1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    text1,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                SvgPicture.asset(
-                  image1,
-                ),
-              ],
+                  SizedBox(
+                    width: 10,
+                  ),
+                  SvgPicture.asset(
+                    image1,
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(
             width: margin,
           ),
           Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SvgPicture.asset(
-                  image2,
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  text2,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+            child: InkWell(
+              onTap: onTap2,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SvgPicture.asset(
+                    image2,
                   ),
-                ),
-              ],
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    text2,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
