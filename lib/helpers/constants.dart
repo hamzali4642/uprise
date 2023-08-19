@@ -36,6 +36,8 @@ class Constants {
     const Color(0xff2B138D),
     const Color(0xff3B8B70),
     const Color(0xffA8433B),
+    const Color.fromRGBO(255, 255, 255, 0.15),
+
   ];
 
   static PopupMenuItem returnMenu(String value, String text) {
