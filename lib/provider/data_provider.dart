@@ -250,6 +250,41 @@ class DataProvider extends ChangeNotifier {
     return bandChartData;
   }
 
+  Map<String, UserModel> getPopularArtistByGenre(){
+    Map<String, UserModel> map = {};
+    for(var genre in userModel!.selectedGenres){
+      var band = getPopularBand(genre: genre);
+
+      if(band != null){
+        map[genre] = band;
+      }
+    }
+
+    return map;
+  }
+  UserModel? getPopularBand({String? genre}){
+
+    var max = 0;
+    UserModel? band;
+    for(var user in users.where((element) => element.isBand)){
+      user.totalUpVotes = 0;
+      for(var song in songs.where((element) => genre == null ? true : element.genre == genre).where((element) => element.bandId == user.id)){
+        print(song.upVotes.length);
+        user.totalUpVotes += song.upVotes.length;
+      }
+
+      if(user.totalUpVotes > max){
+        band = user;
+        // print(user.id);
+        // print(max);
+        // print(user.totalUpVotes);
+        max = user.totalUpVotes;
+      }
+    }
+
+    return band;
+  }
+
   updateUser(UserModel userModel) {
     try {
       db.collection("users").doc(userModel.id!).update(userModel.toMap());
@@ -266,23 +301,6 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  UserModel getPopularBand() {
-    var max = -1;
-    UserModel? band;
-    for (var user in users.where((element) => element.isBand)) {
-      user.totalUpVotes = 0;
-      for (var song in songs.where((element) => element.bandId == user.id)) {
-        user.totalUpVotes += song.upVotes.length;
-      }
-
-      if (user.totalUpVotes > max) {
-        band = user;
-        max = user.totalUpVotes;
-      }
-    }
-
-    return band!;
-  }
 
   SongModel? _currentSong;
 
