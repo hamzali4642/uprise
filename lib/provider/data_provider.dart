@@ -259,13 +259,25 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  SongModel getSong(String id) {
-    SongModel songModel = songs.firstWhere((element) => element.id == id);
-    print(songModel == null);
 
-    return songModel;
+  UserModel getPopularBand(){
+
+    var max = -1;
+    UserModel? band;
+    for(var user in users.where((element) => element.isBand)){
+      user.totalUpVotes = 0;
+      for(var song in songs.where((element) => element.bandId == user.id)){
+        user.totalUpVotes += song.upVotes.length;
+      }
+
+      if(user.totalUpVotes > max){
+        band = user;
+        max = user.totalUpVotes;
+      }
+    }
+
+    return band!;
   }
-
   SongModel? _currentSong;
 
   SongModel? get currentSong => _currentSong;
@@ -307,5 +319,10 @@ class DataProvider extends ChangeNotifier {
     duration?.cancel();
     isDisposed = true;
     userSubscriptions?.cancel();
+  }
+
+  SongModel getSong(String id) {
+    SongModel songModel = songs.firstWhere((element) => element.id == id);
+    return songModel;
   }
 }

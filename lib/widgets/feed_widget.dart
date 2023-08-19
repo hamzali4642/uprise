@@ -80,7 +80,7 @@ class _FeedWidgetState extends State<FeedWidget> {
               if (event != null)
                 RichText(
                   text: TextSpan(
-                    text: "${band.username} has hosting an event ",
+                    text: "${band.bandName} has hosting an event ",
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -104,7 +104,7 @@ class _FeedWidgetState extends State<FeedWidget> {
               else if (song != null)
                 RichText(
                   text: TextSpan(
-                      text: "Hey there!! ${band.username} have released a song ",
+                      text: "Hey there!! ${band.bandName} have released a song ",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,

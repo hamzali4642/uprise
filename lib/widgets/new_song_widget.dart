@@ -56,7 +56,7 @@ class NewSongWidget extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      band.username,
+                      band.bandName!,
                       style: const TextStyle(
                           color: CColors.Grey,
                           fontSize: 12,

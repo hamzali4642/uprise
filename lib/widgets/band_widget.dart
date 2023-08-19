@@ -41,7 +41,7 @@ class BandWidget extends StatelessWidget {
             height: 15,
           ),
           Text(
-            band.username,
+            band.bandName!,
             style: AppTextStyles.clickable(
                 color: Colors.white, fontSize: 14, weight: FontWeights.normal),
           ),
