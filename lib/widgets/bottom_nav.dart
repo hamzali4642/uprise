@@ -21,15 +21,7 @@ class CustomBottomNavigation extends StatelessWidget {
 
         child: Stack(
           children: [
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                color: Color(0xff3b3b2c),
-                height: 20,
-              ),
-            ),
+
             Container(
               color: Colors.black,
               child: Image(
@@ -47,10 +39,6 @@ class CustomBottomNavigation extends StatelessWidget {
               right: 0,
               child: Container(
 
-
-                padding: EdgeInsets.only(
-                  bottom: context.bottomPadding,
-                ),
                 child: Row(
                   children: [
                     for (var item in items)
@@ -79,10 +67,9 @@ class CustomBottomNavigation extends StatelessWidget {
           },
           child: Column(
             children: [
-              SizedBox(height: 10,),
               Icon(
                 item.iconData,
-                size: 24,
+                size: 20,
                 color: item.isSelected ? Colors.white : Colors.white60,
               ),
               Text(
