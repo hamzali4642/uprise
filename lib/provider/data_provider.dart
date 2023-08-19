@@ -51,6 +51,13 @@ class DataProvider extends ChangeNotifier {
   DataStates postState = DataStates.waiting;
 
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? userSubscriptions;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? songSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? eventSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? postsSubscription;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? genreSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? userListSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? citySubscription;
+
   StreamSubscription<Duration>? duration;
 
   AudioPlayer audioPlayer = AudioPlayer();
@@ -95,8 +102,9 @@ class DataProvider extends ChangeNotifier {
   }
 
   void getUsers() {
-    db.collection("users").get().then((snapshot) {
-      var docs = snapshot.docs.where((element) => element.exists).toList();
+    userListSubscription = db.collection("users").snapshots().listen((event) {
+      users = [];
+      var docs = event.docs.where((element) => element.exists).toList();
       users = List.generate(
         docs.length,
         (index) => UserModel.fromMap(
@@ -105,51 +113,50 @@ class DataProvider extends ChangeNotifier {
       );
       notifyListeners();
     });
+  
   }
 
   getSongs() async {
-    QuerySnapshot querySnapshot = await db.collection("Songs").get();
+    songSubscription = db.collection("Songs").snapshots().listen((event) {
+      songs = [];
+      songs = event.docs.map((doc) => SongModel.fromMap(doc.data())).toList();
+      this.cities = [];
+      var cities = List.generate(songs.length, (index) => songs[index].city);
+      this.cities = cities.toSet().toList();
+      songsState = DataStates.success;
+      notifyListeners();
+    });
 
-    songs = querySnapshot.docs
-        .map((doc) => SongModel.fromMap(doc.data() as Map<String, dynamic>))
-        .toList();
-
-    var cities = List.generate(songs.length, (index) => songs[index].city);
-    this.cities = cities.toSet().toList();
-    songsState = DataStates.success;
-    notifyListeners();
   }
 
   getEvents() async {
-    QuerySnapshot querySnapshot = await db.collection("events").get();
+    eventSubscription = db.collection("events").snapshots().listen((event) {
+      events = [];
+      events = event.docs.map((doc) => EventModel.fromMap(doc.data())).toList();
+      eventState = DataStates.success;
+      notifyListeners();
+    });
 
-    events = querySnapshot.docs
-        .map((doc) => EventModel.fromMap(doc.data() as Map<String, dynamic>))
-        .toList();
-    eventState = DataStates.success;
-    notifyListeners();
   }
 
   void getGenres() {
-    FirebaseFirestore.instance
-        .collection("genre")
-        .doc("genre")
-        .get()
-        .then((value) {
-      var genres = value.data()!["genre"] ?? <String>[];
+    genreSubscription =
+        db.collection("genre").doc("genre").snapshots().listen((event) {
+      var genres = event.data()!["genre"] ?? <String>[];
       this.genres = List.generate(genres.length, (index) => genres[index]);
       notifyListeners();
     });
   }
 
   getPosts() async {
-    QuerySnapshot querySnapshot = await db.collection("feed").get();
+    postsSubscription = db.collection("feed").snapshots().listen((event) {
+      posts = [];
 
-    posts = querySnapshot.docs
-        .map((doc) => PostModel.fromMap(doc.data() as Map<String, dynamic>))
-        .toList();
-    postState = DataStates.success;
-    notifyListeners();
+      posts = event.docs.map((doc) => PostModel.fromMap(doc.data())).toList();
+      postState = DataStates.success;
+      notifyListeners();
+    });
+
   }
 
   initializePlayer() async {
@@ -259,18 +266,16 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-
-  UserModel getPopularBand(){
-
+  UserModel getPopularBand() {
     var max = -1;
     UserModel? band;
-    for(var user in users.where((element) => element.isBand)){
+    for (var user in users.where((element) => element.isBand)) {
       user.totalUpVotes = 0;
-      for(var song in songs.where((element) => element.bandId == user.id)){
+      for (var song in songs.where((element) => element.bandId == user.id)) {
         user.totalUpVotes += song.upVotes.length;
       }
 
-      if(user.totalUpVotes > max){
+      if (user.totalUpVotes > max) {
         band = user;
         max = user.totalUpVotes;
       }
@@ -278,6 +283,7 @@ class DataProvider extends ChangeNotifier {
 
     return band!;
   }
+
   SongModel? _currentSong;
 
   SongModel? get currentSong => _currentSong;
@@ -316,6 +322,12 @@ class DataProvider extends ChangeNotifier {
   }
 
   cancelStreams() {
+    songSubscription?.cancel();
+    eventSubscription?.cancel();
+    postsSubscription?.cancel();
+    genreSubscription?.cancel();
+    userListSubscription?.cancel();
+    citySubscription?.cancel();
     duration?.cancel();
     isDisposed = true;
     userSubscriptions?.cancel();
