@@ -48,43 +48,8 @@ class _DiscoveryState extends State<Discovery> {
                         setState(() {});
                       },
                     ),
-                    const HeadingWidget(
-                      text: "Popular Bands",
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
                     popularBandsWidget(),
-                    const HeadingWidget(
-                      text: "Popular Radio Stations",
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
                     popularRadioWidget(),
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: HeadingWidget(
-                            text: "Popular Songs",
-                          ),
-                        ),
-                        InkWell(
-                          onTap: (){
-                            context.push(child: const PopularSongs());
-                          },
-                          child: const Text("See all",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
-                            fontWeight: FontWeights.normal
-                          ),),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
                     popularSongsWidget(),
                   ],
                 ),
@@ -105,22 +70,34 @@ class _DiscoveryState extends State<Discovery> {
         .where((element) =>
             element.username.toLowerCase().contains(controller.text))
         .toList();
-    return CarouselSlider.builder(
-      itemCount: bands.length,
-      itemBuilder: (ctx, i, j) {
-        return BandWidget(
-          band: bands[i],
-        );
-      },
-      options: CarouselOptions(
-          initialPage: 0,
-          height: height,
-          viewportFraction: 0.5,
-          enlargeCenterPage: true,
-          enlargeFactor: 0.5,
-          enlargeStrategy: CenterPageEnlargeStrategy.scale,
-          enableInfiniteScroll: false),
-    );
+
+    return bands.isEmpty ? const SizedBox() : Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const HeadingWidget(
+          text: "Popular Bands",
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        CarouselSlider.builder(
+          itemCount: bands.length,
+          itemBuilder: (ctx, i, j) {
+            return BandWidget(
+              band: bands[i],
+            );
+          },
+          options: CarouselOptions(
+              initialPage: 0,
+              height: height,
+              viewportFraction: 0.5,
+              enlargeCenterPage: true,
+              enlargeFactor: 0.5,
+              enlargeStrategy: CenterPageEnlargeStrategy.scale,
+              enableInfiniteScroll: false),
+        ),
+      ],
+    ) ;
   }
 
   Widget popularRadioWidget() {
@@ -128,25 +105,36 @@ class _DiscoveryState extends State<Discovery> {
     var cities = c
         .where((element) => element.toLowerCase().contains(controller.text))
         .toList();
-    return CarouselSlider.builder(
-      itemCount: cities.length,
-      itemBuilder: (ctx, i, j) {
-        return Align(
-          alignment: Alignment.topCenter,
-          child: RadioWidget(
-            name: cities[i],
-            index: i,
-          ),
-        );
-      },
-      options: CarouselOptions(
-          initialPage: 0,
-          height: height - 30,
-          viewportFraction: 0.5,
-          enlargeCenterPage: true,
-          enlargeFactor: 0.5,
-          enlargeStrategy: CenterPageEnlargeStrategy.scale,
-          enableInfiniteScroll: false),
+    return cities.isEmpty ? const SizedBox() : Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const HeadingWidget(
+          text: "Popular Radio Stations",
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        CarouselSlider.builder(
+          itemCount: cities.length,
+          itemBuilder: (ctx, i, j) {
+            return Align(
+              alignment: Alignment.topCenter,
+              child: RadioWidget(
+                name: cities[i],
+                index: i,
+              ),
+            );
+          },
+          options: CarouselOptions(
+              initialPage: 0,
+              height: height - 30,
+              viewportFraction: 0.5,
+              enlargeCenterPage: true,
+              enlargeFactor: 0.5,
+              enlargeStrategy: CenterPageEnlargeStrategy.scale,
+              enableInfiniteScroll: false),
+        ),
+      ],
     );
   }
 
@@ -156,22 +144,50 @@ class _DiscoveryState extends State<Discovery> {
         .where(
             (element) => element.title.toLowerCase().contains(controller.text))
         .toList();
-    return CarouselSlider.builder(
-      itemCount: songs.length,
-      itemBuilder: (ctx, i, j) {
-        return SongsWidget(
-          fromCarousel: true,
-          song: songs[i],
-        );
-      },
-      options: CarouselOptions(
-          initialPage: 0,
-          height: height,
-          viewportFraction: 0.5,
-          enlargeCenterPage: true,
-          enlargeFactor: 0.5,
-          enlargeStrategy: CenterPageEnlargeStrategy.scale,
-          enableInfiniteScroll: false),
+    return  songs.isEmpty ? const SizedBox() :  Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Expanded(
+              child: HeadingWidget(
+                text: "Popular Songs",
+              ),
+            ),
+            InkWell(
+              onTap: (){
+                context.push(child: const PopularSongs());
+              },
+              child: const Text("See all",
+                style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                    fontWeight: FontWeights.normal
+                ),),
+            )
+          ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        CarouselSlider.builder(
+          itemCount: songs.length,
+          itemBuilder: (ctx, i, j) {
+            return SongsWidget(
+              fromCarousel: true,
+              song: songs[i],
+            );
+          },
+          options: CarouselOptions(
+              initialPage: 0,
+              height: height,
+              viewportFraction: 0.5,
+              enlargeCenterPage: true,
+              enlargeFactor: 0.5,
+              enlargeStrategy: CenterPageEnlargeStrategy.scale,
+              enableInfiniteScroll: false),
+        ),
+      ],
     );
   }
 }
