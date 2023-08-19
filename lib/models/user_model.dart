@@ -26,6 +26,11 @@ class UserModel {
   List<String> blasts = [];
   List<String> listen = [];
 
+
+  List<String> upVotes = [];
+  List<String> downVotes = [];
+
+
   List<CalendarModel> calendar = [];
 
   UserModel({
@@ -106,5 +111,14 @@ class UserModel {
     this.listen =
         List.generate(listen.length, (index) => listen[index]);
 
+
+    List upVotes = data["upVotes"] ?? [];
+    print(upVotes);
+    this.upVotes =
+        List.generate(upVotes.length, (index) => upVotes[index]);
+
+    List downVotes = data["downVotes"] ?? [];
+    this.downVotes =
+        List.generate(downVotes.length, (index) => downVotes[index]);
   }
 }

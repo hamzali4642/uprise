@@ -11,6 +11,9 @@ class SongModel {
   List<String> favourites = [];
   List<String> blasts = [];
 
+
+  List<String> upVotes = [];
+  List<String> downVotes = [];
   SongModel({
     this.id,
     required this.title,
@@ -54,5 +57,11 @@ class SongModel {
     this.blasts =
         List.generate(blasts.length, (index) => blasts[index]);
 
+    List upVotes = data["upVotes"] ?? [];
+    this.upVotes =
+        List.generate(upVotes.length, (index) => upVotes[index]);
+    List downVotes = data["downVotes"] ?? [];
+    this.downVotes =
+        List.generate(downVotes.length, (index) => downVotes[index]);
   }
 }
