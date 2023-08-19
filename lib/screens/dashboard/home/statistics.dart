@@ -424,6 +424,7 @@ class _StatisticsState extends State<Statistics> {
 
   Widget popularArtistWidget() {
     var band = provider.getPopularBand();
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: Constants.horizontalPadding,
@@ -445,7 +446,7 @@ class _StatisticsState extends State<Statistics> {
             children: [
               Expanded(
                 child: Text(
-                  band.bandName!,
+                  band?.bandName ?? "",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,
@@ -501,14 +502,14 @@ class _StatisticsState extends State<Statistics> {
               mainAxisSpacing: 10,
             ),
             children: [
-              for (int i = 0; i < 3; i++) ...[
+              for (var entry in provider.getPopularArtistByGenre().entries) ...[
                 Column(
                   children: [
                     AspectRatio(
                       aspectRatio: 1,
                       child: Stack(
                         children: [
-                          Positioned.fill(
+                          const Positioned.fill(
                             child: Image(
                               image: NetworkImage(
                                 Constants.demoCoverImage,
@@ -521,9 +522,9 @@ class _StatisticsState extends State<Statistics> {
                             right: 0,
                             bottom: 10,
                             child: Text(
-                              "Gytes",
+                              entry.key,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeights.semiBold,
@@ -533,12 +534,12 @@ class _StatisticsState extends State<Statistics> {
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Text(
-                      "Gytes",
-                      style: TextStyle(
+                      entry.value.bandName!,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
                         fontWeight: FontWeights.semiBold,
@@ -555,7 +556,7 @@ class _StatisticsState extends State<Statistics> {
   }
 
   Widget chartDescriptionWidget() {
-    var style = TextStyle(
+    var style = const TextStyle(
       color: Colors.white,
       fontWeight: FontWeights.medium,
       fontSize: 16,

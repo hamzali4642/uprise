@@ -260,23 +260,39 @@ class DataProvider extends ChangeNotifier {
   }
 
 
-  UserModel getPopularBand(){
+  Map<String, UserModel> getPopularArtistByGenre(){
+    Map<String, UserModel> map = {};
+    for(var genre in userModel!.selectedGenres){
+      var band = getPopularBand(genre: genre);
 
-    var max = -1;
+      if(band != null){
+        map[genre] = band;
+      }
+    }
+
+    return map;
+  }
+  UserModel? getPopularBand({String? genre}){
+
+    var max = 0;
     UserModel? band;
     for(var user in users.where((element) => element.isBand)){
       user.totalUpVotes = 0;
-      for(var song in songs.where((element) => element.bandId == user.id)){
+      for(var song in songs.where((element) => genre == null ? true : element.genre == genre).where((element) => element.bandId == user.id)){
+        print(song.upVotes.length);
         user.totalUpVotes += song.upVotes.length;
       }
 
       if(user.totalUpVotes > max){
         band = user;
+        // print(user.id);
+        // print(max);
+        // print(user.totalUpVotes);
         max = user.totalUpVotes;
       }
     }
 
-    return band!;
+    return band;
   }
   SongModel? _currentSong;
 
