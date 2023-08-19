@@ -474,8 +474,6 @@ class _DashboardState extends State<Dashboard> {
                 var isUpvote = dataProvider.userModel!.upVotes.contains(dataProvider.currentSong!.id);
                 var isDownVote = dataProvider.userModel!.downVotes.contains(dataProvider.currentSong!.id);
 
-
-                print(isUpvote);
                 var my =
                 FirebaseFirestore.instance.collection("users").doc(uid);
                 var other = FirebaseFirestore.instance
