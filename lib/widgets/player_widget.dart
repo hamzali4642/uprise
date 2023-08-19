@@ -46,7 +46,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       print(value.currentSong!.title);
 
       return Container(
-        margin: const EdgeInsets.symmetric( vertical: 10),
+        margin: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: [
             Image(
@@ -71,13 +71,12 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           child: SizedBox(
                             height: 30,
                             child: Marquee(
-                              text: "${value.currentSong!.title}            " ,
+                              text: "${value.currentSong!.title}            ",
                               style: const TextStyle(
                                 fontWeight: FontWeights.normal,
                                 color: Colors.white,
                                 fontSize: 18,
                               ),
-
                               scrollAxis: Axis.horizontal,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               blankSpace: 10.0,
@@ -140,44 +139,55 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         const SizedBox(
                           width: 17,
                         ),
-                        Builder(
-                          builder: (context) {
-                            bool isFavourite = dataProvider.userModel!.favourites.contains(dataProvider.currentSong!.id);
-                            return InkWell(
-                              onTap: (){
-                                var uid = FirebaseAuth.instance.currentUser!.uid;
-                                var db = FirebaseFirestore.instance;
-                                if(isFavourite){
-                                  db.collection("users").doc(uid).update({
-                                    "favourites" : FieldValue.arrayRemove([dataProvider.currentSong!.id]),
-                                  });
-                                  db.collection("Songs").doc(dataProvider.currentSong!.id).update({
-                                    "favourites" : FieldValue.arrayRemove([uid]),
-                                  });
-                                }else{
-                                  db.collection("users").doc(uid).update({
-                                    "favourites" : FieldValue.arrayUnion([dataProvider.currentSong!.id]),
-                                  });
-                                  db.collection("Songs").doc(dataProvider.currentSong!.id).update({
-                                    "favourites" : FieldValue.arrayUnion([uid]),
-                                  });
-                                }
-                              },
-                              child: Icon(
-                                isFavourite ? Icons.favorite : Icons.favorite_outline_outlined,
-                                color: isFavourite ? Colors.red : CColors.textColor,
-                                size: 30,
-                              ),
-                            );
-                          }
-                        ),
+                        Builder(builder: (context) {
+                          bool isFavourite = dataProvider.userModel!.favourites
+                              .contains(dataProvider.currentSong!.id);
+                          return InkWell(
+                            onTap: () {
+                              var uid = FirebaseAuth.instance.currentUser!.uid;
+                              var db = FirebaseFirestore.instance;
+                              if (isFavourite) {
+                                db.collection("users").doc(uid).update({
+                                  "favourites": FieldValue.arrayRemove(
+                                      [dataProvider.currentSong!.id]),
+                                });
+                                db
+                                    .collection("Songs")
+                                    .doc(dataProvider.currentSong!.id)
+                                    .update({
+                                  "favourites": FieldValue.arrayRemove([uid]),
+                                });
+                              } else {
+                                db.collection("users").doc(uid).update({
+                                  "favourites": FieldValue.arrayUnion(
+                                      [dataProvider.currentSong!.id]),
+                                });
+                                db
+                                    .collection("Songs")
+                                    .doc(dataProvider.currentSong!.id)
+                                    .update({
+                                  "favourites": FieldValue.arrayUnion([uid]),
+                                });
+                              }
+                            },
+                            child: Icon(
+                              isFavourite
+                                  ? Icons.favorite
+                                  : Icons.favorite_outline_outlined,
+                              color:
+                                  isFavourite ? Colors.red : CColors.textColor,
+                              size: 30,
+                            ),
+                          );
+                        }),
                         const SizedBox(
                           width: 10,
                         ),
                       ],
                     ),
-                     Text(
-                      dataProvider.getBandName(dataProvider.currentSong!.bandId),
+                    Text(
+                      dataProvider
+                          .getBandName(dataProvider.currentSong!.bandId),
                       style: const TextStyle(
                         color: CColors.primary,
                         fontSize: 10,
@@ -202,7 +212,6 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                       },
                     ),
                     const SizedBox(height: 2),
-
                   ],
                 ),
               ),
