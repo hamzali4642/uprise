@@ -418,9 +418,7 @@ class _DashboardState extends State<Dashboard> {
             Builder(
               builder: (context) {
                 var uid = FirebaseAuth.instance.currentUser!.uid;
-
                 var band = dataProvider.users.where((element) => element.id == dataProvider.currentSong!.bandId).first;
-
                 var isFollowed = band.followers.contains(uid);
 
 
@@ -470,14 +468,57 @@ class _DashboardState extends State<Dashboard> {
                 );
               }
             ),
-            overlayItemWidget(
-              "Downvote",
-              "Upvote",
-              Assets.imagesDownvote,
-              Assets.imagesUpvote,
-              () {},
-              () {},
-              130.0,
+            Builder(
+              builder: (context) {
+                var uid = FirebaseAuth.instance.currentUser!.uid;
+                var isUpvote = dataProvider.userModel!.upVotes.contains(dataProvider.currentSong!.id);
+                var isDownVote = dataProvider.userModel!.downVotes.contains(dataProvider.currentSong!.id);
+
+                var my =
+                FirebaseFirestore.instance.collection("users").doc(uid);
+                var other = FirebaseFirestore.instance
+                    .collection("Songs")
+                    .doc(dataProvider.currentSong!.id);
+
+
+                return overlayItemWidget(
+                  "DownVote",
+                  "Upvote",
+                  isDownVote ? Assets.imagesDisableDownvote : Assets.imagesDownvote,
+                  isUpvote ? Assets.imagesDisableUpVoteIcon : Assets.imagesUpvote,
+
+                  () {
+                    if(!isDownVote){
+                      my.update({
+                        "upVotes" : FieldValue.arrayRemove([dataProvider.currentSong!.id]),
+                        "downVotes" : FieldValue.arrayUnion([dataProvider.currentSong!.id]),
+                      });
+
+                      other.update({
+                        "upVotes" : FieldValue.arrayRemove([uid]),
+                        "downVotes" : FieldValue.arrayUnion([uid]),
+                      });
+                    }
+                  },
+                  () {
+
+
+                    if(!isUpvote){
+                      my.update({
+                        "upVotes" : FieldValue.arrayUnion([dataProvider.currentSong!.id]),
+                        "downVotes" : FieldValue.arrayRemove([dataProvider.currentSong!.id]),
+                      });
+
+                      other.update({
+                        "upVotes" : FieldValue.arrayUnion([uid]),
+                        "downVotes" : FieldValue.arrayRemove([uid]),
+                      });
+                    }
+
+                  },
+                  130.0,
+                );
+              }
             ),
             SizedBox(
               height: context.bottomPadding + 40,
@@ -611,7 +652,7 @@ class _DashboardState extends State<Dashboard> {
               setState(() {});
             },
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: CColors.screenContainer,
               ),
               child: Column(
@@ -621,7 +662,7 @@ class _DashboardState extends State<Dashboard> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       response,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                       ),
