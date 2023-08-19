@@ -33,6 +33,7 @@ class UserModel {
 
   List<CalendarModel> calendar = [];
 
+  int totalUpVotes = 0;
   UserModel({
     this.id,
     required this.username,
