@@ -8,6 +8,7 @@ import 'package:uprise/models/post_model.dart';
 import 'package:uprise/models/user_model.dart';
 import '../models/event_model.dart';
 import '../models/song_model.dart';
+import '../screens/dashboard/home/statistics.dart';
 
 class DataProvider extends ChangeNotifier {
   DataProvider() {
@@ -172,6 +173,42 @@ class DataProvider extends ChangeNotifier {
     }
 
     return userModel.bandName ?? "";
+  }
+
+  List<ChartData> getEventChartData() {
+    List<ChartData> eventChart = [];
+
+    var now = DateTime.now();
+    DateTime previous = DateTime(now.year, now.month - 11, 1);
+    int index = 0;
+    while (index < 12) {
+      List eventList = events
+          .where((element) =>
+              element.startDate.year == previous.year &&
+              element.startDate.month == previous.month)
+          .toList();
+      eventChart.add(ChartData(previous, eventList.length));
+      index++;
+      previous = DateTime(previous.year, previous.month + 1, 1);
+    }
+    return eventChart;
+  }
+
+
+  List<PieData> getGenrePref() {
+
+    // PieData(
+    //   "",
+    //   artists,
+    // ),
+    List<PieData> pieData = [];
+
+
+
+
+
+
+    return pieData;
   }
 
   updateUser(UserModel userModel) {

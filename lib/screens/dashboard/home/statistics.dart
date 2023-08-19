@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/models/event_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/heading_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
@@ -20,52 +21,51 @@ class _StatisticsState extends State<Statistics> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataProvider>(
-      builder: (context, provider, child) {
-        this.provider = provider;
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              usersWidget(),
-              const SizedBox(
-                height: 20,
-              ),
-              eventsPerYearWidget(),
-              const SizedBox(
-                height: 20,
-              ),
-              genrePreferencesWidget(),
-              const SizedBox(
-                height: 20,
-              ),
-              bandsWidget(),
-              const SizedBox(
-                height: 20,
-              ),
-              popularArtistWidget(),
-              const SizedBox(
-                height: 20,
-              ),
-              popularArtistPerGenreWidget(),
-              const SizedBox(
-                height: 40,
-              ),
-            ],
-          ),
-        );
-      }
-    );
+    return Consumer<DataProvider>(builder: (context, provider, child) {
+      this.provider = provider;
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            usersWidget(),
+            const SizedBox(
+              height: 20,
+            ),
+            eventsPerYearWidget(),
+            const SizedBox(
+              height: 20,
+            ),
+            genrePreferencesWidget(),
+            const SizedBox(
+              height: 20,
+            ),
+            bandsWidget(),
+            const SizedBox(
+              height: 20,
+            ),
+            popularArtistWidget(),
+            const SizedBox(
+              height: 20,
+            ),
+            popularArtistPerGenreWidget(),
+            const SizedBox(
+              height: 40,
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget usersWidget() {
     var artists = provider.users.where((element) => element.isBand).length;
     var listeners = provider.users.where((element) => !element.isBand).length;
-    List<_PieData> pieData = [
-      _PieData(
+
+    List<PieData> pieData = [
+      PieData(
         "",
         artists,
       ),
-      _PieData(
+      PieData(
         "",
         listeners,
       ),
@@ -95,15 +95,16 @@ class _StatisticsState extends State<Statistics> {
                 child: SfCircularChart(palette: [
                   Colors.blue.shade800,
                   Colors.blue,
-                ], series: <PieSeries<_PieData, String>>[
-                  PieSeries<_PieData, String>(
+                ], series: <PieSeries<PieData, String>>[
+                  PieSeries<PieData, String>(
                       radius: "90.0",
                       explode: false,
                       dataSource: pieData,
-                      xValueMapper: (_PieData data, _) => data.xData,
-                      yValueMapper: (_PieData data, _) => data.yData,
-                      dataLabelMapper: (_PieData data, _) => data.text,
-                      dataLabelSettings: const DataLabelSettings(isVisible: false)),
+                      xValueMapper: (PieData data, _) => data.xData,
+                      yValueMapper: (PieData data, _) => data.yData,
+                      dataLabelMapper: (PieData data, _) => data.text,
+                      dataLabelSettings:
+                          const DataLabelSettings(isVisible: false)),
                 ]),
               ),
               Expanded(
@@ -154,18 +155,20 @@ class _StatisticsState extends State<Statistics> {
   }
 
   Widget eventsPerYearWidget() {
-    List<_ChartData> chartData = [
-      _ChartData(DateTime(2022, 8), 1),
-      _ChartData(DateTime(2022, 9), 0),
-      _ChartData(DateTime(2022, 10), 0),
-      _ChartData(DateTime(2022, 11), 4),
-      _ChartData(DateTime(2022, 12), 5),
-      _ChartData(DateTime(2023, 1), 2),
-      _ChartData(DateTime(2023, 2), 3),
-      _ChartData(DateTime(2023, 4), 0),
-      _ChartData(DateTime(2023, 5), 1),
-      _ChartData(DateTime(2023, 6), 8),
-      _ChartData(DateTime(2023, 7), 1),
+    provider.getEventChartData();
+
+    List<ChartData> chartData = [
+      ChartData(DateTime(2022, 8), 1),
+      ChartData(DateTime(2022, 9), 0),
+      ChartData(DateTime(2022, 10), 0),
+      ChartData(DateTime(2022, 11), 4),
+      ChartData(DateTime(2022, 12), 5),
+      ChartData(DateTime(2023, 1), 2),
+      ChartData(DateTime(2023, 2), 3),
+      ChartData(DateTime(2023, 4), 0),
+      ChartData(DateTime(2023, 5), 1),
+      ChartData(DateTime(2023, 6), 8),
+      ChartData(DateTime(2023, 7), 1),
     ];
     var majorGridLines = const MajorGridLines(
       width: 1,
@@ -211,7 +214,7 @@ class _StatisticsState extends State<Statistics> {
                 tooltipPosition: TooltipPosition.pointer,
                 activationMode: ActivationMode.singleTap,
               ),
-              series: _getEventsData(chartData),
+              series: _getEventsData(provider.getEventChartData()),
             ),
           ),
           const SizedBox(
@@ -226,16 +229,16 @@ class _StatisticsState extends State<Statistics> {
     );
   }
 
-  List<AreaSeries<_ChartData, DateTime>> _getEventsData(
-      List<_ChartData> chartData) {
+  List<AreaSeries<ChartData, DateTime>> _getEventsData(
+      List<ChartData> chartData) {
     var lineWidth = 1.0;
     var markerSettings =
         const MarkerSettings(isVisible: true, color: CColors.primary);
     var emptyPointSettings = EmptyPointSettings(
       mode: EmptyPointMode.drop,
     );
-    return <AreaSeries<_ChartData, DateTime>>[
-      AreaSeries<_ChartData, DateTime>(
+    return <AreaSeries<ChartData, DateTime>>[
+      AreaSeries<ChartData, DateTime>(
           dataSource: chartData,
           color: CColors.primary.withOpacity(0.1),
           enableTooltip: false,
@@ -243,34 +246,34 @@ class _StatisticsState extends State<Statistics> {
           emptyPointSettings: emptyPointSettings,
           borderColor: CColors.primary,
           borderWidth: lineWidth,
-          xValueMapper: (_ChartData sales, _) => sales.xData,
-          yValueMapper: (_ChartData sales, _) => sales.yData)
+          xValueMapper: (ChartData sales, _) => sales.xData,
+          yValueMapper: (ChartData sales, _) => sales.yData)
     ];
   }
 
   Widget genrePreferencesWidget() {
-    List<_PieData> pieData = [
-      _PieData(
+    List<PieData> pieData = [
+      PieData(
         "",
         10,
       ),
-      _PieData(
+      PieData(
         "",
         10,
       ),
-      _PieData(
+      PieData(
         "",
         20,
       ),
-      _PieData(
+      PieData(
         "",
         10,
       ),
-      _PieData(
+      PieData(
         "",
         10,
       ),
-      _PieData(
+      PieData(
         "",
         40,
       ),
@@ -304,21 +307,20 @@ class _StatisticsState extends State<Statistics> {
                   Colors.orange,
                   Colors.yellow,
                   Colors.red,
-                ], series: <PieSeries<_PieData, String>>[
-                  PieSeries<_PieData, String>(
+                ], series: <PieSeries<PieData, String>>[
+                  PieSeries<PieData, String>(
                       radius: "90.0",
                       explode: false,
                       dataSource: pieData,
-                      xValueMapper: (_PieData data, _) => data.xData,
-                      yValueMapper: (_PieData data, _) => data.yData,
-                      dataLabelMapper: (_PieData data, _) => data.text,
+                      xValueMapper: (PieData data, _) => data.xData,
+                      yValueMapper: (PieData data, _) => data.yData,
+                      dataLabelMapper: (PieData data, _) => data.text,
                       dataLabelSettings: DataLabelSettings(isVisible: false)),
                 ]),
               ),
               Expanded(
                 child: Column(
                   children: [
-
                     pieDetailsWidget(
                       "10% Punk",
                       Colors.amber,
@@ -354,13 +356,13 @@ class _StatisticsState extends State<Statistics> {
   }
 
   Widget bandsWidget() {
-    List<_ChartData> chartData = [
-      _ChartData(DateTime(2023, 2), 1),
-      _ChartData(DateTime(2023, 4), 0),
-      _ChartData(DateTime(2023, 4), 0),
-      _ChartData(DateTime(2023, 5), 1),
-      _ChartData(DateTime(2023, 6), 0),
-      _ChartData(DateTime(2023, 7), 0),
+    List<ChartData> chartData = [
+      ChartData(DateTime(2023, 2), 1),
+      ChartData(DateTime(2023, 4), 0),
+      ChartData(DateTime(2023, 4), 0),
+      ChartData(DateTime(2023, 5), 1),
+      ChartData(DateTime(2023, 6), 0),
+      ChartData(DateTime(2023, 7), 0),
     ];
     var majorGridLines = const MajorGridLines(
       width: 1,
@@ -423,16 +425,16 @@ class _StatisticsState extends State<Statistics> {
     );
   }
 
-  List<AreaSeries<_ChartData, DateTime>> _getBandData(
-      List<_ChartData> chartData) {
+  List<AreaSeries<ChartData, DateTime>> _getBandData(
+      List<ChartData> chartData) {
     var lineWidth = 1.0;
     var markerSettings =
         const MarkerSettings(isVisible: true, color: Colors.yellow);
     var emptyPointSettings = EmptyPointSettings(
       mode: EmptyPointMode.drop,
     );
-    return <AreaSeries<_ChartData, DateTime>>[
-      AreaSeries<_ChartData, DateTime>(
+    return <AreaSeries<ChartData, DateTime>>[
+      AreaSeries<ChartData, DateTime>(
           dataSource: chartData,
           color: Colors.yellow.withOpacity(0.1),
           enableTooltip: false,
@@ -440,8 +442,8 @@ class _StatisticsState extends State<Statistics> {
           emptyPointSettings: emptyPointSettings,
           borderColor: Colors.yellow,
           borderWidth: lineWidth,
-          xValueMapper: (_ChartData sales, _) => sales.xData,
-          yValueMapper: (_ChartData sales, _) => sales.yData)
+          xValueMapper: (ChartData sales, _) => sales.xData,
+          yValueMapper: (ChartData sales, _) => sales.yData)
     ];
   }
 
@@ -541,7 +543,8 @@ class _StatisticsState extends State<Statistics> {
                             left: 0,
                             right: 0,
                             bottom: 10,
-                            child: Text("Gytes",
+                            child: Text(
+                              "Gytes",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -553,8 +556,11 @@ class _StatisticsState extends State<Statistics> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 5,),
-                    Text("Gytes",
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "Gytes",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -571,7 +577,7 @@ class _StatisticsState extends State<Statistics> {
     );
   }
 
-  Widget chartDescriptionWidget(){
+  Widget chartDescriptionWidget() {
     var style = TextStyle(
       color: Colors.white,
       fontWeight: FontWeights.medium,
@@ -579,23 +585,31 @@ class _StatisticsState extends State<Statistics> {
     );
     return Row(
       children: [
-        Expanded(child: Text("X-Time period", textAlign: TextAlign.center, style: style,), ),
-        Expanded(child: Text("Y-Count", textAlign: TextAlign.center, style: style),),
+        Expanded(
+          child: Text(
+            "X-Time period",
+            textAlign: TextAlign.center,
+            style: style,
+          ),
+        ),
+        Expanded(
+          child: Text("Y-Count", textAlign: TextAlign.center, style: style),
+        ),
       ],
     );
   }
 }
 
-class _PieData {
-  _PieData(this.xData, this.yData, [this.text = ""]);
+class PieData {
+  PieData(this.xData, this.yData, [this.text = ""]);
 
   final String xData;
   final num yData;
   final String text;
 }
 
-class _ChartData {
-  _ChartData(this.xData, this.yData);
+class ChartData {
+  ChartData(this.xData, this.yData);
 
   final DateTime xData;
   final num yData;
