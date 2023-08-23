@@ -17,28 +17,31 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> {
   late DataProvider dataProvider;
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataProvider>(
-      builder: (context, provider, value) {
-        dataProvider = provider;
+    return Consumer<DataProvider>(builder: (context, provider, value) {
+      dataProvider = provider;
 
-        var posts = dataProvider.posts;
-        return CustomScrollView(
-          slivers: [
-            recommendedRadioWidget().toSliver,
-            if(posts.isNotEmpty)
-              FeedWidget(post: posts[0],).toSliver,
-            newReleasesWidget().toSliver,
-            SliverList(
-              delegate: SliverChildBuilderDelegate((ctx, i) {
-                return FeedWidget(post: posts[i + 1],);
-              }, childCount: posts.length - 1),
-            ),
-          ],
-        );
-      }
-    );
+      var posts = dataProvider.posts;
+      return CustomScrollView(
+        slivers: [
+          recommendedRadioWidget().toSliver,
+          if (posts.isNotEmpty)
+            FeedWidget(
+              post: posts[0],
+            ).toSliver,
+          newReleasesWidget().toSliver,
+          SliverList(
+            delegate: SliverChildBuilderDelegate((ctx, i) {
+              return FeedWidget(
+                post: posts[i + 1],
+              );
+            }, childCount: posts.length - 1),
+          ),
+        ],
+      );
+    });
   }
 
   Widget recommendedRadioWidget() {
@@ -57,8 +60,10 @@ class _FeedState extends State<Feed> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
-              if(i == 0){
-                return const SizedBox(width: 1,);
+              if (i == 0) {
+                return const SizedBox(
+                  width: 1,
+                );
               }
               return RadioWidget(
                 index: i,
@@ -67,7 +72,7 @@ class _FeedState extends State<Feed> {
             },
             itemCount: dataProvider.cities.length + 1,
             separatorBuilder: (ctx, i) {
-              if(i == 0){
+              if (i == 0) {
                 return const SizedBox();
               }
               return SizedBox(
@@ -81,8 +86,15 @@ class _FeedState extends State<Feed> {
   }
 
   Widget newReleasesWidget() {
-    var songs = dataProvider.songs.where((element) => dataProvider.userModel!.selectedGenres.contains(element.genre)).toList();
-    if(songs.isEmpty){
+    List songs = [];
+    for (var song in dataProvider.songs) {
+      if (dataProvider.userModel!.selectedGenres
+          .any((s) => song.genreList.contains(s))) {
+        songs.add(song);
+      }
+    }
+
+    if (songs.isEmpty) {
       return const SizedBox();
     }
     return Column(
@@ -100,7 +112,9 @@ class _FeedState extends State<Feed> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
-              return NewSongWidget(song: songs[i],);
+              return NewSongWidget(
+                song: songs[i],
+              );
             },
             itemCount: songs.length,
             separatorBuilder: (ctx, i) {

@@ -2,7 +2,7 @@ class SongModel {
   String? id;
   late String title;
   late String city;
-  late String genre;
+  List<String> genreList = [];
   late String posterUrl;
   late String songUrl;
   late String bandId;
@@ -19,7 +19,7 @@ class SongModel {
     required this.title,
     required this.city,
     required this.createdAt,
-    required this.genre,
+    required this.genreList,
     required this.posterUrl,
     required this.songUrl,
     required this.updatedAt,
@@ -30,7 +30,7 @@ class SongModel {
       "id": id,
       "title": title,
       "city": city,
-      "genre": genre,
+      "genre": genreList,
       "bandId": bandId,
       "posterUrl": posterUrl,
       "songUrl": songUrl,
@@ -40,16 +40,18 @@ class SongModel {
   }
 
   SongModel.fromMap(Map<String, dynamic> data) {
+    // print(data);
     id = data["id"];
     title = data["title"];
     city = data["city"];
     bandId = data["bandId"];
-    genre = data["genre"];
+    print(data["genre"]);
+    // print(id);
+    genreList = List<String>.from(data["genre"]); // Assuming data["genre"] is a List<dynamic>
     posterUrl = data["posterUrl"];
     songUrl = data["songUrl"];
     createdAt = DateTime.fromMillisecondsSinceEpoch(data["createdAt"]);
     updatedAt = DateTime.fromMillisecondsSinceEpoch(data["updatedAt"]);
-
     List favourites = data["favourites"] ?? [];
     this.favourites =
         List.generate(favourites.length, (index) => favourites[index]);

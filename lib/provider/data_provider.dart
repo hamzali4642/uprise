@@ -113,7 +113,6 @@ class DataProvider extends ChangeNotifier {
       );
       notifyListeners();
     });
-  
   }
 
   getSongs() async {
@@ -126,7 +125,6 @@ class DataProvider extends ChangeNotifier {
       songsState = DataStates.success;
       notifyListeners();
     });
-
   }
 
   getEvents() async {
@@ -136,7 +134,6 @@ class DataProvider extends ChangeNotifier {
       eventState = DataStates.success;
       notifyListeners();
     });
-
   }
 
   void getGenres() {
@@ -156,7 +153,6 @@ class DataProvider extends ChangeNotifier {
       postState = DataStates.success;
       notifyListeners();
     });
-
   }
 
   initializePlayer() async {
@@ -250,30 +246,33 @@ class DataProvider extends ChangeNotifier {
     return bandChartData;
   }
 
-  Map<String, UserModel> getPopularArtistByGenre(){
+  //TODO : Change Genre Logic Here
+  Map<String, UserModel> getPopularArtistByGenre() {
     Map<String, UserModel> map = {};
-    for(var genre in userModel!.selectedGenres){
+    for (var genre in userModel!.selectedGenres) {
       var band = getPopularBand(genre: genre);
 
-      if(band != null){
+      if (band != null) {
         map[genre] = band;
       }
     }
 
     return map;
   }
-  UserModel? getPopularBand({String? genre}){
 
+  UserModel? getPopularBand({String? genre}) {
     var max = 0;
     UserModel? band;
-    for(var user in users.where((element) => element.isBand)){
+    for (var user in users.where((element) => element.isBand)) {
       user.totalUpVotes = 0;
-      for(var song in songs.where((element) => genre == null ? true : element.genre == genre).where((element) => element.bandId == user.id)){
-        print(song.upVotes.length);
+      for (var song in songs
+          .where((element) =>
+              genre == null ? true : element.genreList.contains(genre))
+          .where((element) => element.bandId == user.id)) {
         user.totalUpVotes += song.upVotes.length;
       }
 
-      if(user.totalUpVotes > max){
+      if (user.totalUpVotes > max) {
         band = user;
         // print(user.id);
         // print(max);
@@ -300,7 +299,6 @@ class DataProvider extends ChangeNotifier {
       print(e);
     }
   }
-
 
   SongModel? _currentSong;
 

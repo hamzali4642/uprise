@@ -7,6 +7,7 @@ import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:uprise/screens/dashboard/band_member_detail/band_member_detail.dart';
 import 'package:uprise/widgets/event_widget.dart';
 import 'package:uprise/widgets/player_widget.dart';
 import 'package:uprise/widgets/songs_widget.dart';
@@ -103,7 +104,7 @@ class _BandDetailsState extends State<BandDetails>
                 ],
               ),
             ),
-            PlayerWidget(),
+            const PlayerWidget(),
           ],
         ),
       );
@@ -228,7 +229,7 @@ class _BandDetailsState extends State<BandDetails>
   }
 
   Widget memberWidget() {
-    return Container(
+    return SizedBox(
       height: 100,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
@@ -236,30 +237,37 @@ class _BandDetailsState extends State<BandDetails>
           horizontal: Constants.horizontalPadding,
         ),
         itemBuilder: (ctx, i) {
-          return Column(
-            children: [
-              SizedBox(
-                width: 80,
-                height: 80,
-                child: ClipOval(
-                  child: Image(
-                    image: AssetImage(
-                      widget.band.avatar == null
-                          ? Assets.imagesUsers
-                          : widget.band.avatar!,
+          return InkWell(
+            onTap: (){
+
+              context.push(child: BandMemberDetail(model: widget.band));
+
+            },
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: ClipOval(
+                    child: Image(
+                      image: AssetImage(
+                        widget.band.avatar == null
+                            ? Assets.imagesUsers
+                            : widget.band.avatar!,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Text(
-                widget.band.username,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeights.medium,
+                Text(
+                  widget.band.username,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeights.medium,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
         separatorBuilder: (ctx, i) {

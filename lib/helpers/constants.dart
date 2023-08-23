@@ -37,13 +37,15 @@ class Constants {
     const Color(0xff3B8B70),
     const Color(0xffA8433B),
     const Color.fromRGBO(255, 255, 255, 0.15),
-
   ];
 
   static PopupMenuItem returnMenu(String value, String text) {
     return PopupMenuItem(
       value: '/$value',
-      child: Text(text, style: const TextStyle(color: CColors.primary),),
+      child: Text(
+        text,
+        style: const TextStyle(color: CColors.primary),
+      ),
     );
   }
 

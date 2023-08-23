@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:uprise/models/song_model.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
@@ -20,9 +21,12 @@ typedef UserCallBack = void Function(bool);
 
 typedef UserCallBack1 = void Function(int);
 
-
 class UserProfile extends StatefulWidget {
-  const UserProfile({Key? key, required this.isEdit, required this.callBack, required this.callBack1})
+  const UserProfile(
+      {Key? key,
+      required this.isEdit,
+      required this.callBack,
+      required this.callBack1})
       : super(key: key);
   final bool isEdit;
   final UserCallBack callBack;
@@ -45,7 +49,7 @@ class _UserProfileState extends State<UserProfile> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(milliseconds: 20), (){
+    Future.delayed(const Duration(milliseconds: 20), () {
       widget.callBack1(0);
     });
   }
@@ -87,12 +91,16 @@ class _UserProfileState extends State<UserProfile> {
               IntrinsicHeight(
                 child: Row(
                   children: [
-                    Expanded(child: followDetails("Followers",  provider.userModel!.followers.length.toString())),
+                    Expanded(
+                        child: followDetails("Followers",
+                            provider.userModel!.followers.length.toString())),
                     Container(
                       width: 1,
                       color: CColors.textColor.withOpacity(0.13),
                     ),
-                    Expanded(child: followDetails("Following", provider.userModel!.following.length.toString())),
+                    Expanded(
+                        child: followDetails("Following",
+                            provider.userModel!.following.length.toString())),
                   ],
                 ),
               ),
@@ -178,7 +186,8 @@ class _UserProfileState extends State<UserProfile> {
                             email: value.userModel!.email,
                           )),
                     const SizedBox(height: 13),
-                    btn("Instruments interested in", context, const Instruments()),
+                    btn("Instruments interested in", context,
+                        const Instruments()),
                     const SizedBox(
                       height: 13,
                     ),
@@ -226,10 +235,10 @@ class _UserProfileState extends State<UserProfile> {
                       context.push(child: const Avatars());
                     },
                     child: Container(
-                      padding: EdgeInsets.all(
+                      padding: const EdgeInsets.all(
                         6,
                       ),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: CColors.primary,
                         shape: BoxShape.circle,
                       ),
@@ -288,10 +297,7 @@ class _UserProfileState extends State<UserProfile> {
       children: [
         Text(
           str,
-          style: const TextStyle(
-            color: CColors.Grey,
-            fontSize: 12
-          ),
+          style: const TextStyle(color: CColors.Grey, fontSize: 12),
         ),
         if (widget.isEdit)
           SizedBox(
@@ -386,6 +392,18 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  int getComparisonScore() {
+    int comparisonScore = 0;
+    for (var g in provider.userModel!.selectedGenres) {
+      List<SongModel> strength = provider.songs
+          .where((element) => element.genreList.any((s) => s.contains(g)))
+          .toList();
+      comparisonScore += strength.length;
+    }
+
+    return comparisonScore;
+  }
+
   Widget headerTitle(String name) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -397,13 +415,26 @@ class _UserProfileState extends State<UserProfile> {
               color: Colors.white,
               fontWeight: FontWeights.medium),
         ),
-        const SizedBox(width: 10,),
+        const SizedBox(
+          width: 10,
+        ),
         if (provider.userModel!.instrument != null)
           Image(
             image: AssetImage(
                 "assets/instruments/Instrument_${provider.userModel!.instrument! + 1}.png"),
             width: 30,
           ),
+        const SizedBox(
+          width: 10,
+        ),
+        const SizedBox(width: 20),
+        Text(
+          "Score:\t${getComparisonScore()}",
+          style: const TextStyle(
+              fontSize: 22,
+              color: Colors.white,
+              fontWeight: FontWeights.medium),
+        ),
       ],
     );
   }
