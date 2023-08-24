@@ -383,9 +383,14 @@ class _DashboardState extends State<Dashboard> {
                 "Blast",
                 Assets.imagesSkip,
                 isBlast ? Assets.imagesUnBlast : Assets.imagesBlast,
-                () {},
                 () {
-
+                  while (
+                      dataProvider.songs.first == dataProvider.currentSong!) {
+                    dataProvider.songs.shuffle();
+                  }
+                  dataProvider.currentSong = dataProvider.songs.first;
+                },
+                () {
                   var uid = FirebaseAuth.instance.currentUser!.uid;
                   var db = FirebaseFirestore.instance;
                   if (isBlast) {
@@ -415,111 +420,107 @@ class _DashboardState extends State<Dashboard> {
                 20.0,
               );
             }),
-            Builder(
-              builder: (context) {
-                var uid = FirebaseAuth.instance.currentUser!.uid;
-                var band = dataProvider.users.where((element) => element.id == dataProvider.currentSong!.bandId).first;
-                var isFollowed = band.followers.contains(uid);
+            Builder(builder: (context) {
+              var uid = FirebaseAuth.instance.currentUser!.uid;
+              var band = dataProvider.users
+                  .where((element) =>
+                      element.id == dataProvider.currentSong!.bandId)
+                  .first;
+              var isFollowed = band.followers.contains(uid);
 
+              return overlayItemWidget(
+                "Report",
+                isFollowed ? "Unfollow" : "Follow",
+                Assets.imagesReport,
+                isFollowed ? Assets.imagesUnFollow : Assets.imagesFollow,
+                () {},
+                () {
+                  var my =
+                      FirebaseFirestore.instance.collection("users").doc(uid);
+                  var other = FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(band.id);
+                  if (isFollowed) {
+                    my.update({
+                      "following": FieldValue.arrayRemove([other.id])
+                    });
+                    other.update({
+                      "followers": FieldValue.arrayRemove([my.id])
+                    });
 
+                    band.followers.remove(my.id);
+                    dataProvider.userModel!.following.remove(my.id);
 
-                return overlayItemWidget(
-                  "Report",
-                  isFollowed ? "Unfollow" : "Follow",
-                  Assets.imagesReport,
-                  isFollowed ? Assets.imagesUnFollow : Assets.imagesFollow,
-                  () {},
-                  () {
+                    dataProvider.notifyListeners();
+                  } else {
+                    my.update({
+                      "following": FieldValue.arrayUnion([other.id])
+                    });
+                    other.update({
+                      "followers": FieldValue.arrayUnion([my.id])
+                    });
 
+                    band.followers.add(my.id);
+                    dataProvider.userModel!.following.add(my.id);
 
-                    var my =
-                    FirebaseFirestore.instance.collection("users").doc(uid);
-                    var other = FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(band.id);
-                    if (isFollowed) {
-                      my.update({
-                        "following": FieldValue.arrayRemove([other.id])
-                      });
-                      other.update({
-                        "followers": FieldValue.arrayRemove([my.id])
-                      });
+                    dataProvider.notifyListeners();
+                  }
+                },
+                90.0,
+              );
+            }),
+            Builder(builder: (context) {
+              var uid = FirebaseAuth.instance.currentUser!.uid;
+              var isUpvote = dataProvider.userModel!.upVotes
+                  .contains(dataProvider.currentSong!.id);
+              var isDownVote = dataProvider.userModel!.downVotes
+                  .contains(dataProvider.currentSong!.id);
 
-                      band.followers.remove(my.id);
-                      dataProvider.userModel!.following.remove(my.id);
+              var my = FirebaseFirestore.instance.collection("users").doc(uid);
+              var other = FirebaseFirestore.instance
+                  .collection("Songs")
+                  .doc(dataProvider.currentSong!.id);
 
-                      dataProvider.notifyListeners();
-                    } else {
-                      my.update({
-                        "following": FieldValue.arrayUnion([other.id])
-                      });
-                      other.update({
-                        "followers": FieldValue.arrayUnion([my.id])
-                      });
+              return overlayItemWidget(
+                "DownVote",
+                "Upvote",
+                isDownVote
+                    ? Assets.imagesDisableDownvote
+                    : Assets.imagesDownvote,
+                isUpvote ? Assets.imagesDisableUpVoteIcon : Assets.imagesUpvote,
+                () {
+                  if (!isDownVote) {
+                    my.update({
+                      "upVotes": FieldValue.arrayRemove(
+                          [dataProvider.currentSong!.id]),
+                      "downVotes":
+                          FieldValue.arrayUnion([dataProvider.currentSong!.id]),
+                    });
 
-                      band.followers.add(my.id);
-                      dataProvider.userModel!.following.add(my.id);
+                    other.update({
+                      "upVotes": FieldValue.arrayRemove([uid]),
+                      "downVotes": FieldValue.arrayUnion([uid]),
+                    });
+                  }
+                },
+                () {
+                  if (!isUpvote) {
+                    my.update({
+                      "upVotes":
+                          FieldValue.arrayUnion([dataProvider.currentSong!.id]),
+                      "downVotes": FieldValue.arrayRemove(
+                          [dataProvider.currentSong!.id]),
+                    });
 
-                      dataProvider.notifyListeners();
-                    }
-
-                  },
-                  90.0,
-                );
-              }
-            ),
-            Builder(
-              builder: (context) {
-                var uid = FirebaseAuth.instance.currentUser!.uid;
-                var isUpvote = dataProvider.userModel!.upVotes.contains(dataProvider.currentSong!.id);
-                var isDownVote = dataProvider.userModel!.downVotes.contains(dataProvider.currentSong!.id);
-
-                var my =
-                FirebaseFirestore.instance.collection("users").doc(uid);
-                var other = FirebaseFirestore.instance
-                    .collection("Songs")
-                    .doc(dataProvider.currentSong!.id);
-
-
-                return overlayItemWidget(
-                  "DownVote",
-                  "Upvote",
-                  isDownVote ? Assets.imagesDisableDownvote : Assets.imagesDownvote,
-                  isUpvote ? Assets.imagesDisableUpVoteIcon : Assets.imagesUpvote,
-
-                  () {
-                    if(!isDownVote){
-                      my.update({
-                        "upVotes" : FieldValue.arrayRemove([dataProvider.currentSong!.id]),
-                        "downVotes" : FieldValue.arrayUnion([dataProvider.currentSong!.id]),
-                      });
-
-                      other.update({
-                        "upVotes" : FieldValue.arrayRemove([uid]),
-                        "downVotes" : FieldValue.arrayUnion([uid]),
-                      });
-                    }
-                  },
-                  () {
-
-
-                    if(!isUpvote){
-                      my.update({
-                        "upVotes" : FieldValue.arrayUnion([dataProvider.currentSong!.id]),
-                        "downVotes" : FieldValue.arrayRemove([dataProvider.currentSong!.id]),
-                      });
-
-                      other.update({
-                        "upVotes" : FieldValue.arrayUnion([uid]),
-                        "downVotes" : FieldValue.arrayRemove([uid]),
-                      });
-                    }
-
-                  },
-                  130.0,
-                );
-              }
-            ),
+                    other.update({
+                      "upVotes": FieldValue.arrayUnion([uid]),
+                      "downVotes": FieldValue.arrayRemove([uid]),
+                    });
+                  }
+                },
+                130.0,
+              );
+            }),
             SizedBox(
               height: context.bottomPadding + 40,
             ),

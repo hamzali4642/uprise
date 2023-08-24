@@ -49,55 +49,81 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
         child: Column(
           children: [
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: Constants.homePadding, right: Constants.homePadding),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 30),
-                    avatartWidget(),
-                    const SizedBox(height: 10),
-                    Text(
-                      widget.model.bandName ?? "band",
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeights.bold),
-                    ),
-                    Text(
-                      "Comparison Score:\t${getComparisonScore()}",
-                      style: const TextStyle(
-                          fontSize: 22,
-                          color: Colors.white,
-                          fontWeight: FontWeights.medium),
-                    ),
-                    const SizedBox(height: 20),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Appears in band",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: CColors.placeholder,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: Constants.homePadding,
+                      right: Constants.homePadding),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 30),
+                      avatartWidget(),
+                      const SizedBox(height: 10),
+                      Text(
+                        widget.model.bandName ?? "band",
+                        style: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeights.bold),
+                      ),
+                      Text(
+                        "Comparison Score:\t${getComparisonScore()}",
+                        style: const TextStyle(
+                            fontSize: 22,
+                            color: Colors.white,
+                            fontWeight: FontWeights.medium),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Appears in band",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: CColors.placeholder,
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: CColors.primary,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 15, right: 15, top: 8, bottom: 8),
+                              child: const Text(
+                                "Donate Artist",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      brandInfo(),
+                      const SizedBox(height: 10),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "SOCIAL PLATFORMS",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: CColors.textColor,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    brandInfo(),
-                    const Text(
-                      "SOCIAL PLATFORMS",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: CColors.textColor,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    platform("Facebook:", widget.model.facebook ?? ""),
-                    const SizedBox(height: 20),
-                    platform("Instagram:", widget.model.instagram ?? ""),
-                    const SizedBox(height: 20),
-                    platform("Twitter:", widget.model.twitter ?? ""),
-                  ],
+                      const SizedBox(height: 20),
+                      platform("Facebook:", widget.model.facebook ?? ""),
+                      const SizedBox(height: 20),
+                      platform("Instagram:", widget.model.instagram ?? ""),
+                      const SizedBox(height: 20),
+                      platform("Twitter:", widget.model.twitter ?? ""),
+                    ],
+                  ),
                 ),
               ),
             ),

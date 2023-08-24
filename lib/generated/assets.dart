@@ -83,6 +83,7 @@ class Assets {
   static const String imagesBlackEdit = 'assets/images/BlackEdit.svg';
   static const String imagesBlackUserAdd = 'assets/images/blackUserAdd.svg';
   static const String imagesBlast = 'assets/images/Blast.svg';
+  static const String imagesBlastMain = 'assets/images/blastMain.png';
   static const String imagesBoyAvatar = 'assets/images/boyAvatar.png';
   static const String imagesBulstVector = 'assets/images/bulstVector.svg';
   static const String imagesCartoonImg1 = 'assets/images/cartoonImg1.png';
