@@ -17,6 +17,9 @@ class UserModel {
   late String state;
   late String country;
 
+  String? payPalEmail;
+  String? accountType;
+
   late DateTime joinAt;
   double? latitude, longitude;
   List<String> selectedGenres = [];
@@ -26,14 +29,13 @@ class UserModel {
   List<String> blasts = [];
   List<String> listen = [];
 
-
   List<String> upVotes = [];
   List<String> downVotes = [];
-
-
   List<CalendarModel> calendar = [];
 
   int totalUpVotes = 0;
+
+
   UserModel({
     this.id,
     required this.username,
@@ -45,6 +47,8 @@ class UserModel {
     this.instagram,
     this.twitter,
     this.description,
+    this.payPalEmail,
+    this.accountType,
   });
 
   Map<String, dynamic> toMap() {
@@ -59,6 +63,9 @@ class UserModel {
       "instagram": instagram,
       "twitter": twitter,
       "description": description,
+      "payPalEmail": payPalEmail,
+      "accountType": accountType,
+
     };
   }
 
@@ -75,6 +82,11 @@ class UserModel {
     description = data["description"];
     city = data["city"] ?? "";
     state = data["state"] ?? "";
+
+    payPalEmail = data["payPalEmail"];
+    accountType = data["accountType"];
+
+
     country = data["country"] ?? "";
     avatar = data["avatar"];
     instrument = data["instrument"];

@@ -3,6 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/colors.dart';
+import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/user_model.dart';
@@ -30,6 +31,8 @@ class _SignUpState extends State<SignUp> {
   TextEditingController password = TextEditingController();
   TextEditingController cPassword = TextEditingController();
 
+  TextEditingController paypalEmail = TextEditingController();
+
   bool emailError = false;
   bool passwordError = false;
 
@@ -38,6 +41,8 @@ class _SignUpState extends State<SignUp> {
 
   bool hidePassword = true;
   bool hideCPassword = true;
+
+  String? accountType;
 
   @override
   Widget build(BuildContext context) {
@@ -86,60 +91,9 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(height: 20),
                   details(),
                   const SizedBox(height: 35),
-                  Row(
-                    children: [
-                      checkWidget(registerBandArtist, () {
-                        setState(() {
-                          registerBandArtist = !registerBandArtist;
-                        });
-                      }),
-                      const SizedBox(width: 15),
-                      Text(
-                        "Register as a Band or Artist",
-                        style: AppTextStyles.popins(
-                            style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeights.medium,
-                        )),
-                      ),
-                    ],
-                  ),
+                  bandCheckBox(),
                   const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      checkWidget(privacyPolicy, () {
-                        setState(() {
-                          privacyPolicy = !privacyPolicy;
-                        });
-                      }),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: RichText(
-                          text: const TextSpan(
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeights.medium,
-                                fontFamily: 'Oswald'),
-                            text: "Agree with ",
-                            children: [
-                              TextSpan(
-                                  text: 'Terms & Conditions ',
-                                  style: TextStyle(
-                                      color: CColors.primary,
-                                      decoration: TextDecoration.underline)),
-                              TextSpan(text: 'and '),
-                              TextSpan(
-                                text: 'Privacy Policy',
-                                style: TextStyle(
-                                    color: CColors.primary,
-                                    decoration: TextDecoration.underline),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  privacyCheckBox(),
                   const SizedBox(height: 35),
                   signUpButton(),
                   const SizedBox(height: 10),
@@ -151,6 +105,65 @@ class _SignUpState extends State<SignUp> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget bandCheckBox() {
+    return Row(
+      children: [
+        checkWidget(registerBandArtist, () {
+          setState(() {
+            registerBandArtist = !registerBandArtist;
+          });
+        }),
+        const SizedBox(width: 15),
+        Text(
+          "Register as a Band or Artist",
+          style: AppTextStyles.popins(
+              style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeights.medium,
+          )),
+        ),
+      ],
+    );
+  }
+
+  Widget privacyCheckBox() {
+    return Row(
+      children: [
+        checkWidget(privacyPolicy, () {
+          setState(() {
+            privacyPolicy = !privacyPolicy;
+          });
+        }),
+        const SizedBox(width: 15),
+        Expanded(
+          child: RichText(
+            text: const TextSpan(
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeights.medium,
+                  fontFamily: 'Oswald'),
+              text: "Agree with ",
+              children: [
+                TextSpan(
+                    text: 'Terms & Conditions ',
+                    style: TextStyle(
+                        color: CColors.primary,
+                        decoration: TextDecoration.underline)),
+                TextSpan(text: 'and '),
+                TextSpan(
+                  text: 'Privacy Policy',
+                  style: TextStyle(
+                      color: CColors.primary,
+                      decoration: TextDecoration.underline),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -289,8 +302,65 @@ class _SignUpState extends State<SignUp> {
               controller: brandName,
               hint: "Enter your Band",
             ),
+            const SizedBox(height: 20),
+            buildText("PayPal Email"),
+            const SizedBox(height: 2),
+            TextFieldWidget(
+                errorText: "PayPal Email is required",
+                controller: paypalEmail,
+                hint: "Enter your PayPal email",
+                validator: (val) {
+                  return null;
+                }),
+            const SizedBox(height: 20),
+            buildText("PayPal Account Type"),
+            const SizedBox(height: 2),
+            dropdownWidget(),
           ]
         ],
+      ),
+    );
+  }
+
+  Widget dropdownWidget() {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: CColors.placeholderTextColor),
+      ),
+      child: DropdownButton<String>(
+        value: accountType,
+        dropdownColor: CColors.Grey,
+        isExpanded: true,
+        style: const TextStyle(
+          fontSize: 16,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+        underline: const SizedBox(),
+        hint: const Text(
+          "Please Select Account Type",
+          style: TextStyle(
+            fontSize: 13,
+            color: CColors.placeholder,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        items: Constants.payPalAccountTypes
+            .map<DropdownMenuItem<String>>(
+              (e) => DropdownMenuItem<String>(
+                value: e,
+                child: Text(e),
+              ),
+            )
+            .toList(),
+        onChanged: (value) {
+          setState(() {
+            accountType = value;
+          });
+        },
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/data_state.dart';
+import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:uprise/widgets/player_detail_screen.dart';
@@ -29,6 +30,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
       dataProvider = value;
+
+
       if (value.songsState == DataStates.waiting) {
         return const Center(child: CircularProgressIndicator());
       }
@@ -47,7 +50,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
       return GestureDetector(
         onTap: () {
-          context.push(child: const PlayerDetailScreen());
+          Provider.of<DashboardProvider>(context, listen: false).selectedIndex =
+              4;
         },
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 10),

@@ -84,13 +84,15 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
                           ),
                           Container(
                             decoration: BoxDecoration(
-                              color: CColors.primary,
+                              color: widget.model.payPalEmail == null
+                                  ? CColors.Grey
+                                  : CColors.primary,
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(
+                            child: const Padding(
+                              padding: EdgeInsets.only(
                                   left: 15, right: 15, top: 8, bottom: 8),
-                              child: const Text(
+                              child: Text(
                                 "Donate Artist",
                                 style: TextStyle(
                                   fontSize: 16,

@@ -16,6 +16,13 @@ class Constants {
   static const horizontalPadding = 20.0;
   static const boxRadius = 20.0;
 
+
+  static List<String> payPalAccountTypes = [
+    "Personal",
+    "Business"
+  ];
+
+
   static String mapKey = "AIzaSyCNNmfTGsBatXy77JEAcjxuHCR2WSxVhvg";
 
   static List<PopupMenuItem> menuItem = [

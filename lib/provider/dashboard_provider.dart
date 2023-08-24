@@ -3,6 +3,7 @@ import 'package:uprise/screens/dashboard/discovery.dart';
 import 'package:uprise/screens/dashboard/home.dart';
 import 'package:uprise/screens/dashboard/home/promos.dart';
 import 'package:uprise/screens/dashboard/home/statistics.dart';
+import 'package:uprise/widgets/player_detail_screen.dart';
 import '../screens/dashboard/home/event.dart';
 import '../screens/dashboard/home/feed.dart';
 import '../screens/dashboard/profile_details/profile_details.dart';
@@ -22,6 +23,7 @@ class DashboardProvider with ChangeNotifier {
     null,
     const Discovery(),
     const ProfileDetails(),
+    const PlayerDetailScreen(),
 
   ];
 
