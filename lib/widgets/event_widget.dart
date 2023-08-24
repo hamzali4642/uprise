@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/generated/assets.dart';
@@ -24,6 +25,7 @@ class EventWidget extends StatefulWidget {
 class _EventWidgetState extends State<EventWidget> {
   late DataProvider dataProvider;
 
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, value, child) {
@@ -31,7 +33,7 @@ class _EventWidgetState extends State<EventWidget> {
       return Padding(
         padding: const EdgeInsets.only(left: 15, right: 15),
         child: InkWell(
-          onTap: (){
+          onTap: () {
             context.push(child: EventDetails(eventModel: widget.eventModel));
           },
           child: Container(
@@ -89,8 +91,8 @@ class _EventWidgetState extends State<EventWidget> {
                                     cal.add(model);
                                   }
 
-                                  var list = List.generate(
-                                      cal.length, (index) => cal[index].toMap());
+                                  var list = List.generate(cal.length,
+                                      (index) => cal[index].toMap());
                                   dataProvider.updateUserPref({
                                     "calendar": list,
                                   });
@@ -128,7 +130,8 @@ class _EventWidgetState extends State<EventWidget> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              dataProvider.getBandName(widget.eventModel.bandId),
+                              dataProvider
+                                  .getBandName(widget.eventModel.bandId),
                               style: AppTextStyles.title(
                                   color: CColors.primary,
                                   fontSize: 14,

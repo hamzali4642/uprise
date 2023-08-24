@@ -7,6 +7,8 @@ class EventModel {
   late String posterUrl;
   late DateTime startDate;
   late DateTime endDate;
+  late double latitude;
+  late double longitude;
 
   EventModel({
     this.id,
@@ -15,6 +17,8 @@ class EventModel {
     required this.startDate,
     required this.posterUrl,
     required this.endDate,
+    required this.latitude,
+    required this.longitude,
   });
 
   Map<String, dynamic> toMap() {
@@ -27,6 +31,8 @@ class EventModel {
       "startDate": startDate.millisecondsSinceEpoch,
       "endDate": endDate.millisecondsSinceEpoch,
       "description" : description,
+      "latitude": latitude,
+      "longitude": longitude,
     };
   }
 
@@ -39,5 +45,7 @@ class EventModel {
     startDate = DateTime.fromMillisecondsSinceEpoch(data["startDate"]);
     endDate = DateTime.fromMillisecondsSinceEpoch(data["endDate"]);
     description = data["description"];
+    latitude = data["latitude"];
+    longitude = data["longitude"];
   }
 }

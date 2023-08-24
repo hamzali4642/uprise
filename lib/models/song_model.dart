@@ -12,6 +12,8 @@ class SongModel {
   List<String> blasts = [];
 
 
+
+
   List<String> upVotes = [];
   List<String> downVotes = [];
   SongModel({
@@ -23,6 +25,8 @@ class SongModel {
     required this.posterUrl,
     required this.songUrl,
     required this.updatedAt,
+
+
   });
 
   Map<String, dynamic> toMap() {
@@ -34,6 +38,7 @@ class SongModel {
       "bandId": bandId,
       "posterUrl": posterUrl,
       "songUrl": songUrl,
+
       "createdAt": createdAt.millisecondsSinceEpoch,
       "updatedAt": updatedAt.millisecondsSinceEpoch,
     };
@@ -44,6 +49,7 @@ class SongModel {
     id = data["id"];
     title = data["title"];
     city = data["city"];
+
     bandId = data["bandId"];
     print(data["genre"]);
     // print(id);
