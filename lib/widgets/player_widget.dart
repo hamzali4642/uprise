@@ -144,15 +144,17 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             onTap: () {
                               if (dataProvider.audioState != "playing") {
                                 dataProvider.setAudio = "stopped";
-                                int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
+                                int index = dataProvider.songs
+                                    .indexOf(dataProvider.currentSong!);
                                 int nextIndex = index;
                                 if (index + 1 < dataProvider.songs.length) {
                                   nextIndex++;
-                                }else{
+                                } else {
                                   nextIndex = 0;
                                 }
-                                dataProvider.currentSong = dataProvider.songs[nextIndex];
-
+                                dataProvider.currentSong =
+                                    dataProvider.songs[nextIndex];
+                                dataProvider.initializePlayer();
                               }
                             },
                             child: Image.asset(
