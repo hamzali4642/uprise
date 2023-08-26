@@ -68,6 +68,12 @@ class DataProvider extends ChangeNotifier {
   Duration completed = const Duration(seconds: 0);
   Duration? bufferedTime = const Duration(seconds: 0);
 
+
+  set setAudio(String str){
+    audioState = str;
+    notifyListeners();
+  }
+
   authStream() {
     FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user == null) {
@@ -128,6 +134,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   getEvents() async {
+
     eventSubscription = db.collection("events").snapshots().listen((event) {
       events = [];
       events = event.docs.map((doc) => EventModel.fromMap(doc.data())).toList();

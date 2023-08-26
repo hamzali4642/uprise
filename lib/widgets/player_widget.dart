@@ -31,7 +31,6 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
       dataProvider = value;
 
-
       if (value.songsState == DataStates.waiting) {
         return const Center(child: CircularProgressIndicator());
       }
@@ -141,9 +140,28 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           const SizedBox(
                             width: 17,
                           ),
-                          SvgPicture.asset(
-                            Assets.imagesDisableNext,
-                            width: 30,
+                          InkWell(
+                            onTap: () {
+                              if (dataProvider.audioState != "playing") {
+                                dataProvider.setAudio = "stopped";
+                                int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
+                                int nextIndex = index;
+                                if (index + 1 < dataProvider.songs.length) {
+                                  nextIndex++;
+                                }else{
+                                  nextIndex = 0;
+                                }
+                                dataProvider.currentSong = dataProvider.songs[nextIndex];
+
+                              }
+                            },
+                            child: Image.asset(
+                              Assets.imagesNext,
+                              width: 20,
+                              color: dataProvider.audioState == "playing"
+                                  ? CColors.placeholder
+                                  : CColors.primary,
+                            ),
                           ),
                           const SizedBox(
                             width: 17,

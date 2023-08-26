@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,40 +31,45 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => DashboardProvider()),
-        ChangeNotifierProvider(create: (_) => DataProvider()),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          scaffoldBackgroundColor: Colors.black,
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(
-              padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
+    return DevicePreview(
+      enabled: true,
+      builder: (ctx){
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => DashboardProvider()),
+            ChangeNotifierProvider(create: (_) => DataProvider()),
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              scaffoldBackgroundColor: Colors.black,
+              textButtonTheme: TextButtonThemeData(
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
+                ),
+              ),
+
+              fontFamily: "Oswald",
+              unselectedWidgetColor: CColors.White,
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(backgroundColor: CColors.primary),
+              ),
+              radioTheme: RadioThemeData(
+
+              ),
+              appBarTheme: const AppBarTheme(
+                  color: CColors.transparentColor,
+                  iconTheme: IconThemeData(
+                    color: CColors.White,
+                  )),
+              primarySwatch: CColors.getMaterialColor(),
+              useMaterial3: false,
             ),
+            home: const Landing(),
           ),
-
-          fontFamily: "Oswald",
-          unselectedWidgetColor: CColors.White,
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(backgroundColor: CColors.primary),
-          ),
-          radioTheme: RadioThemeData(
-
-          ),
-          appBarTheme: const AppBarTheme(
-              color: CColors.transparentColor,
-              iconTheme: IconThemeData(
-                color: CColors.White,
-              )),
-          primarySwatch: CColors.getMaterialColor(),
-          useMaterial3: false,
-        ),
-        home: const Landing(),
-      ),
+        );
+      },
     );
   }
 }

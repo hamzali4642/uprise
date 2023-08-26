@@ -134,6 +134,7 @@ class Assets {
   static const String imagesMoreFeedIllustration = 'assets/images/More_feed_illustration.png';
   static const String imagesMusicDefaultImg = 'assets/images/music_default_img.png';
   static const String imagesMusicVector = 'assets/images/musicVector.svg';
+  static const String imagesNext = 'assets/images/next.png';
   static const String imagesNotifyBackgroundImage = 'assets/images/notifyBackgroundImage.png';
   static const String imagesNotifyProfileIcon = 'assets/images/notifyProfileIcon.png';
   static const String imagesNotifyProfileIcon1 = 'assets/images/notifyProfileIcon1.png';

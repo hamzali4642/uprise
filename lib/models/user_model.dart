@@ -49,6 +49,11 @@ class UserModel {
     this.description,
     this.payPalEmail,
     this.accountType,
+
+
+    this.city = "",
+    this.state = "",
+    this.country = ""
   });
 
   Map<String, dynamic> toMap() {
@@ -65,6 +70,7 @@ class UserModel {
       "description": description,
       "payPalEmail": payPalEmail,
       "accountType": accountType,
+      "joinAt" : joinAt.millisecondsSinceEpoch,
 
     };
   }
@@ -133,5 +139,10 @@ class UserModel {
     List downVotes = data["downVotes"] ?? [];
     this.downVotes =
         List.generate(downVotes.length, (index) => downVotes[index]);
+  }
+
+  @override
+  String toString() {
+    return 'UserModel{id: $id, username: $username, email: $email, isBand: $isBand, bandName: $bandName, phone: $phone, facebook: $facebook, instagram: $instagram, avatar: $avatar, instrument: $instrument, twitter: $twitter, description: $description, city: $city, state: $state, country: $country, payPalEmail: $payPalEmail, accountType: $accountType, joinAt: $joinAt, latitude: $latitude, longitude: $longitude, selectedGenres: $selectedGenres, followers: $followers, following: $following, favourites: $favourites, blasts: $blasts, listen: $listen, upVotes: $upVotes, downVotes: $downVotes, calendar: $calendar, totalUpVotes: $totalUpVotes}';
   }
 }

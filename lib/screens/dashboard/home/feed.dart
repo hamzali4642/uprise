@@ -31,6 +31,7 @@ class _FeedState extends State<Feed> {
             FeedWidget(
               post: posts[0],
             ).toSliver,
+          const SizedBox(height: 10).toSliver,
           newReleasesWidget().toSliver,
           SliverList(
             delegate: SliverChildBuilderDelegate((ctx, i) {

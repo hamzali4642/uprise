@@ -27,7 +27,7 @@ class AuthService {
       model.id = id;
       await doc.set(model.toMap());
       await doc.update({
-        "joinAt" : DateTime.now().millisecondsSinceEpoch,
+        "joinAt": DateTime.now().millisecondsSinceEpoch,
       });
       // ignore: use_build_context_synchronously
       context.pushAndRemoveUntil(child: const Dashboard());
@@ -95,7 +95,9 @@ class AuthService {
       final userData = await result.authentication;
       final credential = GoogleAuthProvider.credential(
           accessToken: userData.accessToken, idToken: userData.idToken);
-      FirebaseAuth.instance.signInWithCredential(credential).then((value) {
+      FirebaseAuth.instance
+          .signInWithCredential(credential)
+          .then((value) async {
         var id = value.user!.uid;
 
         var user = FirebaseAuth.instance.currentUser!;
@@ -108,25 +110,32 @@ class AuthService {
           isBand: false,
         );
 
+        bool isExist = false;
+
         if (user != null) {
-          var ref =
-              FirebaseFirestore.instance.collection("users").doc(userModel.id);
-          ref.get().then((value) async {
-            if (!value.exists) {
-              await ref.set(userModel.toMap());
-              await ref.update({
-                "joinAt" : DateTime.now().millisecondsSinceEpoch,
-              });
-            }
-            context.pushAndRemoveUntil(child: const Dashboard());
-          });
+          var ref = FirebaseFirestore.instance.collection("users").doc(id);
+
+          DocumentSnapshot snapshot = await ref.get();
+
+
+          if (!snapshot.exists) {
+            userModel.joinAt = DateTime.now();
+            print("Here");
+            await ref.set(userModel.toMap());
+            print("Here");
+          }
+          context.pushAndRemoveUntil(child: const Dashboard());
         } else {
           context.pushAndRemoveUntil(child: const SignIn());
         }
       }).catchError((error) {
+        print("Error");
+        print(error);
         context.pop();
         Functions.showSnackBar(context, error.message!);
       });
-    } catch (error) {}
+    } catch (error) {
+      print(error);
+    }
   }
 }

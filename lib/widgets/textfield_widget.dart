@@ -32,7 +32,6 @@ class TextFieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: TextFormField(
-
         maxLength: maxLength,
         onChanged: onChange,
         enabled: enable,

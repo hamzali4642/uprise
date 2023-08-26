@@ -9,20 +9,22 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DashboardProvider>(
-      builder: (context, provider, child) {
-        return Container(
-          padding: const EdgeInsets.symmetric( vertical: 10),
-          child: Column(
-            children: [
-              selectionWidget(),
-              const SizedBox(height: 10,),
-              Expanded(child: provider.homePage()),
-            ],
-          ),
-        );
-      }
-    );
+    return Consumer<DashboardProvider>(builder: (context, provider, child) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Column(
+          children: [
+            selectionWidget(),
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: provider.homePage(),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget selectionWidget() {
@@ -32,13 +34,11 @@ class Home extends StatelessWidget {
           child: HomeChipWidget(
             text: "Feed",
           ),
-
         ),
         Expanded(
           child: HomeChipWidget(
             text: "Events",
           ),
-
         ),
         Expanded(
           child: HomeChipWidget(

@@ -65,6 +65,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
                   }
 
                   dataProvider.currentSong = dataProvider.songs.first;
+                  dataProvider.initializePlayer();
                 },
                 child: SizedBox(
                   width: double.infinity,
@@ -153,9 +154,28 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SvgPicture.asset(
-          Assets.imagesDisableNext,
-          width: 30,
+        InkWell(
+          onTap: () {
+            if (dataProvider.audioState != "playing") {
+              dataProvider.setAudio = "stopped";
+              int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
+              int nextIndex = index;
+              if (index + 1 < dataProvider.songs.length) {
+                nextIndex++;
+              }else{
+                nextIndex = 0;
+              }
+              dataProvider.currentSong = dataProvider.songs[nextIndex];
+
+            }
+          },
+          child: Image.asset(
+            Assets.imagesNext,
+            width: 20,
+            color: dataProvider.audioState == "playing"
+                ? CColors.placeholder
+                : CColors.primary,
+          ),
         ),
         InkWell(
           onTap: () {

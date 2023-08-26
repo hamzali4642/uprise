@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/models/song_model.dart';
 import 'package:uprise/models/user_model.dart';
@@ -277,12 +278,20 @@ class _UserProfileState extends State<UserProfile> {
     return InkWell(
       onTap: () async {
         if (widget is SignIn) {
+
           await FirebaseAuth.instance.signOut();
-          var p = Provider.of<DashboardProvider>(context, listen: false);
+          await GoogleSignIn().signOut();
+          await GoogleSignIn().currentUser?.clearAuthCache();
+
+          await GoogleSignIn().disconnect();
+
+
+        var p = Provider.of<DashboardProvider>(context, listen: false);
           p.selectedIndex = 0;
           p.homeSelected = "Feed";
         }
         context.push(child: widget);
+
       },
       child: Text(
         str,

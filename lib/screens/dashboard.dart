@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ import 'package:uprise/screens/auth/signin.dart';
 import 'package:uprise/screens/dashboard/profile_details/instruments.dart';
 import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
+import 'package:uprise/widgets/cupertino_textfield.dart';
 import 'package:uprise/widgets/player_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 import '../generated/assets.dart';
@@ -253,7 +255,7 @@ class _DashboardState extends State<Dashboard> {
                   child: Column(
                     children: [
                       radioWidget(),
-                      TextFieldWidget(
+                      CupertinoTextFieldWidget(
                         controller: type == "City"
                             ? city
                             : type == "State"
@@ -274,7 +276,7 @@ class _DashboardState extends State<Dashboard> {
                         },
                       ),
                       suggestionsWidget(),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                     ],

@@ -44,7 +44,8 @@ class _EventWidgetState extends State<EventWidget> {
               borderRadius: BorderRadius.circular(
                 5,
               ),
-              child: Column(
+              child:
+              Column(
                 children: [
                   Image(
                     image: NetworkImage(widget.eventModel.posterUrl),
