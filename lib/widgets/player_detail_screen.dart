@@ -156,24 +156,23 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
       children: [
         InkWell(
           onTap: () {
-            if (dataProvider.audioState != "playing") {
-              dataProvider.setAudio = "stopped";
-              int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
-              int nextIndex = index;
-              if (index + 1 < dataProvider.songs.length) {
-                nextIndex++;
-              } else {
-                nextIndex = 0;
-              }
-              dataProvider.currentSong = dataProvider.songs[nextIndex];
+            dataProvider.stop();
+
+            dataProvider.setAudio = "stopped";
+            int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
+            int nextIndex = index;
+            if (index + 1 < dataProvider.songs.length) {
+              nextIndex++;
+            } else {
+              nextIndex = 0;
             }
+            dataProvider.currentSong = dataProvider.songs[nextIndex];
+            dataProvider.initializePlayer();
           },
           child: Image.asset(
             Assets.imagesNext,
             width: 20,
-            color: dataProvider.audioState == "playing"
-                ? CColors.placeholder
-                : CColors.primary,
+            color: CColors.primary,
           ),
         ),
         InkWell(
