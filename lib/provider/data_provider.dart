@@ -14,24 +14,6 @@ import '../screens/dashboard/home/statistics.dart';
 class DataProvider extends ChangeNotifier {
   DataProvider() {
     authStream();
-
-    audioPlayer.positionStream.listen((event) {
-      completed = event;
-      if (completed.inSeconds == total.inSeconds) {
-        bufferedTime = const Duration(seconds: 0);
-        completed = const Duration(seconds: 0);
-        audioState = "stopped";
-      }
-      if (!isDisposed) {
-        notifyListeners();
-      }
-    });
-    duration = audioPlayer.bufferedPositionStream.listen((event) async {
-      bufferedTime = event;
-      if (!isDisposed) {
-        notifyListeners();
-      }
-    });
   }
 
   var db = FirebaseFirestore.instance;
@@ -62,14 +44,14 @@ class DataProvider extends ChangeNotifier {
 
   AudioPlayer audioPlayer = AudioPlayer();
   Duration total = const Duration(seconds: 0);
-  bool isDisposed = false;
+
+  // bool isDisposed = false;
   bool isPlaying = false;
   String audioState = "stopped";
   Duration completed = const Duration(seconds: 0);
   Duration? bufferedTime = const Duration(seconds: 0);
 
-
-  set setAudio(String str){
+  set setAudio(String str) {
     audioState = str;
     notifyListeners();
   }
@@ -121,6 +103,22 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
+  audiosStreams(){
+    audioPlayer.positionStream.listen((event) {
+      completed = event;
+      if (completed.inSeconds == total.inSeconds) {
+        bufferedTime = const Duration(seconds: 0);
+        completed = const Duration(seconds: 0);
+        audioState = "stopped";
+      }
+      notifyListeners();
+    });
+    duration = audioPlayer.bufferedPositionStream.listen((event) async {
+      bufferedTime = event;
+      notifyListeners();
+    });
+  }
+
   getSongs() async {
     songSubscription = db.collection("Songs").snapshots().listen((event) {
       songs = [];
@@ -134,7 +132,6 @@ class DataProvider extends ChangeNotifier {
   }
 
   getEvents() async {
-
     eventSubscription = db.collection("events").snapshots().listen((event) {
       events = [];
       events = event.docs.map((doc) => EventModel.fromMap(doc.data())).toList();
@@ -166,13 +163,15 @@ class DataProvider extends ChangeNotifier {
     audioPlayer.dispose();
     audioPlayer = AudioPlayer();
     audioPlayer.setUrl(currentSong!.songUrl);
+    audiosStreams();
     await audioPlayer.play();
+
     audioState = "playing";
     isPlaying = true;
     if (audioPlayer.duration != null) {
       total = audioPlayer.duration!;
-    }else{
-     print("null");
+    } else {
+      print("null");
     }
     print(total);
     notifyListeners();
@@ -238,7 +237,6 @@ class DataProvider extends ChangeNotifier {
 
   List<ChartData> getBandsChartData() {
     List<ChartData> bandChartData = [];
-
     var now = DateTime.now();
     DateTime previous = DateTime(now.year, now.month - 5, 1);
     int index = 0;
@@ -331,7 +329,6 @@ class DataProvider extends ChangeNotifier {
   seek(Duration duration) async {
     completed = duration;
     audioPlayer.seek(duration);
-
     notifyListeners();
   }
 
@@ -357,7 +354,6 @@ class DataProvider extends ChangeNotifier {
     userListSubscription?.cancel();
     citySubscription?.cancel();
     duration?.cancel();
-    isDisposed = true;
     userSubscriptions?.cancel();
   }
 

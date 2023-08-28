@@ -142,27 +142,25 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           ),
                           InkWell(
                             onTap: () {
-                              if (dataProvider.audioState != "playing") {
-                                dataProvider.setAudio = "stopped";
-                                int index = dataProvider.songs
-                                    .indexOf(dataProvider.currentSong!);
-                                int nextIndex = index;
-                                if (index + 1 < dataProvider.songs.length) {
-                                  nextIndex++;
-                                } else {
-                                  nextIndex = 0;
-                                }
-                                dataProvider.currentSong =
-                                    dataProvider.songs[nextIndex];
+                              dataProvider.stop();
 
+                              dataProvider.setAudio = "stopped";
+                              int index = dataProvider.songs
+                                  .indexOf(dataProvider.currentSong!);
+                              int nextIndex = index;
+                              if (index + 1 < dataProvider.songs.length) {
+                                nextIndex++;
+                              } else {
+                                nextIndex = 0;
                               }
+                              dataProvider.currentSong =
+                                  dataProvider.songs[nextIndex];
+                              dataProvider.initializePlayer();
                             },
                             child: Image.asset(
                               Assets.imagesNext,
                               width: 20,
-                              color: dataProvider.audioState == "playing"
-                                  ? CColors.placeholder
-                                  : CColors.primary,
+                              color: CColors.primary,
                             ),
                           ),
                           const SizedBox(
@@ -240,7 +238,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         ),
                         onSeek: (duration) {
                           value.seek(duration);
-                          print('User selected a new time: $duration');
+                          // print('User selected a new time: $duration');
                         },
                       ),
                       const SizedBox(height: 2),
