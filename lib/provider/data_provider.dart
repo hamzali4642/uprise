@@ -163,13 +163,18 @@ class DataProvider extends ChangeNotifier {
   }
 
   initializePlayer() async {
+    audioPlayer.dispose();
+    audioPlayer = AudioPlayer();
     audioPlayer.setUrl(currentSong!.songUrl);
     await audioPlayer.play();
     audioState = "playing";
     isPlaying = true;
     if (audioPlayer.duration != null) {
       total = audioPlayer.duration!;
+    }else{
+     print("null");
     }
+    print(total);
     notifyListeners();
   }
 

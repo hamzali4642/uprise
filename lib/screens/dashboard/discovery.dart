@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/popular_songs.dart';
+import 'package:uprise/widgets/cupertino_textfield.dart';
 import 'package:uprise/widgets/songs_widget.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
@@ -40,7 +41,7 @@ class _DiscoveryState extends State<Discovery> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextFieldWidget(
+                    CupertinoTextFieldWidget(
                       controller: controller,
                       hint: "Search",
                       errorText: "",

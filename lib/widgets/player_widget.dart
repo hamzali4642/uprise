@@ -154,7 +154,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                 }
                                 dataProvider.currentSong =
                                     dataProvider.songs[nextIndex];
-                                dataProvider.initializePlayer();
+
                               }
                             },
                             child: Image.asset(

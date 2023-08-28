@@ -166,7 +166,6 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
                 nextIndex = 0;
               }
               dataProvider.currentSong = dataProvider.songs[nextIndex];
-              dataProvider.initializePlayer();
             }
           },
           child: Image.asset(

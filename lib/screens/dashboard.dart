@@ -390,7 +390,11 @@ class _DashboardState extends State<Dashboard> {
                       dataProvider.songs.first == dataProvider.currentSong!) {
                     dataProvider.songs.shuffle();
                   }
+                  dataProvider.stop();
                   dataProvider.currentSong = dataProvider.songs.first;
+
+
+                  // dataProvider.initializePlayer();
                 },
                 () {
                   var uid = FirebaseAuth.instance.currentUser!.uid;
