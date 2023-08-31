@@ -7,9 +7,12 @@ import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/calendar_model.dart';
 import 'package:uprise/models/event_model.dart';
+import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:utility_extensions/extensions/context_extensions.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import '../helpers/colors.dart';
+import '../screens/dashboard/band_details.dart';
 
 class EventDetails extends StatefulWidget {
   const EventDetails({Key? key, required this.eventModel}) : super(key: key);
@@ -25,7 +28,7 @@ class _EventDetailsState extends State<EventDetails> {
 
   late CameraPosition cameraPosition;
 
-  Set<Marker> _markers = Set<Marker>();
+  final Set<Marker> _markers = Set<Marker>();
 
   @override
   void initState() {
@@ -56,7 +59,7 @@ class _EventDetailsState extends State<EventDetails> {
             style: AppTextStyles.title(color: Colors.white, fontSize: 22),
           ),
         ),
-        backgroundColor: CColors.eventViewBgColor,
+        backgroundColor: Colors.black,
         body: SingleChildScrollView(
           child: Container(
             margin: const EdgeInsets.symmetric(
@@ -81,22 +84,17 @@ class _EventDetailsState extends State<EventDetails> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              Assets.imagesBandVector,
-                              height: 15,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              dataProvider
-                                  .getBandName(widget.eventModel.bandId),
-                              style: AppTextStyles.title(
-                                  color: CColors.primary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeights.normal),
-                            ),
-                          ],
+                        InkWell(
+                          onTap: () {
+                            UserModel? band =
+                                dataProvider.getBand(widget.eventModel.bandId);
+                            context.push(
+                              child: BandDetails(
+                                band: band!,
+                              ),
+                            );
+                          },
+                          child: bandTitle(),
                         ),
                         const SizedBox(height: 5),
                         Text(
@@ -200,6 +198,25 @@ class _EventDetailsState extends State<EventDetails> {
         ),
       );
     });
+  }
+
+  Widget bandTitle() {
+    return Row(
+      children: [
+        SvgPicture.asset(
+          Assets.imagesBandVector,
+          height: 15,
+        ),
+        const SizedBox(width: 4),
+        Text(
+          dataProvider.getBand(widget.eventModel.bandId)!.bandName!,
+          style: AppTextStyles.title(
+              color: CColors.primary,
+              fontSize: 14,
+              fontWeight: FontWeights.normal),
+        ),
+      ],
+    );
   }
 
   Widget itemWidget(String text, IconData iconData) {

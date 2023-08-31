@@ -62,7 +62,8 @@ class TextFieldWidget extends StatelessWidget {
           disabledBorder: buildOutlineInputBorder(),
           errorBorder: enableBorder ? errorBorder() : InputBorder.none,
           focusedErrorBorder: errorBorder(),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           hintStyle: AppTextStyles.popins(
             style: const TextStyle(
               fontSize: 13,

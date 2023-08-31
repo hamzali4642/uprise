@@ -131,8 +131,7 @@ class _EventWidgetState extends State<EventWidget> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              dataProvider
-                                  .getBandName(widget.eventModel.bandId),
+                              dataProvider.getBand(widget.eventModel.bandId)!.bandName ?? "",
                               style: AppTextStyles.title(
                                   color: CColors.primary,
                                   fontSize: 14,

@@ -217,7 +217,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                       ),
                       Text(
                         dataProvider
-                            .getBandName(dataProvider.currentSong!.bandId),
+                            .getBand(dataProvider.currentSong!.bandId)!.bandName!,
                         style: const TextStyle(
                           color: CColors.primary,
                           fontSize: 10,

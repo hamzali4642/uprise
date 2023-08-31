@@ -95,7 +95,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
               ),
               const SizedBox(height: 5),
               Text(
-                dataProvider.getBandName(dataProvider.currentSong!.bandId),
+                dataProvider.getBand(dataProvider.currentSong!.bandId)!.bandName!,
                 style: const TextStyle(
                   color: CColors.primary,
                   fontSize: 18,

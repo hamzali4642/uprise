@@ -177,8 +177,8 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String getBandName(String id) {
-    late UserModel userModel;
+  UserModel? getBand(String id) {
+     UserModel? userModel;
 
     for (var user in users) {
       if (user.id == id) {
@@ -187,7 +187,7 @@ class DataProvider extends ChangeNotifier {
       }
     }
 
-    return userModel.bandName ?? "";
+    return userModel;
   }
 
   List<ChartData> getEventChartData() {

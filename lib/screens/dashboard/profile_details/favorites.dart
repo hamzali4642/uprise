@@ -105,7 +105,7 @@ class _FavoritesState extends State<Favorites> {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      dataProvider.getBandName(model.bandId),
+                      dataProvider.getBand(model.bandId)!.bandName!,
                       style: const TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ],
