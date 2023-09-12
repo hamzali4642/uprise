@@ -17,9 +17,7 @@ class UserModel {
   late String state;
   late String country;
 
-  String? payPalEmail;
-  String? accountType;
-
+  String? bandProfile;
   late DateTime joinAt;
   double? latitude, longitude;
   List<String> selectedGenres = [];
@@ -29,13 +27,15 @@ class UserModel {
   List<String> blasts = [];
   List<String> listen = [];
 
+
   List<String> upVotes = [];
   List<String> downVotes = [];
+  List<String> gallery = [];
+
+
   List<CalendarModel> calendar = [];
 
   int totalUpVotes = 0;
-
-
   UserModel({
     this.id,
     required this.username,
@@ -47,13 +47,6 @@ class UserModel {
     this.instagram,
     this.twitter,
     this.description,
-    this.payPalEmail,
-    this.accountType,
-
-
-    this.city = "",
-    this.state = "",
-    this.country = ""
   });
 
   Map<String, dynamic> toMap() {
@@ -68,10 +61,6 @@ class UserModel {
       "instagram": instagram,
       "twitter": twitter,
       "description": description,
-      "payPalEmail": payPalEmail,
-      "accountType": accountType,
-      "joinAt" : joinAt.millisecondsSinceEpoch,
-
     };
   }
 
@@ -87,12 +76,8 @@ class UserModel {
     twitter = data["twitter"];
     description = data["description"];
     city = data["city"] ?? "";
+    bandProfile = data["bandProfile"];
     state = data["state"] ?? "";
-
-    payPalEmail = data["payPalEmail"];
-    accountType = data["accountType"];
-
-
     country = data["country"] ?? "";
     avatar = data["avatar"];
     instrument = data["instrument"];
@@ -130,6 +115,7 @@ class UserModel {
     this.listen =
         List.generate(listen.length, (index) => listen[index]);
 
+    gallery = List.from(data["gallery"] ?? []);
 
     List upVotes = data["upVotes"] ?? [];
     print(upVotes);
@@ -139,10 +125,5 @@ class UserModel {
     List downVotes = data["downVotes"] ?? [];
     this.downVotes =
         List.generate(downVotes.length, (index) => downVotes[index]);
-  }
-
-  @override
-  String toString() {
-    return 'UserModel{id: $id, username: $username, email: $email, isBand: $isBand, bandName: $bandName, phone: $phone, facebook: $facebook, instagram: $instagram, avatar: $avatar, instrument: $instrument, twitter: $twitter, description: $description, city: $city, state: $state, country: $country, payPalEmail: $payPalEmail, accountType: $accountType, joinAt: $joinAt, latitude: $latitude, longitude: $longitude, selectedGenres: $selectedGenres, followers: $followers, following: $following, favourites: $favourites, blasts: $blasts, listen: $listen, upVotes: $upVotes, downVotes: $downVotes, calendar: $calendar, totalUpVotes: $totalUpVotes}';
   }
 }

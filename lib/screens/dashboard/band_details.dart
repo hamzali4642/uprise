@@ -66,10 +66,12 @@ class _BandDetailsState extends State<BandDetails>
             Expanded(
               child: CustomScrollView(
                 slivers: [
-                  const Image(
-                    image: NetworkImage(
-                      Constants.demoCoverImage,
-                    ),
+                  Image(
+                    image: widget.band.bandProfile == null
+                        ? AssetImage(Assets.imagesBandImg)
+                        : NetworkImage(
+                            widget.band.bandProfile!,
+                          ) as ImageProvider,
                     height: 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -238,10 +240,8 @@ class _BandDetailsState extends State<BandDetails>
         ),
         itemBuilder: (ctx, i) {
           return InkWell(
-            onTap: (){
-
+            onTap: () {
               context.push(child: BandMemberDetail(model: widget.band));
-
             },
             child: Column(
               children: [
@@ -352,15 +352,15 @@ class _BandDetailsState extends State<BandDetails>
               borderRadius: BorderRadius.circular(
                 10,
               ),
-              child: const Image(
+              child: Image(
                 image: NetworkImage(
-                  Constants.demoCoverImage,
+                  widget.band.gallery[i],
                 ),
                 fit: BoxFit.cover,
               ),
             );
           },
-          childCount: 5,
+          childCount: widget.band.gallery.length,
         ),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,

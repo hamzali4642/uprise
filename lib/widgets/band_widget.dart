@@ -4,6 +4,7 @@ import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
+import '../generated/assets.dart';
 import '../screens/dashboard/band_details.dart';
 
 class BandWidget extends StatelessWidget {
@@ -29,10 +30,12 @@ class BandWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(
                 4,
               ),
-              child: const Image(
-                image: NetworkImage(
-                  Constants.demoCoverImage,
-                ),
+              child: Image(
+                image: band.bandProfile == null
+                    ? AssetImage(Assets.imagesBandImg)
+                    : NetworkImage(
+                        band.bandProfile!,
+                      ) as ImageProvider,
                 fit: BoxFit.cover,
               ),
             ),
