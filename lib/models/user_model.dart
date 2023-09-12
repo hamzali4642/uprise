@@ -17,6 +17,9 @@ class UserModel {
   late String state;
   late String country;
 
+  String? payPalEmail;
+  String? accountType;
+
   String? bandProfile;
   late DateTime joinAt;
   double? latitude, longitude;
@@ -83,6 +86,8 @@ class UserModel {
     instrument = data["instrument"];
     latitude = data["latitude"];
     longitude = data["longitude"];
+    payPalEmail = data["payPalEmail"];
+    accountType = data["accountType"];
     var joinAt = data["joinAt"];
     this.joinAt = joinAt == null ? DateTime(2023, 08,19) : DateTime.fromMillisecondsSinceEpoch(joinAt);
     List selectedGenres = data["selectedGenres"] ?? [];
