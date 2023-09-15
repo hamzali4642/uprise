@@ -31,7 +31,6 @@ class _DashboardState extends State<Dashboard> {
 
   late DataProvider dataProvider;
 
-
   var city = TextEditingController();
   var state = TextEditingController();
   var country = TextEditingController(text: "USA");
@@ -251,12 +250,12 @@ class _DashboardState extends State<Dashboard> {
               IconButton(
                 onPressed: () {
                   setState(() {
-                    if (type == "City") {
-                      type = "State";
-                    } else if (type == "State") {
-                      type = "Country";
+                    if (dataProvider.type == "City") {
+                      dataProvider.type = "State";
+                    } else if (dataProvider.type == "State") {
+                      dataProvider.type = "Country";
                     } else {
-                      type = "City";
+                      dataProvider.type = "City";
                     }
                     // radioButtonItem("City"),
                     // radioButtonItem("State"),
@@ -410,6 +409,18 @@ class _DashboardState extends State<Dashboard> {
                       "blasts": FieldValue.arrayRemove([uid]),
                     });
                   } else {
+
+                    db.collection("users").doc(uid).update({
+                      "favourites": FieldValue.arrayUnion(
+                          [dataProvider.currentSong!.id]),
+                    });
+                    db
+                        .collection("Songs")
+                        .doc(dataProvider.currentSong!.id)
+                        .update({
+                      "favourites": FieldValue.arrayUnion([uid]),
+                    });
+
                     db.collection("users").doc(uid).update({
                       "blasts":
                           FieldValue.arrayUnion([dataProvider.currentSong!.id]),
@@ -618,8 +629,6 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  String type = "City";
-
   Widget radioWidget() {
     return Row(
       children: [
@@ -636,13 +645,9 @@ class _DashboardState extends State<Dashboard> {
         children: [
           Radio(
             value: text,
-            groupValue: type,
+            groupValue: dataProvider.type,
             onChanged: (value) {
-              setState(
-                () {
-                  type = text;
-                },
-              );
+              dataProvider.type = value!;
             },
           ),
           Text(
@@ -655,5 +660,4 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-
 }

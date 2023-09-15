@@ -67,10 +67,21 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           if (isLeftToRightDrag) {
             dataProvider.stop();
             dataProvider.setAudio = "stopped";
-            int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
+            // int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
             // int nextIndex = index;
 
-            List<SongModel> songList = dataProvider.songs.where((element) => element.city != dataProvider.currentSong!.city && element.id != dataProvider.currentSong!.id).toList();
+            List<SongModel> songList;
+
+            songList = dataProvider.songs.where((element) => element.city != dataProvider.currentSong!.city && element.id != dataProvider.currentSong!.id).toList();
+
+            //TODO : Uncomment when state, country is added to song model
+            if (dataProvider.type == "City") {
+              songList = dataProvider.songs.where((element) => element.city != dataProvider.currentSong!.city && element.id != dataProvider.currentSong!.id).toList();
+            }  else if (dataProvider.type == "State") {
+              songList = dataProvider.songs.where((element) => element.city != dataProvider.currentSong!.city && element.id != dataProvider.currentSong!.id).toList();
+            }  else{
+              songList = dataProvider.songs.where((element) => element.city != dataProvider.currentSong!.city && element.id != dataProvider.currentSong!.id).toList();
+            }
             songList.shuffle();
 
             // if (index + 1 < dataProvider.songs.length) {

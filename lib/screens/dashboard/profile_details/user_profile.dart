@@ -44,6 +44,12 @@ class _UserProfileState extends State<UserProfile> {
   TextEditingController phone = TextEditingController();
   TextEditingController description = TextEditingController();
 
+  TextEditingController fGenre = TextEditingController();
+  TextEditingController fBand = TextEditingController();
+  TextEditingController fArtist = TextEditingController();
+  TextEditingController fMixes = TextEditingController();
+
+
   late DataProvider provider;
 
   @override
@@ -65,6 +71,11 @@ class _UserProfileState extends State<UserProfile> {
         twitter.text = value.userModel!.twitter ?? "";
         phone.text = value.userModel!.phone ?? "";
         description.text = value.userModel!.description ?? "";
+
+        fGenre.text = value.userModel!.fGenre ?? "";
+        fBand.text = value.userModel!.fBand ?? "";
+        fArtist.text = value.userModel!.fArtist ?? "";
+        fMixes.text = value.userModel!.fMixes ?? "";
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,6 +163,14 @@ class _UserProfileState extends State<UserProfile> {
                   const SizedBox(height: 20),
                   platform("Twitter:", twitter),
                   const SizedBox(height: 30),
+                  platform("Favourite Genre:", fGenre),
+                  const SizedBox(height: 30),
+                  platform("Favourite Commercial Band:", fBand),
+                  const SizedBox(height: 30),
+                  platform("Favourite Independant Artist:", fArtist),
+                  const SizedBox(height: 30),
+                  platform("Favourite Mixes:", fMixes),
+                  const SizedBox(height: 30),
                   if (widget.isEdit) ...[
                     Align(
                       alignment: Alignment.center,
@@ -163,6 +182,11 @@ class _UserProfileState extends State<UserProfile> {
                           user.instagram = instagram.text;
                           user.twitter = twitter.text;
                           user.description = description.text;
+                          user.fGenre = fGenre.text;
+                          user.fBand = fBand.text;
+                          user.fArtist = fArtist.text;
+                          user.fMixes = fMixes.text;
+
                           value.updateUser(user);
                           widget.callBack(false);
                         },

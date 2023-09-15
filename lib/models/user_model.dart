@@ -30,15 +30,19 @@ class UserModel {
   List<String> blasts = [];
   List<String> listen = [];
 
-
   List<String> upVotes = [];
   List<String> downVotes = [];
   List<String> gallery = [];
 
-
   List<CalendarModel> calendar = [];
 
+  String? fGenre;
+  String? fBand;
+  String? fArtist;
+  String? fMixes;
+
   int totalUpVotes = 0;
+
   UserModel({
     this.id,
     required this.username,
@@ -50,6 +54,10 @@ class UserModel {
     this.instagram,
     this.twitter,
     this.description,
+    this.fGenre,
+    this.fBand,
+    this.fArtist,
+    this.fMixes,
   });
 
   Map<String, dynamic> toMap() {
@@ -64,6 +72,10 @@ class UserModel {
       "instagram": instagram,
       "twitter": twitter,
       "description": description,
+      "fGenre": fGenre,
+      "fBand": fBand,
+      "fArtist": fArtist,
+      "fMixes": fMixes,
     };
   }
 
@@ -88,8 +100,16 @@ class UserModel {
     longitude = data["longitude"];
     payPalEmail = data["payPalEmail"];
     accountType = data["accountType"];
+
+    fGenre = data["fGenre"];
+    fBand = data["fBand"];
+    fArtist = data["fArtist"];
+    fMixes = data["fMixes"];
+
     var joinAt = data["joinAt"];
-    this.joinAt = joinAt == null ? DateTime(2023, 08,19) : DateTime.fromMillisecondsSinceEpoch(joinAt);
+    this.joinAt = joinAt == null
+        ? DateTime(2023, 08, 19)
+        : DateTime.fromMillisecondsSinceEpoch(joinAt);
     List selectedGenres = data["selectedGenres"] ?? [];
     this.selectedGenres =
         List.generate(selectedGenres.length, (index) => selectedGenres[index]);
@@ -114,18 +134,15 @@ class UserModel {
     this.favourites =
         List.generate(favourites.length, (index) => favourites[index]);
     List blasts = data["blasts"] ?? [];
-    this.blasts =
-        List.generate(blasts.length, (index) => blasts[index]);
+    this.blasts = List.generate(blasts.length, (index) => blasts[index]);
     List listen = data["listen"] ?? [];
-    this.listen =
-        List.generate(listen.length, (index) => listen[index]);
+    this.listen = List.generate(listen.length, (index) => listen[index]);
 
     gallery = List.from(data["gallery"] ?? []);
 
     List upVotes = data["upVotes"] ?? [];
     print(upVotes);
-    this.upVotes =
-        List.generate(upVotes.length, (index) => upVotes[index]);
+    this.upVotes = List.generate(upVotes.length, (index) => upVotes[index]);
 
     List downVotes = data["downVotes"] ?? [];
     this.downVotes =

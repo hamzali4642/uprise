@@ -51,6 +51,16 @@ class DataProvider extends ChangeNotifier {
   Duration completed = const Duration(seconds: 0);
   Duration? bufferedTime = const Duration(seconds: 0);
 
+  String _type = "City";
+
+
+  String get type => _type;
+
+  set type(String value) {
+    _type = value;
+    notifyListeners();
+  }
+
   set setAudio(String str) {
     audioState = str;
     notifyListeners();
@@ -103,7 +113,7 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
-  audiosStreams(){
+  audiosStreams() {
     audioPlayer.positionStream.listen((event) {
       completed = event;
       if (completed.inSeconds == total.inSeconds) {
@@ -178,7 +188,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   UserModel? getBand(String id) {
-     UserModel? userModel;
+    UserModel? userModel;
 
     for (var user in users) {
       if (user.id == id) {
