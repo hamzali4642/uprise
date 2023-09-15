@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uprise/models/song_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/feed_widget.dart';
 import 'package:uprise/widgets/heading_widget.dart';
@@ -87,13 +88,21 @@ class _FeedState extends State<Feed> {
   }
 
   Widget newReleasesWidget() {
-    List songs = [];
-    for (var song in dataProvider.songs) {
-      if (dataProvider.userModel!.selectedGenres
-          .any((s) => song.genreList.contains(s))) {
-        songs.add(song);
-      }
-    }
+    List<SongModel> songs = [];
+
+    songs = dataProvider.songs
+        .where((element) => dataProvider.userModel!.following
+            .any((follow) => follow == element.bandId))
+        .toList();
+
+    songs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    // for (var song in dataProvider.songs)
+    //   if (dataProvider.userModel!.selectedGenres
+    //       .any((s) => song.genreList.contains(s))) {
+    //     songs.add(song);
+    //   }
+    // }
 
     if (songs.isEmpty) {
       return const SizedBox();

@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,6 +31,11 @@ class _DashboardState extends State<Dashboard> {
 
   late DataProvider dataProvider;
 
+
+  var city = TextEditingController();
+  var state = TextEditingController();
+  var country = TextEditingController(text: "USA");
+
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -58,8 +62,8 @@ class _DashboardState extends State<Dashboard> {
           state.text = dataProvider.userModel?.state ?? "";
         }
         return WillPopScope(
-          onWillPop: (){
-            if(provider.selectedIndex == 0){
+          onWillPop: () {
+            if (provider.selectedIndex == 0) {
               return Future.value(true);
             }
             provider.selectedIndex = 0;
@@ -177,6 +181,11 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ),
+          const Icon(
+            Icons.notifications,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 10),
           PopupMenuButton(
             color: Colors.black,
             child: const Icon(
@@ -242,7 +251,16 @@ class _DashboardState extends State<Dashboard> {
               IconButton(
                 onPressed: () {
                   setState(() {
-                    isEditing = !isEditing;
+                    if (type == "City") {
+                      type = "State";
+                    } else if (type == "State") {
+                      type = "Country";
+                    } else {
+                      type = "City";
+                    }
+                    // radioButtonItem("City"),
+                    // radioButtonItem("State"),
+                    // radioButtonItem("Country"),
                   });
                   // context.push(child: const RadioPreferences());
                 },
@@ -253,47 +271,45 @@ class _DashboardState extends State<Dashboard> {
               ),
             ],
           ),
-          if (isEditing) ...[
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      radioWidget(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                  ),
-                ),
-                Column(
+          Row(
+            children: [
+              Expanded(
+                child: Column(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        dataProvider.updateUserPref({
-                          "city": city.text,
-                          "country": country.text,
-                          "state": state.text,
-                        });
-
-                        isEditing = !isEditing;
-                        setState(() {});
-                      },
-                      color: Colors.white,
-                      icon: Icon(Icons.check_circle),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        context.push(child: RadioPreferences());
-                      },
-                      color: Colors.white,
-                      icon: Icon(Icons.more_horiz),
+                    radioWidget(),
+                    const SizedBox(
+                      height: 10,
                     ),
                   ],
                 ),
-              ],
-            ),
-          ],
+              ),
+              Column(
+                children: [
+                  // IconButton(
+                  //   onPressed: () {
+                  //     dataProvider.updateUserPref({
+                  //       "city": city.text,
+                  //       "country": country.text,
+                  //       "state": state.text,
+                  //     });
+                  //
+                  //     isEditing = !isEditing;
+                  //     setState(() {});
+                  //   },
+                  //   color: Colors.white,
+                  //   icon: Icon(Icons.check_circle),
+                  // ),
+                  IconButton(
+                    onPressed: () {
+                      context.push(child: RadioPreferences());
+                    },
+                    color: Colors.white,
+                    icon: Icon(Icons.more_horiz),
+                  ),
+                ],
+              ),
+            ],
+          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -376,7 +392,6 @@ class _DashboardState extends State<Dashboard> {
                   }
                   dataProvider.stop();
                   dataProvider.currentSong = dataProvider.songs.first;
-
 
                   // dataProvider.initializePlayer();
                 },
@@ -471,13 +486,25 @@ class _DashboardState extends State<Dashboard> {
                   .collection("Songs")
                   .doc(dataProvider.currentSong!.id);
 
+              bool isDisable;
+
+              if (isUpvote ||
+                  dataProvider.currentSong?.city !=
+                      dataProvider.userModel?.city) {
+                isDisable = true;
+              } else {
+                isDisable = false;
+              }
+
               return overlayItemWidget(
                 "DownVote",
                 "Upvote",
                 isDownVote
                     ? Assets.imagesDisableDownvote
                     : Assets.imagesDownvote,
-                isUpvote ? Assets.imagesDisableUpVoteIcon : Assets.imagesUpvote,
+                isDisable
+                    ? Assets.imagesDisableUpVoteIcon
+                    : Assets.imagesUpvote,
                 () {
                   if (!isDownVote) {
                     my.update({
@@ -494,7 +521,9 @@ class _DashboardState extends State<Dashboard> {
                   }
                 },
                 () {
-                  if (!isUpvote) {
+                  if (!isUpvote &&
+                      dataProvider.currentSong?.city !=
+                          dataProvider.userModel?.city) {
                     my.update({
                       "upVotes":
                           FieldValue.arrayUnion([dataProvider.currentSong!.id]),
@@ -626,10 +655,5 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-
-  var city = TextEditingController();
-  var state = TextEditingController();
-  var country = TextEditingController(text: "USA");
-
 
 }

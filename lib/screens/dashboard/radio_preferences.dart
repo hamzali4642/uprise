@@ -76,6 +76,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                     ),
                     radioWidget(),
                     TextFieldWidget(
+
                       controller: type == "City"
                           ? city
                           : type == "State"
@@ -83,7 +84,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                               : country,
                       hint: "Manually Enter Location",
                       errorText: "errorText",
-                      enable: type != "Country",
+                      enable: type == "City" ? city.text.isEmpty : type != "Country",
                       onChange: (value) async {
                         if (value.trim().isEmpty) {
                           responses = [];

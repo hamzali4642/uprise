@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/data_state.dart';
+import 'package:uprise/models/song_model.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
@@ -25,6 +26,9 @@ class PlayerWidget extends StatefulWidget {
 
 class _PlayerWidgetState extends State<PlayerWidget> {
   late DataProvider dataProvider;
+
+  bool isLeftToRightDrag = false;
+  double startX = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +52,36 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       }
 
       return GestureDetector(
+        onHorizontalDragStart: (dragStartDetails) {
+          startX = dragStartDetails.globalPosition.dx;
+        },
+        onHorizontalDragUpdate: (dragUpdateDetails) {
+          double endX = dragUpdateDetails.globalPosition.dx;
+          if (endX > startX) {
+            isLeftToRightDrag = true;
+          } else {
+            isLeftToRightDrag = false;
+          }
+        },
+        onHorizontalDragEnd: (dragEndDetails) {
+          if (isLeftToRightDrag) {
+            dataProvider.stop();
+            dataProvider.setAudio = "stopped";
+            int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
+            // int nextIndex = index;
+
+            List<SongModel> songList = dataProvider.songs.where((element) => element.city != dataProvider.currentSong!.city && element.id != dataProvider.currentSong!.id).toList();
+            songList.shuffle();
+
+            // if (index + 1 < dataProvider.songs.length) {
+            //   nextIndex++;
+            // } else {
+            //   nextIndex = 0;
+            // }
+            dataProvider.currentSong = songList.first;
+            dataProvider.initializePlayer();
+          }
+        },
         onTap: () {
           Provider.of<DashboardProvider>(context, listen: false).selectedIndex =
               4;
@@ -217,7 +251,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                       ),
                       Text(
                         dataProvider
-                            .getBand(dataProvider.currentSong!.bandId)!.bandName!,
+                            .getBand(dataProvider.currentSong!.bandId)!
+                            .bandName!,
                         style: const TextStyle(
                           color: CColors.primary,
                           fontSize: 10,
