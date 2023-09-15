@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,15 +13,12 @@ import 'package:uprise/screens/auth/signin.dart';
 import 'package:uprise/screens/dashboard/profile_details/instruments.dart';
 import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
-import 'package:uprise/widgets/cupertino_textfield.dart';
 import 'package:uprise/widgets/player_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 import '../generated/assets.dart';
 import '../helpers/colors.dart';
 import '../helpers/textstyles.dart';
 import '../widgets/bottom_nav.dart';
-import '../widgets/textfield_widget.dart';
-import 'package:http/http.dart' as http;
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
