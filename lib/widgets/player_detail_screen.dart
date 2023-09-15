@@ -6,7 +6,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:uprise/screens/dashboard/band_details.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
+import 'package:utility_extensions/utility_extensions.dart';
 
 import '../generated/assets.dart';
 import '../helpers/colors.dart';
@@ -94,12 +96,22 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
                 ],
               ),
               const SizedBox(height: 5),
-              Text(
-                dataProvider.getBand(dataProvider.currentSong!.bandId)!.bandName!,
-                style: const TextStyle(
-                  color: CColors.primary,
-                  fontSize: 18,
-                ),
+              Builder(
+                builder: (context) {
+                  var band = dataProvider.getBand(dataProvider.currentSong!.bandId)!;
+                  return InkWell(
+                    onTap: (){
+                      context.push(child: BandDetails(band: band));
+                    },
+                    child: Text(
+                      band.bandName!,
+                      style: const TextStyle(
+                        color: CColors.primary,
+                        fontSize: 18,
+                      ),
+                    ),
+                  );
+                }
               ),
               const SizedBox(height: 40),
               ProgressBar(

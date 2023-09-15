@@ -109,6 +109,7 @@ class _EventDetailsState extends State<EventDetails> {
                           height: 200,
                           child: GoogleMap(
                             scrollGesturesEnabled: false,
+                            myLocationButtonEnabled: false,
                             initialCameraPosition: cameraPosition,
                             markers: _markers,
                           ),
@@ -205,14 +206,14 @@ class _EventDetailsState extends State<EventDetails> {
       children: [
         SvgPicture.asset(
           Assets.imagesBandVector,
-          height: 15,
+          height: 25,
         ),
         const SizedBox(width: 4),
         Text(
           dataProvider.getBand(widget.eventModel.bandId)!.bandName!,
           style: AppTextStyles.title(
               color: CColors.primary,
-              fontSize: 14,
+              fontSize: 20,
               fontWeight: FontWeights.normal),
         ),
       ],

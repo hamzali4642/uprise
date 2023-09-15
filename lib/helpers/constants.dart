@@ -29,7 +29,7 @@ class Constants {
     returnMenu("profile", "Profile"),
     returnMenu("discovery", "Discovery"),
     returnMenu("favourites", "Favourites"),
-    returnMenu("instruments", "Interested Instruments"),
+    returnMenu("instruments", "Music Skills"),
     returnMenu("logout", "Logout"),
   ];
 

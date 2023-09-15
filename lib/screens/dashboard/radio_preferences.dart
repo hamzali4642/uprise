@@ -1,18 +1,13 @@
 import 'dart:convert';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
-import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/provider/data_provider.dart';
-import 'package:uprise/screens/dashboard.dart';
 import 'package:uprise/screens/select_location.dart';
 import 'package:uprise/widgets/genere_tile_widget.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:utility_extensions/utility_extensions.dart';
-
 import '../../helpers/colors.dart';
 import '../../models/address_model.dart';
 import '../../provider/dashboard_provider.dart';

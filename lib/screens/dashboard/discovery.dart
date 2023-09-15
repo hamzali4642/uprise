@@ -69,7 +69,7 @@ class _DiscoveryState extends State<Discovery> {
     var b = dataProvider.users.where((element) => element.isBand).toList();
     var bands = b
         .where((element) =>
-            element.username.toLowerCase().contains(controller.text))
+            element.bandName!.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
 
     return bands.isEmpty ? const SizedBox() : Column(
@@ -104,7 +104,7 @@ class _DiscoveryState extends State<Discovery> {
   Widget popularRadioWidget() {
     var c = dataProvider.cities;
     var cities = c
-        .where((element) => element.toLowerCase().contains(controller.text))
+        .where((element) => element.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
     return cities.isEmpty ? const SizedBox() : Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +143,7 @@ class _DiscoveryState extends State<Discovery> {
     var s = dataProvider.songs;
     var songs = s
         .where(
-            (element) => element.title.toLowerCase().contains(controller.text))
+            (element) => element.title.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
     return  songs.isEmpty ? const SizedBox() :  Column(
       crossAxisAlignment: CrossAxisAlignment.start,

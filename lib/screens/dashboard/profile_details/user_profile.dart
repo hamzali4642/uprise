@@ -187,7 +187,7 @@ class _UserProfileState extends State<UserProfile> {
                             email: value.userModel!.email,
                           )),
                     const SizedBox(height: 13),
-                    btn("Instruments interested in", context,
+                    btn("Music Skills", context,
                         const Instruments()),
                     const SizedBox(
                       height: 13,
@@ -438,7 +438,7 @@ class _UserProfileState extends State<UserProfile> {
         ),
         const SizedBox(width: 20),
         Text(
-          "Score:\t${getComparisonScore()}",
+          "Activity Points:\t${getComparisonScore()}",
           style: const TextStyle(
               fontSize: 22,
               color: Colors.white,

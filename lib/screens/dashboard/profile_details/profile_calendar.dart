@@ -21,7 +21,8 @@ class ProfileCalendar extends StatefulWidget {
 
 class _ProfileCalendarState extends State<ProfileCalendar> {
   DateTime _focusedDay = DateTime.now();
-  DateTime _selectedDay = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  DateTime _selectedDay =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   late DataProvider provider;
 
@@ -29,10 +30,9 @@ class _ProfileCalendarState extends State<ProfileCalendar> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(milliseconds: 20), (){
+    Future.delayed(const Duration(milliseconds: 20), () {
       widget.callBack(1);
     });
-
   }
 
   @override
@@ -53,6 +53,14 @@ class _ProfileCalendarState extends State<ProfileCalendar> {
           const SizedBox(height: 10),
           TableCalendar(
             headerStyle: const HeaderStyle(
+              leftChevronIcon: Icon(
+                Icons.arrow_back_ios,
+                color: CColors.primary,
+              ),
+              rightChevronIcon: Icon(
+                Icons.arrow_forward_ios,
+                color: CColors.primary,
+              ),
               formatButtonVisible: false,
               titleCentered: true,
               titleTextStyle: TextStyle(

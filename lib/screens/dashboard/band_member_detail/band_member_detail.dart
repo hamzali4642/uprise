@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +67,7 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
                             color: Colors.white, fontWeight: FontWeights.bold),
                       ),
                       Text(
-                        "Comparison Score:\t${getComparisonScore()}",
+                        "Comparison Score:\t${calculatePearsonCorrelation().toStringAsFixed(2)}",
                         style: const TextStyle(
                             fontSize: 22,
                             color: Colors.white,
@@ -305,9 +307,9 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
     );
   }
 
-  int getComparisonScore() {
+  int getComparisonScore(UserModel model) {
     int comparisonScore = 0;
-    for (var g in dataProvider.userModel!.selectedGenres) {
+    for (var g in model.selectedGenres) {
       List<SongModel> strength = dataProvider.songs
           .where((element) => element.genreList.any((s) => s.contains(g)))
           .toList();
@@ -315,5 +317,48 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
     }
 
     return comparisonScore;
+  }
+
+
+  double calculatePearsonCorrelation() {
+    // Calculate the mean proportions for each list
+
+    var myScore = getComparisonScore(dataProvider.userModel!);
+    var memberScore = getComparisonScore(widget.model);
+    print(memberScore);
+
+    var listA = [myScore.toDouble(), myScore.toDouble(),0.5, 0.2];
+    var listB = [memberScore.toDouble(), memberScore.toDouble(), .2,.2];
+
+    print(listA.length);
+    print(listB.length);
+    double meanProportionA =
+        listA.reduce((sum, proportion) => sum + proportion) / listA.length;
+    double meanProportionB =
+        listB.reduce((sum, proportion) => sum + proportion) / listB.length;
+
+    // Calculate the numerator of the Pearson correlation coefficient
+    double numerator = 0;
+    for (int i = 0; i < listA.length; i++) {
+      numerator +=
+          (listA[i] - meanProportionA) * (listB[i] - meanProportionB);
+    }
+
+    // Calculate the denominator for both lists
+    double denominatorA = 0;
+    double denominatorB = 0;
+    for (int i = 0; i < listA.length; i++) {
+      denominatorA += (listA[i] - meanProportionA) *
+          (listA[i] - meanProportionA);
+      denominatorB += (listB[i] - meanProportionB) *
+          (listB[i] - meanProportionB);
+    }
+
+    print((sqrt(denominatorA) * sqrt(denominatorB)));
+    // Calculate the Pearson correlation coefficient
+    double pearsonCoefficient =
+        numerator / (sqrt(denominatorA) * sqrt(denominatorB));
+
+    return pearsonCoefficient;
   }
 }

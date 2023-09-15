@@ -17,11 +17,8 @@ class GenreTileWidget extends StatelessWidget {
           bool isSelected = provider.selectedGenres.contains(text);
           return InkWell(
             onTap: (){
-              if(provider.selectedGenres.contains(text)){
-                provider.selectedGenres.remove(text);
-              }else{
-                provider.selectedGenres.add(text);
-              }
+              provider.selectedGenres = [];
+              provider.selectedGenres.add(text);
               provider.refresh();
             },
             child: Container(

@@ -61,60 +61,69 @@ class _DashboardState extends State<Dashboard> {
         if (state.text.isEmpty) {
           state.text = dataProvider.userModel?.state ?? "";
         }
-        return Scaffold(
-          floatingActionButton: provider.showOverlay
-              ? InkWell(
-                  onTap: () {
-                    provider.showOverlay = !provider.showOverlay;
-                  },
-                  child: SvgPicture.asset(
-                    Assets.imagesClose,
-                    width: iconSize,
-                  ),
-                )
-              : null,
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          body: Stack(
-            children: [
-              Positioned.fill(
-                child: Scaffold(
-                  floatingActionButton: fabWidget(),
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerDocked,
-                  bottomNavigationBar: bottomNavigationWidget(),
-                  body: SmartRefresher(
-                    controller: _refreshController,
-                    onRefresh: _onRefresh,
-                    onLoading: _onLoading,
-                    enablePullDown: provider.selectedIndex == 0 ||
-                            provider.selectedIndex == 2
-                        ? true
-                        : false,
-                    header: WaterDropHeader(),
-                    child: Column(
-                      children: [
-                        if (provider.selectedIndex == 0 ||
-                            provider.selectedIndex == 2) ...[
-                          headerWidget(),
-                          locationWidget(),
-                          if (provider.selectedIndex != 2) ...[
-                            const PlayerWidget(),
-                            const Divider(
-                              color: CColors.textColor,
-                              thickness: 0.4,
-                            ),
-                          ]
+        return WillPopScope(
+          onWillPop: (){
+            if(provider.selectedIndex == 0){
+              return Future.value(true);
+            }
+            provider.selectedIndex = 0;
+            return Future.value(false);
+          },
+          child: Scaffold(
+            floatingActionButton: provider.showOverlay
+                ? InkWell(
+                    onTap: () {
+                      provider.showOverlay = !provider.showOverlay;
+                    },
+                    child: SvgPicture.asset(
+                      Assets.imagesClose,
+                      width: iconSize,
+                    ),
+                  )
+                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            body: Stack(
+              children: [
+                Positioned.fill(
+                  child: Scaffold(
+                    floatingActionButton: fabWidget(),
+                    floatingActionButtonLocation:
+                        FloatingActionButtonLocation.centerDocked,
+                    bottomNavigationBar: bottomNavigationWidget(),
+                    body: SmartRefresher(
+                      controller: _refreshController,
+                      onRefresh: _onRefresh,
+                      onLoading: _onLoading,
+                      enablePullDown: provider.selectedIndex == 0 ||
+                              provider.selectedIndex == 2
+                          ? true
+                          : false,
+                      header: WaterDropHeader(),
+                      child: Column(
+                        children: [
+                          if (provider.selectedIndex == 0 ||
+                              provider.selectedIndex == 2) ...[
+                            headerWidget(),
+                            locationWidget(),
+                            if (provider.selectedIndex != 2) ...[
+                              const PlayerWidget(),
+                              const Divider(
+                                color: CColors.textColor,
+                                thickness: 0.4,
+                              ),
+                            ]
+                          ],
+                          Expanded(
+                              child: provider.pages[provider.selectedIndex]!),
                         ],
-                        Expanded(
-                            child: provider.pages[provider.selectedIndex]!),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              if (provider.showOverlay) overlayWidget(),
-            ],
+                if (provider.showOverlay) overlayWidget(),
+              ],
+            ),
           ),
         );
       });
@@ -255,27 +264,6 @@ class _DashboardState extends State<Dashboard> {
                   child: Column(
                     children: [
                       radioWidget(),
-                      CupertinoTextFieldWidget(
-                        controller: type == "City"
-                            ? city
-                            : type == "State"
-                                ? state
-                                : country,
-                        hint: "Manually Enter Location",
-                        errorText: "errorText",
-                        enable: type != "Country",
-                        onChange: (value) async {
-                          if (value.trim().isEmpty) {
-                            responses = [];
-                          } else {
-                            responses = await autoCompleteCity(value);
-                            responses = responses.toSet().toList();
-                          }
-
-                          setState(() {});
-                        },
-                      ),
-                      suggestionsWidget(),
                       const SizedBox(
                         height: 10,
                       ),
@@ -628,14 +616,13 @@ class _DashboardState extends State<Dashboard> {
               setState(
                 () {
                   type = text;
-                  responses = [];
                 },
               );
             },
           ),
           Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               color: CColors.White,
             ),
           ),
@@ -644,70 +631,9 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  List<String> responses = [];
-
-  Widget suggestionsWidget() {
-    return Column(
-      children: [
-        for (var response in responses)
-          InkWell(
-            onTap: () {
-              city.text = response.split(",")[0];
-              state.text = response.split(",")[1];
-              responses = [];
-              FocusScope.of(context).unfocus();
-              setState(() {});
-            },
-            child: Container(
-              decoration: const BoxDecoration(
-                color: CColors.screenContainer,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      response,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.white,
-                    height: 1,
-                  ),
-                ],
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
   var city = TextEditingController();
   var state = TextEditingController();
   var country = TextEditingController(text: "USA");
 
-  Future<List<String>> autoCompleteCity(String input) async {
-    final response = await http.get(Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(${type == "City" ? "cities" : "states"})&components=country:us&key=${Constants.mapKey}'));
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final predictions = data['predictions'] as List<dynamic>;
-
-      List<String> citySuggestions = [];
-      for (var prediction in predictions) {
-        citySuggestions.add(prediction['description']);
-      }
-
-      return citySuggestions;
-    } else {
-      throw Exception('Failed to load city suggestions');
-    }
-  }
 }
