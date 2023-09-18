@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +10,9 @@ import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:uprise/widgets/donation_view.dart';
 import 'package:uprise/widgets/player_widget.dart';
+import 'package:utility_extensions/extensions/context_extensions.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 
 import '../../../generated/assets.dart';
@@ -91,14 +94,23 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
                                   : CColors.primary,
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.only(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
                                   left: 15, right: 15, top: 8, bottom: 8),
-                              child: Text(
-                                "Donate Artist",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
+                              child: InkWell(
+                                onTap: () {
+                                  context.push(
+                                      child: DonationView(
+                                    url: widget.model.donationLink ??
+                                        "https://pub.dev/",
+                                  ));
+                                },
+                                child: const Text(
+                                  "Donate Artist",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                             ),
@@ -319,46 +331,75 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
     return comparisonScore;
   }
 
-
   double calculatePearsonCorrelation() {
+    Map<String, double> list1 = {};
+
+    for (var songId in dataProvider.userModel!.favourites) {
+      final song =
+          dataProvider.songs.where((song) => songId == song.id).firstOrNull;
+      if (song != null) {
+        for (var genre in song.genreList) {
+          list1[genre] = (list1[genre] ?? 0) + 1;
+        }
+      }
+    }
+
+
+    final totalRepetitions = list1.values.reduce((a, b) => a + b).toDouble();
+    list1.forEach((genre, count) {
+      list1[genre] = count / totalRepetitions;
+    });
+
+    print('Total Repetitions: $totalRepetitions');
+
+
+    double a = 0;
+    list1.forEach((key, value) {
+      print("$key $value");
+      a += value;
+    });
+
+    print(a);
     // Calculate the mean proportions for each list
 
-    var myScore = getComparisonScore(dataProvider.userModel!);
-    var memberScore = getComparisonScore(widget.model);
-    print(memberScore);
+    // var myScore = getComparisonScore(dataProvider.userModel!);
+    // var memberScore = getComparisonScore(widget.model);
+    // print(memberScore);
+    //
+    // var listA = [myScore.toDouble(), myScore.toDouble(),0.5, 0.2];
+    // var listB = [memberScore.toDouble(), memberScore.toDouble(), .2,.2];
+    //
+    // print(listA.length);
+    // print(listB.length);
+    // double meanProportionA =
+    //     listA.reduce((sum, proportion) => sum + proportion) / listA.length;
+    // double meanProportionB =
+    //     listB.reduce((sum, proportion) => sum + proportion) / listB.length;
+    //
+    // // Calculate the numerator of the Pearson correlation coefficient
+    // double numerator = 0;
+    // for (int i = 0; i < listA.length; i++) {
+    //   numerator +=
+    //       (listA[i] - meanProportionA) * (listB[i] - meanProportionB);
+    // }
+    //
+    // // Calculate the denominator for both lists
+    // double denominatorA = 0;
+    // double denominatorB = 0;
+    // for (int i = 0; i < listA.length; i++) {
+    //   denominatorA += (listA[i] - meanProportionA) *
+    //       (listA[i] - meanProportionA);
+    //   denominatorB += (listB[i] - meanProportionB) *
+    //       (listB[i] - meanProportionB);
+    // }
+    //
+    // print((sqrt(denominatorA) * sqrt(denominatorB)));
+    // // Calculate the Pearson correlation coefficient
+    // double pearsonCoefficient =
+    //     numerator / (sqrt(denominatorA) * sqrt(denominatorB));
+    //
+    // return pearsonCoefficient;
 
-    var listA = [myScore.toDouble(), myScore.toDouble(),0.5, 0.2];
-    var listB = [memberScore.toDouble(), memberScore.toDouble(), .2,.2];
-
-    print(listA.length);
-    print(listB.length);
-    double meanProportionA =
-        listA.reduce((sum, proportion) => sum + proportion) / listA.length;
-    double meanProportionB =
-        listB.reduce((sum, proportion) => sum + proportion) / listB.length;
-
-    // Calculate the numerator of the Pearson correlation coefficient
-    double numerator = 0;
-    for (int i = 0; i < listA.length; i++) {
-      numerator +=
-          (listA[i] - meanProportionA) * (listB[i] - meanProportionB);
-    }
-
-    // Calculate the denominator for both lists
-    double denominatorA = 0;
-    double denominatorB = 0;
-    for (int i = 0; i < listA.length; i++) {
-      denominatorA += (listA[i] - meanProportionA) *
-          (listA[i] - meanProportionA);
-      denominatorB += (listB[i] - meanProportionB) *
-          (listB[i] - meanProportionB);
-    }
-
-    print((sqrt(denominatorA) * sqrt(denominatorB)));
-    // Calculate the Pearson correlation coefficient
-    double pearsonCoefficient =
-        numerator / (sqrt(denominatorA) * sqrt(denominatorB));
-
-    return pearsonCoefficient;
+    return 0;
   }
 }

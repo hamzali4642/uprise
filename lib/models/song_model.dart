@@ -11,6 +11,9 @@ class SongModel {
   List<String> favourites = [];
   List<String> blasts = [];
 
+  late String state;
+  late String country;
+
 
 
 
@@ -26,6 +29,9 @@ class SongModel {
     required this.songUrl,
     required this.updatedAt,
 
+    required this.state,
+    required this.country,
+
 
   });
 
@@ -39,6 +45,9 @@ class SongModel {
       "posterUrl": posterUrl,
       "songUrl": songUrl,
 
+      "state": state,
+      "country": country,
+
       "createdAt": createdAt.millisecondsSinceEpoch,
       "updatedAt": updatedAt.millisecondsSinceEpoch,
     };
@@ -49,6 +58,11 @@ class SongModel {
     id = data["id"];
     title = data["title"];
     city = data["city"];
+
+
+    state = data["state"];
+    country = data["country"];
+
 
     bandId = data["bandId"];
     print(data["genre"]);

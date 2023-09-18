@@ -13,6 +13,9 @@ class UserModel {
   int? instrument;
   String? twitter;
   String? description;
+
+  String? donationLink;
+
   late String city;
   late String state;
   late String country;
@@ -58,6 +61,7 @@ class UserModel {
     this.fBand,
     this.fArtist,
     this.fMixes,
+    this.donationLink,
   });
 
   Map<String, dynamic> toMap() {
@@ -76,6 +80,9 @@ class UserModel {
       "fBand": fBand,
       "fArtist": fArtist,
       "fMixes": fMixes,
+      "donationLink": donationLink,
+
+
     };
   }
 
@@ -105,6 +112,8 @@ class UserModel {
     fBand = data["fBand"];
     fArtist = data["fArtist"];
     fMixes = data["fMixes"];
+
+    donationLink = data["donationLink"];
 
     var joinAt = data["joinAt"];
     this.joinAt = joinAt == null

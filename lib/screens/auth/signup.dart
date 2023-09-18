@@ -33,6 +33,9 @@ class _SignUpState extends State<SignUp> {
 
   TextEditingController paypalEmail = TextEditingController();
 
+  TextEditingController donationLink = TextEditingController();
+
+
   bool emailError = false;
   bool passwordError = false;
 
@@ -303,6 +306,14 @@ class _SignUpState extends State<SignUp> {
               hint: "Enter your Band",
             ),
             const SizedBox(height: 20),
+            buildText("Donation Link"),
+            const SizedBox(height: 2),
+            TextFieldWidget(
+              errorText: "Donation Link is Required",
+              controller: donationLink,
+              hint: "Enter your Donation link",
+            ),
+            const SizedBox(height: 20),
             buildText("PayPal Email"),
             const SizedBox(height: 2),
             TextFieldWidget(
@@ -433,6 +444,7 @@ class _SignUpState extends State<SignUp> {
                   email: email.text,
                   isBand: registerBandArtist,
                   bandName: registerBandArtist ? brandName.text : null,
+                  donationLink: donationLink.text,
                 );
                 await AuthService.signUp(context, userModel, password.text);
               } else {

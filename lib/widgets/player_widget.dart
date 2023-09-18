@@ -72,16 +72,48 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
             List<SongModel> songList;
 
-            songList = dataProvider.songs.where((element) => element.city != dataProvider.currentSong!.city && element.id != dataProvider.currentSong!.id).toList();
+            songList = dataProvider.songs
+                .where((element) =>
+                    element.genreList.any((genre) =>
+                        genre ==
+                        dataProvider.userModel!.selectedGenres.first) &&
+                    element.city != dataProvider.currentSong!.city &&
+                    element.id != dataProvider.currentSong!.id)
+                .toList();
 
-            //TODO : Uncomment when state, country is added to song model
             if (dataProvider.type == "City") {
-              songList = dataProvider.songs.where((element) => element.city != dataProvider.currentSong!.city && element.id != dataProvider.currentSong!.id).toList();
-            }  else if (dataProvider.type == "State") {
-              songList = dataProvider.songs.where((element) => element.city != dataProvider.currentSong!.city && element.id != dataProvider.currentSong!.id).toList();
-            }  else{
-              songList = dataProvider.songs.where((element) => element.city != dataProvider.currentSong!.city && element.id != dataProvider.currentSong!.id).toList();
+              songList = dataProvider.songs
+                  .where((element) =>
+                      element.genreList.any((genre) =>
+                          genre ==
+                          dataProvider.userModel!.selectedGenres.first) &&
+                      element.upVotes.length < 15 &&
+                      element.city != dataProvider.currentSong!.city &&
+                      element.id != dataProvider.currentSong!.id)
+                  .toList();
+            } else if (dataProvider.type == "State") {
+              songList = dataProvider.songs
+                  .where((element) =>
+                      element.genreList.any((genre) =>
+                          genre ==
+                          dataProvider.userModel!.selectedGenres.first) &&
+                      (element.upVotes.length >= 15 &&
+                          element.upVotes.length < 30) &&
+                      element.state != dataProvider.currentSong!.state &&
+                      element.id != dataProvider.currentSong!.id)
+                  .toList();
+            } else {
+              songList = dataProvider.songs
+                  .where((element) =>
+                      element.genreList.any((genre) =>
+                          genre ==
+                          dataProvider.userModel!.selectedGenres.first) &&
+                      element.upVotes.length >= 30 &&
+                      element.country != dataProvider.currentSong!.country &&
+                      element.id != dataProvider.currentSong!.id)
+                  .toList();
             }
+
             songList.shuffle();
 
             // if (index + 1 < dataProvider.songs.length) {

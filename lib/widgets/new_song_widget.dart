@@ -10,9 +10,11 @@ import 'package:utility_extensions/extensions/font_utilities.dart';
 import '../helpers/colors.dart';
 
 class NewSongWidget extends StatelessWidget {
-  const NewSongWidget({super.key, required this.song});
+
+  const NewSongWidget({super.key, required this.song, this.isBlasted = false});
 
   final SongModel song;
+  final bool isBlasted;
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +43,27 @@ class NewSongWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 7),
-              Text(
-                song.title,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeights.light),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      song.title,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeights.light),
+                    ),
+                  ),
+                  if(isBlasted)...[
+                    Text(
+                      "Blasts: ${song.blasts.length}",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeights.light),
+                    ),
+                  ],
+                ],
               ),
               Row(
                 children: [
@@ -65,6 +82,7 @@ class NewSongWidget extends StatelessWidget {
                   ),
                 ],
               ),
+
             ],
           ),
         ),

@@ -6,7 +6,6 @@ import 'package:uprise/widgets/feed_widget.dart';
 import 'package:uprise/widgets/heading_widget.dart';
 import 'package:uprise/widgets/radio_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
-
 import '../../../widgets/new_song_widget.dart';
 
 class Feed extends StatefulWidget {
@@ -34,6 +33,7 @@ class _FeedState extends State<Feed> {
             ).toSliver,
           const SizedBox(height: 10).toSliver,
           newReleasesWidget().toSliver,
+          blastedSongs().toSliver,
           SliverList(
             delegate: SliverChildBuilderDelegate((ctx, i) {
               return FeedWidget(
@@ -97,13 +97,6 @@ class _FeedState extends State<Feed> {
 
     songs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    // for (var song in dataProvider.songs)
-    //   if (dataProvider.userModel!.selectedGenres
-    //       .any((s) => song.genreList.contains(s))) {
-    //     songs.add(song);
-    //   }
-    // }
-
     if (songs.isEmpty) {
       return const SizedBox();
     }
@@ -137,4 +130,53 @@ class _FeedState extends State<Feed> {
       ],
     );
   }
+
+
+  Widget blastedSongs() {
+    List<SongModel> songs = [];
+
+    songs = dataProvider.songs
+        .where((element) => element.blasts.isNotEmpty)
+        .toList();
+
+
+    if (songs.isEmpty) {
+      return const SizedBox();
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 10),
+        const HeadingWidget(
+          text: "Blasted Songs",
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+          height: 200,
+          width: double.infinity,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (ctx, i) {
+              return NewSongWidget(
+                isBlasted: true,
+                song: songs[i],
+              );
+            },
+            itemCount: songs.length,
+            separatorBuilder: (ctx, i) {
+              return const SizedBox(
+                width: 20,
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
+    );
+  }
+
+
+
 }

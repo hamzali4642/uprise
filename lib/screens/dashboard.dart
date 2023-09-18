@@ -409,10 +409,9 @@ class _DashboardState extends State<Dashboard> {
                       "blasts": FieldValue.arrayRemove([uid]),
                     });
                   } else {
-
                     db.collection("users").doc(uid).update({
-                      "favourites": FieldValue.arrayUnion(
-                          [dataProvider.currentSong!.id]),
+                      "favourites":
+                          FieldValue.arrayUnion([dataProvider.currentSong!.id]),
                     });
                     db
                         .collection("Songs")

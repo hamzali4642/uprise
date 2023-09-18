@@ -50,6 +50,10 @@ class _UserProfileState extends State<UserProfile> {
   TextEditingController fMixes = TextEditingController();
 
 
+  TextEditingController donationLink = TextEditingController();
+
+
+
   late DataProvider provider;
 
   @override
@@ -76,6 +80,7 @@ class _UserProfileState extends State<UserProfile> {
         fBand.text = value.userModel!.fBand ?? "";
         fArtist.text = value.userModel!.fArtist ?? "";
         fMixes.text = value.userModel!.fMixes ?? "";
+        donationLink.text = value.userModel!.donationLink ?? "";
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,6 +175,10 @@ class _UserProfileState extends State<UserProfile> {
                   platform("Favourite Independant Artist:", fArtist),
                   const SizedBox(height: 30),
                   platform("Favourite Mixes:", fMixes),
+                  if(value.userModel!.isBand)...[
+                    const SizedBox(height: 30),
+                    platform("Donation Link:", donationLink),
+                  ],
                   const SizedBox(height: 30),
                   if (widget.isEdit) ...[
                     Align(
@@ -186,7 +195,7 @@ class _UserProfileState extends State<UserProfile> {
                           user.fBand = fBand.text;
                           user.fArtist = fArtist.text;
                           user.fMixes = fMixes.text;
-
+                          user.donationLink = donationLink.text;
                           value.updateUser(user);
                           widget.callBack(false);
                         },
@@ -220,6 +229,9 @@ class _UserProfileState extends State<UserProfile> {
                       "Logout",
                       context,
                       const SignIn(),
+                    ),
+                    const SizedBox(
+                      height: 13,
                     ),
                   ]
                 ],
@@ -306,7 +318,6 @@ class _UserProfileState extends State<UserProfile> {
           await FirebaseAuth.instance.signOut();
           await GoogleSignIn().signOut();
           await GoogleSignIn().currentUser?.clearAuthCache();
-
           await GoogleSignIn().disconnect();
 
 
@@ -461,12 +472,16 @@ class _UserProfileState extends State<UserProfile> {
           width: 10,
         ),
         const SizedBox(width: 20),
-        Text(
-          "Activity Points:\t${getComparisonScore()}",
-          style: const TextStyle(
-              fontSize: 22,
-              color: Colors.white,
-              fontWeight: FontWeights.medium),
+        Expanded(
+          child: Text(
+            textAlign : TextAlign.center,
+            "Activity Points: ${provider.userModel!.favourites.length}",
+            // "Activity Points:\t${getComparisonScore()}",
+            style: const TextStyle(
+                fontSize: 22,
+                color: Colors.white,
+                fontWeight: FontWeights.medium),
+          ),
         ),
       ],
     );

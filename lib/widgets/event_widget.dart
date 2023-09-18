@@ -12,6 +12,8 @@ import 'package:uprise/widgets/event_details.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 import '../helpers/colors.dart';
+import '../models/user_model.dart';
+import '../screens/dashboard/band_details.dart';
 
 class EventWidget extends StatefulWidget {
   const EventWidget({super.key, required this.eventModel});
@@ -130,12 +132,30 @@ class _EventWidgetState extends State<EventWidget> {
                               height: 15,
                             ),
                             const SizedBox(width: 4),
-                            Text(
-                              dataProvider.getBand(widget.eventModel.bandId)!.bandName ?? "",
-                              style: AppTextStyles.title(
-                                  color: CColors.primary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeights.normal),
+                            Builder(
+                              builder: (context) {
+
+                                UserModel? band =
+                                dataProvider.getBand(widget.eventModel.bandId);
+
+                                return InkWell(
+                                  onTap: (){
+
+                                    context.push(
+                                      child: BandDetails(
+                                        band: band!,
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    band!.bandName ?? "",
+                                    style: AppTextStyles.title(
+                                        color: CColors.primary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeights.normal),
+                                  ),
+                                );
+                              }
                             ),
                           ],
                         ),
