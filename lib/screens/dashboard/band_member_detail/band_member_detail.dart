@@ -333,6 +333,7 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
 
   double calculatePearsonCorrelation() {
     Map<String, double> list1 = {};
+    Map<String, double> list2 = {};
 
     for (var songId in dataProvider.userModel!.favourites) {
       final song =
@@ -344,22 +345,52 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
       }
     }
 
-
     final totalRepetitions = list1.values.reduce((a, b) => a + b).toDouble();
     list1.forEach((genre, count) {
       list1[genre] = count / totalRepetitions;
     });
 
-    print('Total Repetitions: $totalRepetitions');
+    for (var songId in widget.model.favourites) {
+      final song =
+          dataProvider.songs.where((song) => songId == song.id).firstOrNull;
+      if (song != null) {
+        for (var genre in song.genreList) {
+          list2[genre] = (list2[genre] ?? 0) + 1;
+        }
+      }
+    }
 
-
-    double a = 0;
-    list1.forEach((key, value) {
-      print("$key $value");
-      a += value;
+    final totalRepetitions1 = list2.values.isEmpty ? 0.0 : list2.values.reduce((a, b) => a + b);
+    list2.forEach((genre, count) {
+        list2[genre] = count / totalRepetitions1;
     });
 
-    print(a);
+    for (var element in dataProvider.genres) {
+      if (list1[element] == null) {
+        list1[element] = 0;
+      }
+    }
+
+    for (var element in dataProvider.genres) {
+      if (list2[element] == null) {
+        list2[element] = 0;
+      }
+    }
+
+    list1.forEach((key, value) {
+      print(value);
+    });
+
+    List<double> listA = [];
+    List<double> listB = [];
+
+    list1.forEach((key, value) {
+      listA.add(value);
+    });
+    list2.forEach((key, value) {
+      listB.add(value);
+    });
+
     // Calculate the mean proportions for each list
 
     // var myScore = getComparisonScore(dataProvider.userModel!);
@@ -371,35 +402,34 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
     //
     // print(listA.length);
     // print(listB.length);
-    // double meanProportionA =
-    //     listA.reduce((sum, proportion) => sum + proportion) / listA.length;
-    // double meanProportionB =
-    //     listB.reduce((sum, proportion) => sum + proportion) / listB.length;
-    //
-    // // Calculate the numerator of the Pearson correlation coefficient
-    // double numerator = 0;
-    // for (int i = 0; i < listA.length; i++) {
-    //   numerator +=
-    //       (listA[i] - meanProportionA) * (listB[i] - meanProportionB);
-    // }
-    //
-    // // Calculate the denominator for both lists
-    // double denominatorA = 0;
-    // double denominatorB = 0;
-    // for (int i = 0; i < listA.length; i++) {
-    //   denominatorA += (listA[i] - meanProportionA) *
-    //       (listA[i] - meanProportionA);
-    //   denominatorB += (listB[i] - meanProportionB) *
-    //       (listB[i] - meanProportionB);
-    // }
-    //
-    // print((sqrt(denominatorA) * sqrt(denominatorB)));
-    // // Calculate the Pearson correlation coefficient
-    // double pearsonCoefficient =
-    //     numerator / (sqrt(denominatorA) * sqrt(denominatorB));
-    //
-    // return pearsonCoefficient;
+    double meanProportionA =
+        listA.reduce((sum, proportion) => sum + proportion) / listA.length;
+    double meanProportionB =
+        listB.reduce((sum, proportion) => sum + proportion) / listB.length;
 
-    return 0;
+    // Calculate the numerator of the Pearson correlation coefficient
+    double numerator = 0;
+    for (int i = 0; i < listA.length; i++) {
+      numerator += (listA[i] - meanProportionA) * (listB[i] - meanProportionB);
+    }
+
+    // Calculate the denominator for both lists
+    double denominatorA = 0;
+    double denominatorB = 0;
+    for (int i = 0; i < listA.length; i++) {
+      denominatorA +=
+          (listA[i] - meanProportionA) * (listA[i] - meanProportionA);
+      denominatorB +=
+          (listB[i] - meanProportionB) * (listB[i] - meanProportionB);
+    }
+
+    if ((sqrt(denominatorA) * sqrt(denominatorB)) == 0) {
+      return 0;
+    }
+    // Calculate the Pearson correlation coefficient
+    double pearsonCoefficient =
+        numerator / (sqrt(denominatorA) * sqrt(denominatorB));
+
+    return pearsonCoefficient;
   }
 }
