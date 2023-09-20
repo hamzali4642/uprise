@@ -102,11 +102,11 @@ class _DiscoveryState extends State<Discovery> {
   }
 
   Widget popularRadioWidget() {
-    var c = dataProvider.cities;
-    var cities = c
-        .where((element) => element.toLowerCase().contains(controller.text.toLowerCase()))
+    var s = dataProvider.radioStations;
+    var radioStations = s
+        .where((element) => element.name.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
-    return cities.isEmpty ? const SizedBox() : Column(
+    return radioStations.isEmpty ? const SizedBox() : Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const HeadingWidget(
@@ -116,12 +116,12 @@ class _DiscoveryState extends State<Discovery> {
           height: 20,
         ),
         CarouselSlider.builder(
-          itemCount: cities.length,
+          itemCount: radioStations.length,
           itemBuilder: (ctx, i, j) {
             return Align(
               alignment: Alignment.topCenter,
               child: RadioWidget(
-                name: cities[i],
+                radioStationModel: radioStations[i],
                 index: i,
               ),
             );

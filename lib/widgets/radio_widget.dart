@@ -4,16 +4,18 @@ import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/helpers/textstyles.dart';
+import 'package:uprise/models/radio_station.dart';
 import 'package:uprise/screens/dashboard/radio_details.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
 import '../helpers/colors.dart';
 
 class RadioWidget extends StatelessWidget {
-  const RadioWidget({super.key, required this.name, required this.index});
+  const RadioWidget(
+      {super.key, required this.index, required this.radioStationModel});
 
-  final String name;
   final int index;
+  final RadioStationModel radioStationModel;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class RadioWidget extends StatelessWidget {
         onTap: () {
           context.push(
               child: RadioDetails(
-            name: name,
+            radioStationModel: radioStationModel,
             index: index,
           ));
         },
@@ -48,7 +50,7 @@ class RadioWidget extends StatelessWidget {
                 right: 0,
                 bottom: 22,
                 child: Text(
-                  name,
+                  radioStationModel.name,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.clickable(
                     fontSize: 15,

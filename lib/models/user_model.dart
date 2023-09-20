@@ -30,6 +30,8 @@ class UserModel {
   List<String> followers = [];
   List<String> following = [];
   List<String> favourites = [];
+  List<String> favouriteRadioStations = [];
+
   List<String> blasts = [];
   List<String> listen = [];
 
@@ -81,15 +83,13 @@ class UserModel {
       "fArtist": fArtist,
       "fMixes": fMixes,
       "donationLink": donationLink,
-
-
     };
   }
 
   UserModel.fromMap(Map<String, dynamic> data) {
     id = data["id"];
-    username = data["username"];
-    email = data["email"];
+    username = data["username"] ?? "";
+    email = data["email"] ?? "";
     isBand = data["isBand"];
     bandName = data["bandName"];
     phone = data["phone"];
@@ -142,6 +142,12 @@ class UserModel {
     List favourites = data["favourites"] ?? [];
     this.favourites =
         List.generate(favourites.length, (index) => favourites[index]);
+
+    List favouriteRadioStations = data["favouriteRadioStations"] ?? [];
+
+    this.favouriteRadioStations = List.generate(favouriteRadioStations.length,
+        (index) => favouriteRadioStations[index]);
+
     List blasts = data["blasts"] ?? [];
     this.blasts = List.generate(blasts.length, (index) => blasts[index]);
     List listen = data["listen"] ?? [];
@@ -150,7 +156,6 @@ class UserModel {
     gallery = List.from(data["gallery"] ?? []);
 
     List upVotes = data["upVotes"] ?? [];
-    print(upVotes);
     this.upVotes = List.generate(upVotes.length, (index) => upVotes[index]);
 
     List downVotes = data["downVotes"] ?? [];

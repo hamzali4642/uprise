@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uprise/helpers/data_state.dart';
 import 'package:uprise/models/song_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/feed_widget.dart';
@@ -47,6 +48,10 @@ class _FeedState extends State<Feed> {
   }
 
   Widget recommendedRadioWidget() {
+    if (dataProvider.radioStationState == DataStates.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -62,22 +67,17 @@ class _FeedState extends State<Feed> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, i) {
-              if (i == 0) {
-                return const SizedBox(
-                  width: 1,
-                );
-              }
               return RadioWidget(
                 index: i,
-                name: dataProvider.cities[i - 1],
+                radioStationModel: dataProvider.radioStations[i],
               );
             },
-            itemCount: dataProvider.cities.length + 1,
+            itemCount: dataProvider.radioStations.length,
             separatorBuilder: (ctx, i) {
               if (i == 0) {
                 return const SizedBox();
               }
-              return SizedBox(
+              return const SizedBox(
                 width: 20,
               );
             },
@@ -131,14 +131,12 @@ class _FeedState extends State<Feed> {
     );
   }
 
-
   Widget blastedSongs() {
     List<SongModel> songs = [];
 
     songs = dataProvider.songs
         .where((element) => element.blasts.isNotEmpty)
         .toList();
-
 
     if (songs.isEmpty) {
       return const SizedBox();
@@ -176,7 +174,4 @@ class _FeedState extends State<Feed> {
       ],
     );
   }
-
-
-
 }

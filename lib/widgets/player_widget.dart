@@ -9,6 +9,7 @@ import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/data_state.dart';
 import 'package:uprise/models/song_model.dart';
+import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
@@ -292,15 +293,18 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           ),
                         ],
                       ),
-                      Text(
-                        dataProvider
-                            .getBand(dataProvider.currentSong!.bandId)!
-                            .bandName!,
-                        style: const TextStyle(
-                          color: CColors.primary,
-                          fontSize: 10,
-                        ),
-                      ),
+                      Builder(builder: (context) {
+                        UserModel? band = dataProvider
+                            .getBand(dataProvider.currentSong!.bandId);
+                        print(dataProvider.currentSong!.bandId);
+                        return Text(
+                           band!.bandName!,
+                          style: const TextStyle(
+                            color: CColors.primary,
+                            fontSize: 10,
+                          ),
+                        );
+                      }),
                       const SizedBox(height: 5),
                       ProgressBar(
                         thumbRadius: 5,

@@ -6,6 +6,7 @@ class SongModel {
   late String posterUrl;
   late String songUrl;
   late String bandId;
+  late String rid;
   late DateTime createdAt;
   late DateTime updatedAt;
   List<String> favourites = [];
@@ -14,11 +15,9 @@ class SongModel {
   late String state;
   late String country;
 
-
-
-
   List<String> upVotes = [];
   List<String> downVotes = [];
+
   SongModel({
     this.id,
     required this.title,
@@ -28,11 +27,8 @@ class SongModel {
     required this.posterUrl,
     required this.songUrl,
     required this.updatedAt,
-
     required this.state,
     required this.country,
-
-
   });
 
   Map<String, dynamic> toMap() {
@@ -44,10 +40,8 @@ class SongModel {
       "bandId": bandId,
       "posterUrl": posterUrl,
       "songUrl": songUrl,
-
       "state": state,
       "country": country,
-
       "createdAt": createdAt.millisecondsSinceEpoch,
       "updatedAt": updatedAt.millisecondsSinceEpoch,
     };
@@ -59,15 +53,14 @@ class SongModel {
     title = data["title"];
     city = data["city"];
 
-
     state = data["state"];
     country = data["country"];
 
-
     bandId = data["bandId"];
-    print(data["genre"]);
+    rid = data["rid"];
     // print(id);
-    genreList = List<String>.from(data["genre"]); // Assuming data["genre"] is a List<dynamic>
+    genreList = List<String>.from(
+        data["genre"]); // Assuming data["genre"] is a List<dynamic>
     posterUrl = data["posterUrl"];
     songUrl = data["songUrl"];
     createdAt = DateTime.fromMillisecondsSinceEpoch(data["createdAt"]);
@@ -76,12 +69,10 @@ class SongModel {
     this.favourites =
         List.generate(favourites.length, (index) => favourites[index]);
     List blasts = data["blasts"] ?? [];
-    this.blasts =
-        List.generate(blasts.length, (index) => blasts[index]);
+    this.blasts = List.generate(blasts.length, (index) => blasts[index]);
 
     List upVotes = data["upVotes"] ?? [];
-    this.upVotes =
-        List.generate(upVotes.length, (index) => upVotes[index]);
+    this.upVotes = List.generate(upVotes.length, (index) => upVotes[index]);
     List downVotes = data["downVotes"] ?? [];
     this.downVotes =
         List.generate(downVotes.length, (index) => downVotes[index]);

@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/generated/assets.dart';
+import 'package:uprise/helpers/textstyles.dart';
+import 'package:uprise/models/radio_station.dart';
 import 'package:uprise/models/song_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 
@@ -21,6 +24,8 @@ class Favorites extends StatefulWidget {
 
 class _FavoritesState extends State<Favorites> {
   late DataProvider dataProvider;
+
+  bool songSelected = true, radioSelected = false;
 
   @override
   void initState() {
@@ -43,19 +48,70 @@ class _FavoritesState extends State<Favorites> {
         child: Column(
           children: [
             const SizedBox(height: 40),
-            const Text(
-              "Your Favorites Songs list",
-              style: TextStyle(
-                fontSize: 14,
-                color: CColors.textColor,
+            IntrinsicHeight(
+              child: Row(
+                children: [
+                  tab("Favourite Songs", songSelected),
+                  Container(
+                    width: 1,
+                    color: Colors.black,
+                  ),
+                  tab("Favourite RadioStations", radioSelected),
+                ],
               ),
             ),
             const SizedBox(height: 20),
-            songs(),
+            if (songSelected) ...[
+              const Text(
+                "Your Favorites Songs list",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: CColors.textColor,
+                ),
+              ),
+              const SizedBox(height: 20),
+              songs(),
+              const SizedBox(height: 20),
+            ] else ...[
+              const Text(
+                "Your Favorites RadioStation list",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: CColors.textColor,
+                ),
+              ),
+              const SizedBox(height: 20),
+              radioStations(),
+              const SizedBox(height: 20),
+            ],
           ],
         ),
       );
     });
+  }
+
+  Widget tab(String header, bool value) {
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            songSelected = !songSelected;
+            radioSelected = !radioSelected;
+          });
+        },
+        child: Container(
+          width: double.infinity,
+          color: value ? CColors.primary : CColors.placeholder,
+          padding: const EdgeInsets.all(10),
+          alignment: Alignment.center,
+          child: Text(
+            header,
+            style: AppTextStyles.message(
+                color: value ? Colors.black : Colors.white),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget songs() {
@@ -69,6 +125,26 @@ class _FavoritesState extends State<Favorites> {
         itemCount: songs.length,
         itemBuilder: (ctx, index) {
           return songWidget(songs[index]);
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const SizedBox(height: 10);
+        },
+      ),
+    );
+  }
+
+  Widget radioStations() {
+    List<RadioStationModel> radioStations = dataProvider.radioStations
+        .where((element) => element.favourites
+            .any((fvrt) => fvrt == FirebaseAuth.instance.currentUser!.uid))
+        .toList();
+
+    return Expanded(
+      child: ListView.separated(
+        padding: EdgeInsets.zero,
+        itemCount: radioStations.length,
+        itemBuilder: (ctx, index) {
+          return radioWidget(radioStations[index]);
         },
         separatorBuilder: (BuildContext context, int index) {
           return const SizedBox(height: 10);
@@ -109,6 +185,39 @@ class _FavoritesState extends State<Favorites> {
                       style: const TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ],
+                ),
+              ),
+              const Icon(
+                Icons.favorite,
+                color: CColors.error,
+              )
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Divider(color: CColors.textColor),
+        ],
+      ),
+    );
+  }
+
+  Widget radioWidget(RadioStationModel model) {
+    return InkWell(
+      onTap: () {},
+      child: Column(
+        children: [
+          Row(
+            children: [
+              // Image(
+              //   height: 50,
+              //   width: 50,
+              //   fit: BoxFit.cover,
+              //   image: NetworkImage(model.posterUrl),
+              // ),
+              const SizedBox(width: 20),
+              Expanded(
+                child: Text(
+                  model.name,
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ),
               const Icon(

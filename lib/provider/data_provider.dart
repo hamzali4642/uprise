@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:uprise/helpers/data_state.dart';
 import 'package:uprise/models/post_model.dart';
+import 'package:uprise/models/radio_station.dart';
 import 'package:uprise/models/user_model.dart';
 import '../models/event_model.dart';
 import '../models/song_model.dart';
@@ -26,11 +27,13 @@ class DataProvider extends ChangeNotifier {
   List<String> genres = [];
   List<UserModel> users = [];
   List<String> cities = [];
+  List<RadioStationModel> radioStations = [];
 
   DataStates profileState = DataStates.waiting;
   DataStates songsState = DataStates.waiting;
   DataStates eventState = DataStates.waiting;
   DataStates postState = DataStates.waiting;
+  DataStates radioStationState = DataStates.waiting;
 
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? userSubscriptions;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? songSubscription;
@@ -39,6 +42,7 @@ class DataProvider extends ChangeNotifier {
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? genreSubscription;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? userListSubscription;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? citySubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? radioStationsStream;
 
   StreamSubscription<Duration>? duration;
 
@@ -52,7 +56,6 @@ class DataProvider extends ChangeNotifier {
   Duration? bufferedTime = const Duration(seconds: 0);
 
   String _type = "City";
-
 
   String get type => _type;
 
@@ -77,6 +80,7 @@ class DataProvider extends ChangeNotifier {
         getSongs();
         getEvents();
         getPosts();
+        getRadioStations();
       }
     });
   }
@@ -103,6 +107,7 @@ class DataProvider extends ChangeNotifier {
     userListSubscription = db.collection("users").snapshots().listen((event) {
       users = [];
       var docs = event.docs.where((element) => element.exists).toList();
+
       users = List.generate(
         docs.length,
         (index) => UserModel.fromMap(
@@ -137,6 +142,18 @@ class DataProvider extends ChangeNotifier {
       var cities = List.generate(songs.length, (index) => songs[index].city);
       this.cities = cities.toSet().toList();
       songsState = DataStates.success;
+      notifyListeners();
+    });
+  }
+
+  getRadioStations() async {
+    radioStationsStream =
+        db.collection("radiostation").snapshots().listen((event) {
+      radioStations = [];
+      radioStations = event.docs
+          .map((doc) => RadioStationModel.fromMap(doc.data()))
+          .toList();
+      radioStationState = DataStates.success;
       notifyListeners();
     });
   }
@@ -183,19 +200,23 @@ class DataProvider extends ChangeNotifier {
     } else {
       print("null");
     }
-    print(total);
     notifyListeners();
   }
 
   UserModel? getBand(String id) {
+
+
     UserModel? userModel;
 
     for (var user in users) {
+
       if (user.id == id) {
         userModel = user;
         break;
       }
     }
+
+
 
     return userModel;
   }
@@ -365,6 +386,7 @@ class DataProvider extends ChangeNotifier {
     citySubscription?.cancel();
     duration?.cancel();
     userSubscriptions?.cancel();
+    radioStationsStream?.cancel();
   }
 
   SongModel getSong(String id) {
