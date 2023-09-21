@@ -1,15 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/radio_station.dart';
 import 'package:uprise/models/song_model.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:utility_extensions/extensions/context_extensions.dart';
 
 import '../../../helpers/colors.dart';
 import '../../../helpers/constants.dart';
 import '../../../widgets/custom_asset_image.dart';
+import '../radio_details.dart';
 
 typedef UserCallBack = void Function(int);
 
@@ -144,7 +147,7 @@ class _FavoritesState extends State<Favorites> {
         padding: EdgeInsets.zero,
         itemCount: radioStations.length,
         itemBuilder: (ctx, index) {
-          return radioWidget(radioStations[index]);
+          return radioWidget(radioStations[index], index);
         },
         separatorBuilder: (BuildContext context, int index) {
           return const SizedBox(height: 10);
@@ -200,19 +203,33 @@ class _FavoritesState extends State<Favorites> {
     );
   }
 
-  Widget radioWidget(RadioStationModel model) {
+  Widget radioWidget(RadioStationModel model, int index) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        context.push(
+            child: RadioDetails(
+          radioStationModel: model,
+          index: index,
+        ));
+      },
       child: Column(
         children: [
           Row(
             children: [
-              // Image(
-              //   height: 50,
-              //   width: 50,
-              //   fit: BoxFit.cover,
-              //   image: NetworkImage(model.posterUrl),
-              // ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Constants.colors[index % Constants.colors.length],
+                ),
+                alignment: Alignment.topCenter,
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: SvgPicture.asset(
+                    Assets.imagesRadioStations,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+              ),
               const SizedBox(width: 20),
               Expanded(
                 child: Text(
@@ -220,10 +237,18 @@ class _FavoritesState extends State<Favorites> {
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ),
-              const Icon(
-                Icons.favorite,
-                color: CColors.error,
-              )
+              Builder(builder: (context) {
+                bool isFavourite = dataProvider
+                    .userModel!.favouriteRadioStations
+                    .contains(model.id);
+
+                return Icon(
+                  isFavourite
+                      ? Icons.favorite
+                      : Icons.favorite_outline_outlined,
+                  color: isFavourite ? Colors.red : CColors.textColor,
+                );
+              })
             ],
           ),
           const SizedBox(height: 10),

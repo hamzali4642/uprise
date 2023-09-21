@@ -28,7 +28,7 @@ class _EventDetailsState extends State<EventDetails> {
 
   late CameraPosition cameraPosition;
 
-  final Set<Marker> _markers = Set<Marker>();
+  final Set<Marker> _markers = <Marker>{};
 
   @override
   void initState() {
