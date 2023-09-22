@@ -1,11 +1,12 @@
-
 import 'dart:math';
+import 'package:geocoding/geocoding.dart';
 
 import 'package:flutter/material.dart';
+import 'package:google_geocoding/google_geocoding.dart' hide Location;
 
 import 'colors.dart';
-class Functions{
 
+class Functions {
   static showSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -69,4 +70,10 @@ class Functions{
     return Color.fromARGB(255, red + 128, green + 128, blue + 128);
   }
 
+  static Future<Map<String, dynamic>> getLatLongFromAddress(
+      String address) async {
+    List<Location> locations = await locationFromAddress(address);
+
+    return {"lat": locations.first.latitude, "long": locations.first.longitude};
+  }
 }

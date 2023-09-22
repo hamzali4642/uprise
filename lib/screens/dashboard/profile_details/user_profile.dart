@@ -318,7 +318,6 @@ class _UserProfileState extends State<UserProfile> {
           await FirebaseAuth.instance.signOut();
           await GoogleSignIn().signOut();
           await GoogleSignIn().currentUser?.clearAuthCache();
-          await GoogleSignIn().disconnect();
 
 
         var p = Provider.of<DashboardProvider>(context, listen: false);

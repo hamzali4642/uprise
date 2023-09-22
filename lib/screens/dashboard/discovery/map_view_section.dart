@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/helpers/textstyles.dart';
+import 'package:uprise/provider/data_provider.dart';
 
 class MapViewSection extends StatefulWidget {
   const MapViewSection({Key? key}) : super(key: key);
@@ -10,43 +14,67 @@ class MapViewSection extends StatefulWidget {
 }
 
 class _MapViewSectionState extends State<MapViewSection> {
-
   late CameraPosition cameraPosition;
 
-  Set<Polygon> polygons = {};
+  late DataProvider dataProvider;
+
+  Set<Circle> circles = {};
 
   @override
   void initState() {
     super.initState();
 
+    dataProvider = context.read<DataProvider>();
     cameraPosition =
-    const CameraPosition(target: LatLng(39.3426728, 9.2390613), zoom: 2);
+        const CameraPosition(target: LatLng(31.5212832, 74.4375577), zoom: 8);
+    addCircles();
+  }
 
-    polygons.add(Polygon(
-      polygonId: PolygonId('highlight_polygon'),
-      points: [
-        LatLng(38.9357948,-9.241254),
-        LatLng(38.9357948, -9.241254),
-        LatLng(38.9357948, -9.241254),
-        LatLng(38.6112076, -9.2115624),
-      ],
-      fillColor: Colors.red.withOpacity(0.5),
-      strokeWidth: 2,
-      strokeColor: Colors.red,
-    ));
+  addCircles() {
+    Map<String, dynamic> cities = {};
+
+    for (var element in dataProvider.songs) {
+      cities["${element.city},${element.country}"] =
+          (cities["${element.city},${element.country}"] == null)
+              ? 1
+              : cities["${element.city},${element.country}"] + 1;
+    }
+
+    cities.forEach((key, value) async {
+      Map<String, dynamic> position =
+          await Functions.getLatLongFromAddress(key);
+      print("$key $value");
+      print(position);
+
+      circles.add(Circle(
+          strokeWidth: 1,
+          center: LatLng(position["lat"], position["long"]),
+          circleId: CircleId(key),
+          radius: 10000,
+          fillColor: value <= 5
+              ? Colors.green.withOpacity(0.5)
+              : value > 5 && value <= 20
+                  ? Colors.yellow.withOpacity(0.5)
+                  : Colors.red.withOpacity(0.5)));
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Map View Section",style: TextStyle(color: Colors.white),),
+        title: const Text(
+          "Map View Section",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
-        body: GoogleMap(
-      polygons: polygons,
-      scrollGesturesEnabled: true,
-      myLocationButtonEnabled: false,
-      initialCameraPosition: cameraPosition,
-    ));
+      body: GoogleMap(
+        circles: circles,
+        scrollGesturesEnabled: true,
+        myLocationButtonEnabled: false,
+        initialCameraPosition: cameraPosition,
+      ),
+    );
   }
 }
