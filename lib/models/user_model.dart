@@ -16,7 +16,7 @@ class UserModel {
 
   String? donationLink;
 
-  late String city;
+  String? city;
   late String state;
   late String country;
 
@@ -54,6 +54,7 @@ class UserModel {
     required this.email,
     required this.isBand,
     this.bandName,
+    this.city,
     this.phone,
     this.facebook,
     this.instagram,
@@ -83,6 +84,7 @@ class UserModel {
       "fArtist": fArtist,
       "fMixes": fMixes,
       "donationLink": donationLink,
+      "city" : city
     };
   }
 

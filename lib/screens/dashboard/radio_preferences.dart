@@ -39,7 +39,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
           dataProvider = provider;
           if(check){
             dashboardProvider.selectedGenres = dataProvider.userModel!.selectedGenres;
-            city.text = dataProvider.userModel!.city;
+            city.text = dataProvider.userModel!.city!;
             state.text = dataProvider.userModel!.state;
             latitude = dataProvider.userModel!.latitude;
             longitude = dataProvider.userModel!.longitude;

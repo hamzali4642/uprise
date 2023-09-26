@@ -76,4 +76,25 @@ class Functions {
 
     return {"lat": locations.first.latitude, "long": locations.first.longitude};
   }
+
+  static Future<String> getCityFromLatLong(double lat, double long) async {
+    String location = "";
+
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+
+      if (placemarks != null && placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[0];
+        String? city = placemark.locality;
+
+        location = "$city";
+      } else {
+        print('No placemarks found.');
+      }
+    } catch (e) {
+      print('Error getting location: $e');
+    }
+
+    return location;
+  }
 }

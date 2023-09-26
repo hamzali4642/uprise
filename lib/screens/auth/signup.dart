@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
@@ -34,7 +35,6 @@ class _SignUpState extends State<SignUp> {
   TextEditingController paypalEmail = TextEditingController();
 
   TextEditingController donationLink = TextEditingController();
-
 
   bool emailError = false;
   bool passwordError = false;
@@ -464,6 +464,7 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
+
   Widget buildText(String str, {Color color = Colors.white}) {
     return Text(
       str,
@@ -492,4 +493,6 @@ class _SignUpState extends State<SignUp> {
         .get();
     return docs.docs.isEmpty;
   }
+
+
 }

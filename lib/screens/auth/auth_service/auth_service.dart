@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:utility_extensions/extensions/context_extensions.dart';
 
@@ -18,6 +20,16 @@ class AuthService {
       BuildContext context, UserModel model, String password) async {
     try {
       Functions.showLoaderDialog(context);
+
+      Map<String, dynamic> position = await determinePosition(context);
+
+      double lat = position["lat"];
+      double long = position["long"];
+
+      String city = await Functions.getCityFromLatLong(lat, long);
+
+      print(city);
+      model.city = city;
 
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: model.email, password: password);
@@ -54,6 +66,56 @@ class AuthService {
       print(e.message);
     }
   }
+
+
+  static Future<Map<String, double>> determinePosition(BuildContext context) async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      showError('Location services are disabled.',context);
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        if (permission == LocationPermission.deniedForever) {
+          showError('Location permissions are denied', context);
+        }
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      showError(
+          'Location permissions are permanently denied, we cannot request permissions. Turn these on from settings',context);
+    }
+
+    var position = await Geolocator.getCurrentPosition();
+
+    return {"lat": position.latitude, "long": position.longitude};
+  }
+
+  static showError(String message,BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            content: Text(
+              message,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  context.pop();
+                  determinePosition(context);
+                },
+                child: Text("Retry"),
+              ),
+            ],
+          );
+        });
+  }
+
 
   static Future<void> signIn(
       BuildContext context, String email, String password) async {

@@ -19,7 +19,7 @@ class _MapViewSectionState extends State<MapViewSection> {
   Set<Circle> circles = {};
 
   @override
-  void initState() {
+  void initState()  {
     super.initState();
 
     dataProvider = context.read<DataProvider>();
