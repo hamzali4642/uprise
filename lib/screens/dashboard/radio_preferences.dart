@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/select_location.dart';
 import 'package:uprise/widgets/genere_tile_widget.dart';
@@ -22,7 +23,7 @@ class RadioPreferences extends StatefulWidget {
 class _RadioPreferencesState extends State<RadioPreferences> {
   var city = TextEditingController();
   var state = TextEditingController();
-  var country = TextEditingController(text: "USA");
+  var country = TextEditingController();
 
   double? latitude, longitude;
   late DataProvider dataProvider;
@@ -41,6 +42,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
             dashboardProvider.selectedGenres = dataProvider.userModel!.selectedGenres;
             city.text = dataProvider.userModel!.city!;
             state.text = dataProvider.userModel!.state;
+            country.text = dataProvider.userModel!.country!;
             latitude = dataProvider.userModel!.latitude;
             longitude = dataProvider.userModel!.longitude;
             check = false;
@@ -84,7 +86,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                               : country,
                       hint: "Manually Enter Location",
                       errorText: "errorText",
-                      enable: type == "City" ? city.text.isEmpty : type != "Country",
+                      enable: type == "City" && city.text.isEmpty || type == "State" && state.text.isEmpty || type == "Country" && country.text.isEmpty  ,
                       onChange: (value) async {
                         if (value.trim().isEmpty) {
                           responses = [];
@@ -137,8 +139,8 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          dataProvider.updateUserPref({
+                        onPressed: () async {
+                         await  dataProvider.updateUserPref({
                             "selectedGenres" : dashboardProvider.selectedGenres,
                             "city" : city.text,
                             "country" : country.text,
@@ -146,6 +148,8 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                             "latitude" : latitude,
                             "longitude" : longitude,
                           });
+                         Functions.showSnackBar(context, "Data successfully saved");
+
                         },
                         child: Text(
                           "Save",

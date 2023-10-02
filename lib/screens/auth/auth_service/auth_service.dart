@@ -26,10 +26,11 @@ class AuthService {
       double lat = position["lat"];
       double long = position["long"];
 
-      String city = await Functions.getCityFromLatLong(lat, long);
+      Map<String,dynamic> location = await Functions.getCityFromLatLong(lat, long);
 
-      print(city);
-      model.city = city;
+      model.city = location["city"];
+      model.state = location["state"];
+      model.country = location["country"];
 
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: model.email, password: password);

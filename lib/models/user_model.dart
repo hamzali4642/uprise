@@ -84,7 +84,9 @@ class UserModel {
       "fArtist": fArtist,
       "fMixes": fMixes,
       "donationLink": donationLink,
-      "city" : city
+      "city": city,
+      "state": state,
+      "country": country,
     };
   }
 

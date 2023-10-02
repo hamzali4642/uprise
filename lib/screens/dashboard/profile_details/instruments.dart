@@ -52,7 +52,7 @@ class _InstrumentsState extends State<Instruments> {
             children: [
               const SizedBox(height: 10),
               const Text(
-                "Choose an instrument that you are interested in",
+                "Choose an instrument that you play",
                 style: TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 50),

@@ -77,8 +77,10 @@ class Functions {
     return {"lat": locations.first.latitude, "long": locations.first.longitude};
   }
 
-  static Future<String> getCityFromLatLong(double lat, double long) async {
+  static Future<Map<String, String>> getCityFromLatLong(double lat, double long) async {
     String location = "";
+    String state = "";
+    String country = "";
 
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
@@ -86,6 +88,8 @@ class Functions {
       if (placemarks != null && placemarks.isNotEmpty) {
         Placemark placemark = placemarks[0];
         String? city = placemark.locality;
+        state = placemark.administrativeArea ?? "";
+         country = placemark.country ?? "";
 
         location = "$city";
       } else {
@@ -95,6 +99,7 @@ class Functions {
       print('Error getting location: $e');
     }
 
-    return location;
+    return {"city" : location, "state" : state, "country" : country};
   }
+
 }

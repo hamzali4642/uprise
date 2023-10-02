@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/models/song_model.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
@@ -198,6 +199,7 @@ class _UserProfileState extends State<UserProfile> {
                           user.donationLink = donationLink.text;
                           value.updateUser(user);
                           widget.callBack(false);
+                          Functions.showSnackBar(context, "Profile Successfully update");
                         },
                         child: const Text(
                           "Save",
