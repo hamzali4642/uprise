@@ -39,6 +39,7 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+
   TextEditingController facebook = TextEditingController();
   TextEditingController instagram = TextEditingController();
   TextEditingController twitter = TextEditingController();
@@ -50,10 +51,7 @@ class _UserProfileState extends State<UserProfile> {
   TextEditingController fArtist = TextEditingController();
   TextEditingController fMixes = TextEditingController();
 
-
   TextEditingController donationLink = TextEditingController();
-
-
 
   late DataProvider provider;
 
@@ -176,7 +174,7 @@ class _UserProfileState extends State<UserProfile> {
                   platform("Favourite Independant Artist:", fArtist),
                   const SizedBox(height: 30),
                   platform("Favourite Mixes:", fMixes),
-                  if(value.userModel!.isBand)...[
+                  if (value.userModel!.isBand) ...[
                     const SizedBox(height: 30),
                     platform("Donation Link:", donationLink),
                   ],
@@ -199,7 +197,8 @@ class _UserProfileState extends State<UserProfile> {
                           user.donationLink = donationLink.text;
                           value.updateUser(user);
                           widget.callBack(false);
-                          Functions.showSnackBar(context, "Profile Successfully update");
+                          Functions.showSnackBar(
+                              context, "Profile Successfully update");
                         },
                         child: const Text(
                           "Save",
@@ -222,8 +221,7 @@ class _UserProfileState extends State<UserProfile> {
                             email: value.userModel!.email,
                           )),
                     const SizedBox(height: 13),
-                    btn("Music Skills", context,
-                        const Instruments()),
+                    btn("Music Skills", context, const Instruments()),
                     const SizedBox(
                       height: 13,
                     ),
@@ -316,18 +314,15 @@ class _UserProfileState extends State<UserProfile> {
     return InkWell(
       onTap: () async {
         if (widget is SignIn) {
-
           await FirebaseAuth.instance.signOut();
           await GoogleSignIn().signOut();
           await GoogleSignIn().currentUser?.clearAuthCache();
 
-
-        var p = Provider.of<DashboardProvider>(context, listen: false);
+          var p = Provider.of<DashboardProvider>(context, listen: false);
           p.selectedIndex = 0;
           p.homeSelected = "Feed";
         }
         context.push(child: widget);
-
       },
       child: Text(
         str,
@@ -475,7 +470,7 @@ class _UserProfileState extends State<UserProfile> {
         const SizedBox(width: 20),
         Expanded(
           child: Text(
-            textAlign : TextAlign.center,
+            textAlign: TextAlign.center,
             "Activity Points: ${provider.userModel!.favourites.length}",
             // "Activity Points:\t${getComparisonScore()}",
             style: const TextStyle(

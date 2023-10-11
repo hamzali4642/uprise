@@ -250,32 +250,38 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                 .contains(dataProvider.currentSong!.id);
                             return InkWell(
                               onTap: () {
-                                var uid =
-                                    FirebaseAuth.instance.currentUser!.uid;
-                                var db = FirebaseFirestore.instance;
-                                if (isFavourite) {
-                                  db.collection("users").doc(uid).update({
-                                    "favourites": FieldValue.arrayRemove(
-                                        [dataProvider.currentSong!.id]),
-                                  });
-                                  db
-                                      .collection("Songs")
-                                      .doc(dataProvider.currentSong!.id)
-                                      .update({
-                                    "favourites": FieldValue.arrayRemove([uid]),
-                                  });
-                                } else {
-                                  db.collection("users").doc(uid).update({
-                                    "favourites": FieldValue.arrayUnion(
-                                        [dataProvider.currentSong!.id]),
-                                  });
-                                  db
-                                      .collection("Songs")
-                                      .doc(dataProvider.currentSong!.id)
-                                      .update({
-                                    "favourites": FieldValue.arrayUnion([uid]),
-                                  });
-                                }
+
+                                UserModel? band = dataProvider
+                                    .getBand(dataProvider.currentSong!.bandId);
+
+                                  var uid =
+                                      FirebaseAuth.instance.currentUser!.uid;
+                                  var db = FirebaseFirestore.instance;
+                                  if (isFavourite) {
+                                    db.collection("users").doc(uid).update({
+                                      "favourites": FieldValue.arrayRemove(
+                                          [dataProvider.currentSong!.id]),
+                                    });
+                                    db
+                                        .collection("Songs")
+                                        .doc(dataProvider.currentSong!.id)
+                                        .update({
+                                      "favourites":
+                                          FieldValue.arrayRemove([uid]),
+                                    });
+                                  } else {
+                                    db.collection("users").doc(uid).update({
+                                      "favourites": FieldValue.arrayUnion(
+                                          [dataProvider.currentSong!.id]),
+                                    });
+                                    db
+                                        .collection("Songs")
+                                        .doc(dataProvider.currentSong!.id)
+                                        .update({
+                                      "favourites":
+                                          FieldValue.arrayUnion([uid]),
+                                    });
+                                  }
                               },
                               child: Icon(
                                 isFavourite
@@ -296,9 +302,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                       Builder(builder: (context) {
                         UserModel? band = dataProvider
                             .getBand(dataProvider.currentSong!.bandId);
-                        print(dataProvider.currentSong!.bandId);
+
                         return Text(
-                           band!.bandName!,
+                          "${band!.bandName!}: ${band.city}",
                           style: const TextStyle(
                             color: CColors.primary,
                             fontSize: 10,

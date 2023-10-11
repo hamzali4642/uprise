@@ -148,7 +148,9 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                             "latitude" : latitude,
                             "longitude" : longitude,
                           });
+                         context.pop();
                          Functions.showSnackBar(context, "Data successfully saved");
+
 
                         },
                         child: Text(

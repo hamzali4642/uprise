@@ -85,11 +85,12 @@ class _DiscoveryState extends State<Discovery> {
   var height = 250.0;
 
   Widget popularBandsWidget() {
-    var b = dataProvider.users.where((element) => element.isBand).toList();
-    var bands = b
-        .where((element) => element.bandName!
-            .toLowerCase()
-            .contains(controller.text.toLowerCase()))
+    var bands = dataProvider.users
+        .where((element) =>
+            element.isBand &&
+            element.bandName!
+                .toLowerCase()
+                .contains(controller.text.toLowerCase()))
         .toList();
 
     return bands.isEmpty

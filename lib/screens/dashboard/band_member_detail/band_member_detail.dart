@@ -377,9 +377,6 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
       }
     }
 
-    list1.forEach((key, value) {
-      print(value);
-    });
 
     List<double> listA = [];
     List<double> listB = [];
@@ -391,17 +388,6 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
       listB.add(value);
     });
 
-    // Calculate the mean proportions for each list
-
-    // var myScore = getComparisonScore(dataProvider.userModel!);
-    // var memberScore = getComparisonScore(widget.model);
-    // print(memberScore);
-    //
-    // var listA = [myScore.toDouble(), myScore.toDouble(),0.5, 0.2];
-    // var listB = [memberScore.toDouble(), memberScore.toDouble(), .2,.2];
-    //
-    // print(listA.length);
-    // print(listB.length);
     double meanProportionA =
         listA.reduce((sum, proportion) => sum + proportion) / listA.length;
     double meanProportionB =

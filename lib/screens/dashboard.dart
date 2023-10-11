@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -98,7 +97,7 @@ class _DashboardState extends State<Dashboard> {
                               provider.selectedIndex == 2
                           ? true
                           : false,
-                      header: WaterDropHeader(),
+                      header: const WaterDropHeader(),
                       child: Column(
                         children: [
                           if (provider.selectedIndex == 0 ||
@@ -241,7 +240,7 @@ class _DashboardState extends State<Dashboard> {
                     horizontal: 10,
                   ),
                   child: Text(
-                    dataProvider.userModel?.city ?? "",
+                    "${dataProvider.userModel?.city}, ${dataProvider.userModel?.state}",
                     style: AppTextStyles.message(
                         color: Colors.white, fontSize: 15),
                   ),
@@ -497,6 +496,7 @@ class _DashboardState extends State<Dashboard> {
                   .doc(dataProvider.currentSong!.id);
 
               bool isDisable;
+              bool isDisable1;
 
               if (isUpvote ||
                   dataProvider.currentSong?.city !=
@@ -506,17 +506,29 @@ class _DashboardState extends State<Dashboard> {
                 isDisable = false;
               }
 
+              if (isDownVote ||
+                  dataProvider.currentSong?.city !=
+                      dataProvider.userModel?.city) {
+                isDisable1 = true;
+              } else {
+                isDisable1 = false;
+              }
+
               return overlayItemWidget(
                 "DownVote",
                 "Upvote",
-                isDownVote
+                isDisable1
                     ? Assets.imagesDisableDownvote
                     : Assets.imagesDownvote,
                 isDisable
                     ? Assets.imagesDisableUpVoteIcon
                     : Assets.imagesUpvote,
                 () {
-                  if (!isDownVote) {
+                  print(dataProvider.currentSong!.id);
+
+                  if (!isDownVote &&
+                      dataProvider.currentSong?.city ==
+                          dataProvider.userModel?.city) {
                     my.update({
                       "upVotes": FieldValue.arrayRemove(
                           [dataProvider.currentSong!.id]),
@@ -528,11 +540,12 @@ class _DashboardState extends State<Dashboard> {
                       "upVotes": FieldValue.arrayRemove([uid]),
                       "downVotes": FieldValue.arrayUnion([uid]),
                     });
+                    // }
                   }
                 },
                 () {
                   if (!isUpvote &&
-                      dataProvider.currentSong?.city !=
+                      dataProvider.currentSong?.city ==
                           dataProvider.userModel?.city) {
                     my.update({
                       "upVotes":
@@ -571,7 +584,7 @@ class _DashboardState extends State<Dashboard> {
     double margin,
   ) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         children: [
           Expanded(
@@ -587,9 +600,7 @@ class _DashboardState extends State<Dashboard> {
                       fontSize: 16,
                     ),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
+                  const SizedBox(width: 10),
                   SvgPicture.asset(
                     image1,
                   ),
@@ -609,9 +620,7 @@ class _DashboardState extends State<Dashboard> {
                   SvgPicture.asset(
                     image2,
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
+                  const SizedBox(width: 10),
                   Text(
                     text2,
                     style: const TextStyle(

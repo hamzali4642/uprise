@@ -96,23 +96,22 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
                 ],
               ),
               const SizedBox(height: 5),
-              Builder(
-                builder: (context) {
-                  var band = dataProvider.getBand(dataProvider.currentSong!.bandId)!;
-                  return InkWell(
-                    onTap: (){
-                      context.push(child: BandDetails(band: band));
-                    },
-                    child: Text(
-                      band.bandName!,
-                      style: const TextStyle(
-                        color: CColors.primary,
-                        fontSize: 18,
-                      ),
+              Builder(builder: (context) {
+                var band =
+                    dataProvider.getBand(dataProvider.currentSong!.bandId)!;
+                return InkWell(
+                  onTap: () {
+                    context.push(child: BandDetails(band: band));
+                  },
+                  child: Text(
+                    "${band.bandName!}: ${band.city}",
+                    style: const TextStyle(
+                      color: CColors.primary,
+                      fontSize: 18,
                     ),
-                  );
-                }
-              ),
+                  ),
+                );
+              }),
               const SizedBox(height: 40),
               ProgressBar(
                 thumbRadius: 10,

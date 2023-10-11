@@ -118,16 +118,17 @@ class _FavoritesState extends State<Favorites> {
   }
 
   Widget songs() {
-    List<SongModel> songs = dataProvider.userModel!.favourites
+    List<SongModel?> songs = dataProvider.userModel!.favourites
         .map((e) => dataProvider.getSong(e))
         .toList();
+    songs = songs.where((element) => element != null).toList();
 
     return Expanded(
       child: ListView.separated(
         padding: EdgeInsets.zero,
         itemCount: songs.length,
         itemBuilder: (ctx, index) {
-          return songWidget(songs[index]);
+          return songWidget(songs[index]!);
         },
         separatorBuilder: (BuildContext context, int index) {
           return const SizedBox(height: 10);

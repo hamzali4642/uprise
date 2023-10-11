@@ -389,8 +389,19 @@ class DataProvider extends ChangeNotifier {
     radioStationsStream?.cancel();
   }
 
-  SongModel getSong(String id) {
-    SongModel songModel = songs.firstWhere((element) => element.id == id);
-    return songModel;
+  SongModel? getSong(String id) {
+    try {
+      SongModel songModel = songs.firstWhere((element) => element.id == id);
+      return songModel;
+    } catch (e) {
+      // Handle the case where no element matches the condition.
+      print("Song with ID $id not found.");
+      return null; // You can return null or another appropriate value.
+    }
+  }
+
+  @override
+  String toString() {
+    return 'DataProvider{db: $db, userModel: $userModel, songs: $songs, events: $events, posts: $posts, genres: $genres, users: $users, cities: $cities, radioStations: $radioStations, profileState: $profileState, songsState: $songsState, eventState: $eventState, postState: $postState, radioStationState: $radioStationState, userSubscriptions: $userSubscriptions, songSubscription: $songSubscription, eventSubscription: $eventSubscription, postsSubscription: $postsSubscription, genreSubscription: $genreSubscription, userListSubscription: $userListSubscription, citySubscription: $citySubscription, radioStationsStream: $radioStationsStream, duration: $duration, audioPlayer: $audioPlayer, total: $total, isPlaying: $isPlaying, audioState: $audioState, completed: $completed, bufferedTime: $bufferedTime, _type: $_type, _currentSong: $_currentSong}';
   }
 }

@@ -28,7 +28,7 @@ class Constants {
   static List<PopupMenuItem> menuItem = [
     returnMenu("profile", "Profile"),
     returnMenu("discovery", "Discovery"),
-    returnMenu("favourites", "Favourites"),
+    returnMenu("favourites", "Favorite"),
     returnMenu("instruments", "Music Skills"),
     returnMenu("logout", "Logout"),
   ];
