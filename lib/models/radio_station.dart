@@ -5,6 +5,8 @@ class RadioStationModel {
   late String city;
   late String color;
   late String country;
+  late String genre;
+
   List<String> favourites = [];
 
   RadioStationModel(
@@ -13,7 +15,8 @@ class RadioStationModel {
       required this.state,
       required this.city,
       required this.name,
-      required this.color});
+      required this.color,
+      required this.genre});
 
   RadioStationModel.fromMap(Map<String, dynamic> data) {
     id = data["id"];
@@ -22,7 +25,7 @@ class RadioStationModel {
     city = data["city"];
     color = data["color"];
     country = data["country"];
-
+    genre = data["genre"];
     List favourites = data["favourites"] ?? [];
     this.favourites =
         List<String>.generate(favourites.length, (index) => favourites[index]);

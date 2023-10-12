@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/data_state.dart';
+import 'package:uprise/models/radio_station.dart';
 import 'package:uprise/models/song_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/feed_widget.dart';
@@ -52,6 +53,32 @@ class _FeedState extends State<Feed> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    List<RadioStationModel> radioStations = dataProvider.radioStations
+        .where((element) =>
+            element.genre == dataProvider.userModel!.selectedGenres.first)
+        .toList();
+
+    if (radioStations.isNotEmpty) {
+      if (dataProvider.type == "City") {
+        radioStations = radioStations
+            .where((element) => element.city == dataProvider.userModel!.city)
+            .toList();
+      } else if (dataProvider.type == "State") {
+        radioStations = radioStations
+            .where((element) => element.state == dataProvider.userModel!.state)
+            .toList();
+      } else {
+        radioStations = radioStations
+            .where(
+                (element) => element.country == dataProvider.userModel!.country)
+            .toList();
+      }
+    }
+
+    if (radioStations.isEmpty) {
+      return const SizedBox();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -69,10 +96,10 @@ class _FeedState extends State<Feed> {
             itemBuilder: (ctx, i) {
               return RadioWidget(
                 index: i,
-                radioStationModel: dataProvider.radioStations[i],
+                radioStationModel: radioStations[i],
               );
             },
-            itemCount: dataProvider.radioStations.length,
+            itemCount: radioStations.length,
             separatorBuilder: (ctx, i) {
               if (i == 0) {
                 return const SizedBox();
@@ -94,6 +121,33 @@ class _FeedState extends State<Feed> {
         .where((element) => dataProvider.userModel!.following
             .any((follow) => follow == element.bandId))
         .toList();
+
+    if (dataProvider.type == "City") {
+      songs = dataProvider.songs
+          .where((element) =>
+      element.genreList.any((genre) =>
+      genre ==
+          dataProvider.userModel!.selectedGenres.first) &&
+          element.upVotes.length < 25)
+          .toList();
+    } else if (dataProvider.type == "State") {
+      songs = dataProvider.songs
+          .where((element) =>
+      element.genreList.any((genre) =>
+      genre ==
+          dataProvider.userModel!.selectedGenres.first) &&
+          (element.upVotes.length >= 25 &&
+              element.upVotes.length < 75))
+          .toList();
+    } else {
+      songs = dataProvider.songs
+          .where((element) =>
+      element.genreList.any((genre) =>
+      genre ==
+          dataProvider.userModel!.selectedGenres.first) &&
+          element.upVotes.length >= 75 )
+          .toList();
+    }
 
     songs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 

@@ -16,13 +16,17 @@ class Events extends StatelessWidget {
       return check?.toSliver ??
           CustomScrollView(
             slivers: [
-              SliverList(
-                delegate: SliverChildBuilderDelegate((ctx, i) {
-                  return EventWidget(eventModel: value.events[i]);
-                }, childCount: value.events.length),
-              ),
+              events(value),
             ],
           );
     });
+  }
+
+  Widget events(DataProvider value) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((ctx, i) {
+        return EventWidget(eventModel: value.events[i]);
+      }, childCount: value.events.length),
+    );
   }
 }

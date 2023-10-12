@@ -26,11 +26,11 @@ class EventModel {
       "id": id,
       "name": name,
       "venue": venue,
-      "bandId" : bandId,
+      "bandId": bandId,
       "posterUrl": posterUrl,
       "startDate": startDate.millisecondsSinceEpoch,
       "endDate": endDate.millisecondsSinceEpoch,
-      "description" : description,
+      "description": description,
       "latitude": latitude,
       "longitude": longitude,
     };

@@ -85,12 +85,16 @@ class _DiscoveryState extends State<Discovery> {
   var height = 250.0;
 
   Widget popularBandsWidget() {
-    var bands = dataProvider.users
+    var bands = [];
+    bands = dataProvider.users
         .where((element) =>
             element.isBand &&
             element.bandName!
                 .toLowerCase()
-                .contains(controller.text.toLowerCase()))
+                .contains(controller.text.toLowerCase()) &&
+            element.selectedGenres.isNotEmpty &&
+            element.selectedGenres.first ==
+                dataProvider.userModel!.selectedGenres.first)
         .toList();
 
     return bands.isEmpty
@@ -128,6 +132,7 @@ class _DiscoveryState extends State<Discovery> {
     var s = dataProvider.radioStations;
     var radioStations = s
         .where((element) =>
+            element.genre == dataProvider.userModel!.selectedGenres.first &&
             element.name.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
     return radioStations.isEmpty
@@ -169,6 +174,8 @@ class _DiscoveryState extends State<Discovery> {
     var s = dataProvider.songs;
     var songs = s
         .where((element) =>
+            element.genreList.first ==
+                dataProvider.userModel!.selectedGenres.first &&
             element.title.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
     return songs.isEmpty

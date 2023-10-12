@@ -34,17 +34,18 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
+      print(value.currentSong == null);
       dataProvider = value;
 
       if (value.songsState == DataStates.waiting) {
         return const Center(child: CircularProgressIndicator());
       }
 
-      if (value.songsState == DataStates.success) {
+      if (value.songsState == DataStates.success && value.currentSong == null) {
         Future.delayed(
           const Duration(milliseconds: 10),
         ).then((v) {
-          value.currentSong ??= value.songs.first;
+          dataProvider.setSong();
         });
       }
 
@@ -52,292 +53,336 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         return const Center(child: CircularProgressIndicator());
       }
 
-      return GestureDetector(
-        onHorizontalDragStart: (dragStartDetails) {
-          startX = dragStartDetails.globalPosition.dx;
-        },
-        onHorizontalDragUpdate: (dragUpdateDetails) {
-          double endX = dragUpdateDetails.globalPosition.dx;
-          if (endX > startX) {
-            isLeftToRightDrag = true;
-          } else {
-            isLeftToRightDrag = false;
-          }
-        },
-        onHorizontalDragEnd: (dragEndDetails) {
-          if (isLeftToRightDrag) {
-            dataProvider.stop();
-            dataProvider.setAudio = "stopped";
-            // int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
-            // int nextIndex = index;
+      return dataProvider.currentSong == null
+          ? const Center(child: Text("No Song Available"))
+          : GestureDetector(
+              onHorizontalDragStart: (dragStartDetails) {
+                startX = dragStartDetails.globalPosition.dx;
+              },
+              onHorizontalDragUpdate: (dragUpdateDetails) {
+                double endX = dragUpdateDetails.globalPosition.dx;
+                if (endX > startX) {
+                  isLeftToRightDrag = true;
+                } else {
+                  isLeftToRightDrag = false;
+                }
+              },
+              onHorizontalDragEnd: (dragEndDetails) {
+                if (isLeftToRightDrag) {
+                  dataProvider.stop();
+                  dataProvider.setAudio = "stopped";
+                  // int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
+                  // int nextIndex = index;
 
-            List<SongModel> songList;
+                  List<SongModel> songList;
 
-            songList = dataProvider.songs
-                .where((element) =>
-                    element.genreList.any((genre) =>
-                        genre ==
-                        dataProvider.userModel!.selectedGenres.first) &&
-                    element.city != dataProvider.currentSong!.city &&
-                    element.id != dataProvider.currentSong!.id)
-                .toList();
+                  songList = dataProvider.songs
+                      .where((element) =>
+                          element.genreList.any((genre) =>
+                              genre ==
+                              dataProvider.userModel!.selectedGenres.first) &&
+                          element.city != dataProvider.currentSong!.city &&
+                          element.id != dataProvider.currentSong!.id)
+                      .toList();
 
-            if (dataProvider.type == "City") {
-              songList = dataProvider.songs
-                  .where((element) =>
-                      element.genreList.any((genre) =>
-                          genre ==
-                          dataProvider.userModel!.selectedGenres.first) &&
-                      element.upVotes.length < 15 &&
-                      element.city != dataProvider.currentSong!.city &&
-                      element.id != dataProvider.currentSong!.id)
-                  .toList();
-            } else if (dataProvider.type == "State") {
-              songList = dataProvider.songs
-                  .where((element) =>
-                      element.genreList.any((genre) =>
-                          genre ==
-                          dataProvider.userModel!.selectedGenres.first) &&
-                      (element.upVotes.length >= 15 &&
-                          element.upVotes.length < 30) &&
-                      element.state != dataProvider.currentSong!.state &&
-                      element.id != dataProvider.currentSong!.id)
-                  .toList();
-            } else {
-              songList = dataProvider.songs
-                  .where((element) =>
-                      element.genreList.any((genre) =>
-                          genre ==
-                          dataProvider.userModel!.selectedGenres.first) &&
-                      element.upVotes.length >= 30 &&
-                      element.country != dataProvider.currentSong!.country &&
-                      element.id != dataProvider.currentSong!.id)
-                  .toList();
-            }
+                  if (dataProvider.type == "City") {
+                    songList = dataProvider.songs
+                        .where((element) =>
+                            element.genreList.any((genre) =>
+                                genre ==
+                                dataProvider.userModel!.selectedGenres.first) &&
+                            element.upVotes.length < 25 &&
+                            element.city != dataProvider.currentSong!.city &&
+                            element.id != dataProvider.currentSong!.id)
+                        .toList();
+                  } else if (dataProvider.type == "State") {
+                    songList = dataProvider.songs
+                        .where((element) =>
+                            element.genreList.any((genre) =>
+                                genre ==
+                                dataProvider.userModel!.selectedGenres.first) &&
+                            (element.upVotes.length >= 25 &&
+                                element.upVotes.length < 75) &&
+                            element.state != dataProvider.currentSong!.state &&
+                            element.id != dataProvider.currentSong!.id)
+                        .toList();
+                  } else {
+                    songList = dataProvider.songs
+                        .where((element) =>
+                            element.genreList.any((genre) =>
+                                genre ==
+                                dataProvider.userModel!.selectedGenres.first) &&
+                            element.upVotes.length >= 75 &&
+                            element.country !=
+                                dataProvider.currentSong!.country &&
+                            element.id != dataProvider.currentSong!.id)
+                        .toList();
+                  }
 
-            songList.shuffle();
+                  songList.shuffle();
 
-            // if (index + 1 < dataProvider.songs.length) {
-            //   nextIndex++;
-            // } else {
-            //   nextIndex = 0;
-            // }
-            dataProvider.currentSong = songList.first;
-            dataProvider.initializePlayer();
-          }
-        },
-        onTap: () {
-          Provider.of<DashboardProvider>(context, listen: false).selectedIndex =
-              4;
-        },
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          child: Row(
-            children: [
-              Image(
-                image: NetworkImage(
-                  value.currentSong!.posterUrl,
-                ),
-                fit: BoxFit.cover,
-                height: 80,
-                width: 80,
-              ),
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 30,
-                              child: Marquee(
-                                text: "${value.currentSong!.title}            ",
-                                style: const TextStyle(
-                                  fontWeight: FontWeights.normal,
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                ),
-                                scrollAxis: Axis.horizontal,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                blankSpace: 10.0,
-                                velocity: 50.0,
-                                pauseAfterRound: const Duration(seconds: 1),
-                                startPadding: 10.0,
-                                accelerationDuration:
-                                    const Duration(seconds: 3),
-                                accelerationCurve: Curves.linear,
-                                decelerationDuration: const Duration(
-                                  milliseconds: 500,
-                                ),
-                                decelerationCurve: Curves.easeOut,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 60,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              switch (value.audioState) {
-                                case "stopped":
-                                  value.initializePlayer();
-                                  break;
-                                case "pause":
-                                  value.play();
-                                  break;
-                                case "playing":
-                                  value.pause();
-                                  break;
-                                default:
-                                  value.stop();
-                                  break;
-                              }
-                            },
-                            child: Container(
-                              height: 22,
-                              width: 22,
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: CColors.primary,
-                              ),
-                              child: CustomAssetImage(
-                                path: (value.audioState != "playing")
-                                    ? Assets.imagesPlayBtn
-                                    : Assets.imagesPauseBtn,
-                                height: 9,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 17,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              dataProvider.stop();
-
-                              dataProvider.setAudio = "stopped";
-                              int index = dataProvider.songs
-                                  .indexOf(dataProvider.currentSong!);
-                              int nextIndex = index;
-                              if (index + 1 < dataProvider.songs.length) {
-                                nextIndex++;
-                              } else {
-                                nextIndex = 0;
-                              }
-                              dataProvider.currentSong =
-                                  dataProvider.songs[nextIndex];
-                              dataProvider.initializePlayer();
-                            },
-                            child: Image.asset(
-                              Assets.imagesNext,
-                              width: 20,
-                              color: CColors.primary,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 17,
-                          ),
-                          Builder(builder: (context) {
-                            bool isFavourite = dataProvider
-                                .userModel!.favourites
-                                .contains(dataProvider.currentSong!.id);
-                            return InkWell(
-                              onTap: () {
-
-                                UserModel? band = dataProvider
-                                    .getBand(dataProvider.currentSong!.bandId);
-
-                                  var uid =
-                                      FirebaseAuth.instance.currentUser!.uid;
-                                  var db = FirebaseFirestore.instance;
-                                  if (isFavourite) {
-                                    db.collection("users").doc(uid).update({
-                                      "favourites": FieldValue.arrayRemove(
-                                          [dataProvider.currentSong!.id]),
-                                    });
-                                    db
-                                        .collection("Songs")
-                                        .doc(dataProvider.currentSong!.id)
-                                        .update({
-                                      "favourites":
-                                          FieldValue.arrayRemove([uid]),
-                                    });
-                                  } else {
-                                    db.collection("users").doc(uid).update({
-                                      "favourites": FieldValue.arrayUnion(
-                                          [dataProvider.currentSong!.id]),
-                                    });
-                                    db
-                                        .collection("Songs")
-                                        .doc(dataProvider.currentSong!.id)
-                                        .update({
-                                      "favourites":
-                                          FieldValue.arrayUnion([uid]),
-                                    });
-                                  }
-                              },
-                              child: Icon(
-                                isFavourite
-                                    ? Icons.favorite
-                                    : Icons.favorite_outline_outlined,
-                                color: isFavourite
-                                    ? Colors.red
-                                    : CColors.textColor,
-                                size: 30,
-                              ),
-                            );
-                          }),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                        ],
+                  // if (index + 1 < dataProvider.songs.length) {
+                  //   nextIndex++;
+                  // } else {
+                  //   nextIndex = 0;
+                  // }
+                  dataProvider.currentSong = songList.first;
+                  dataProvider.initializePlayer();
+                }
+              },
+              onTap: () {
+                Provider.of<DashboardProvider>(context, listen: false)
+                    .selectedIndex = 4;
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  children: [
+                    Image(
+                      image: NetworkImage(
+                        value.currentSong!.posterUrl,
                       ),
-                      Builder(builder: (context) {
-                        UserModel? band = dataProvider
-                            .getBand(dataProvider.currentSong!.bandId);
-
-                        return Text(
-                          "${band!.bandName!}: ${band.city}",
-                          style: const TextStyle(
-                            color: CColors.primary,
-                            fontSize: 10,
-                          ),
-                        );
-                      }),
-                      const SizedBox(height: 5),
-                      ProgressBar(
-                        thumbRadius: 5,
-                        barHeight: 2,
-                        baseBarColor: CColors.placeholderTextColor,
-                        bufferedBarColor: CColors.placeholderTextColor,
-                        progress: value.completed,
-                        buffered: value.bufferedTime!,
-                        total: value.total,
-                        timeLabelTextStyle: const TextStyle(
-                          color: CColors.primary,
-                          fontSize: 10,
+                      fit: BoxFit.cover,
+                      height: 80,
+                      width: 80,
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 10,
                         ),
-                        onSeek: (duration) {
-                          value.seek(duration);
-                          // print('User selected a new time: $duration');
-                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 30,
+                                    child: Marquee(
+                                      text:
+                                          "${value.currentSong!.title}            ",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeights.normal,
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                      ),
+                                      scrollAxis: Axis.horizontal,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      blankSpace: 10.0,
+                                      velocity: 50.0,
+                                      pauseAfterRound:
+                                          const Duration(seconds: 1),
+                                      startPadding: 10.0,
+                                      accelerationDuration:
+                                          const Duration(seconds: 3),
+                                      accelerationCurve: Curves.linear,
+                                      decelerationDuration: const Duration(
+                                        milliseconds: 500,
+                                      ),
+                                      decelerationCurve: Curves.easeOut,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 60,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    switch (value.audioState) {
+                                      case "stopped":
+                                        value.initializePlayer();
+                                        break;
+                                      case "pause":
+                                        value.play();
+                                        break;
+                                      case "playing":
+                                        value.pause();
+                                        break;
+                                      default:
+                                        value.stop();
+                                        break;
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 22,
+                                    width: 22,
+                                    alignment: Alignment.center,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: CColors.primary,
+                                    ),
+                                    child: CustomAssetImage(
+                                      path: (value.audioState != "playing")
+                                          ? Assets.imagesPlayBtn
+                                          : Assets.imagesPauseBtn,
+                                      height: 9,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 17,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    dataProvider.stop();
+
+                                    dataProvider.setAudio = "stopped";
+
+
+                                    List<SongModel> songs = dataProvider.songs;
+
+                                    if (dataProvider.type == "City") {
+                                      songs = dataProvider.songs
+                                          .where((element) =>
+                                              element.genreList.any((genre) =>
+                                                  genre ==
+                                                  dataProvider.userModel!
+                                                      .selectedGenres.first) &&
+                                              element.upVotes.length < 25)
+                                          .toList();
+                                    } else if (dataProvider.type == "State") {
+                                      songs = dataProvider.songs
+                                          .where((element) =>
+                                              element.genreList.any((genre) =>
+                                                  genre ==
+                                                  dataProvider.userModel!
+                                                      .selectedGenres.first) &&
+                                              (element.upVotes.length >= 25 &&
+                                                  element.upVotes.length < 75))
+                                          .toList();
+                                    } else {
+                                      songs = dataProvider.songs
+                                          .where((element) =>
+                                              element.genreList.any((genre) =>
+                                                  genre ==
+                                                  dataProvider.userModel!
+                                                      .selectedGenres.first) &&
+                                              element.upVotes.length >= 75)
+                                          .toList();
+                                    }
+
+
+                                    if (dataProvider.index + 1 < songs.length) {
+                                      dataProvider.index++;
+                                    } else {
+                                      dataProvider.index = 0;
+                                    }
+                                    if (songs.isEmpty) {
+                                      print("object");
+                                      dataProvider.currentSong = null;
+                                    } else {
+                                      dataProvider.currentSong =
+                                          songs[dataProvider.index];
+                                      dataProvider.initializePlayer();
+                                    }
+                                  },
+                                  child: Image.asset(
+                                    Assets.imagesNext,
+                                    width: 20,
+                                    color: CColors.primary,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 17,
+                                ),
+                                Builder(builder: (context) {
+                                  bool isFavourite = dataProvider
+                                      .userModel!.favourites
+                                      .contains(dataProvider.currentSong!.id);
+                                  return InkWell(
+                                    onTap: () {
+                                      UserModel? band = dataProvider.getBand(
+                                          dataProvider.currentSong!.bandId);
+
+                                      var uid = FirebaseAuth
+                                          .instance.currentUser!.uid;
+                                      var db = FirebaseFirestore.instance;
+                                      if (isFavourite) {
+                                        db.collection("users").doc(uid).update({
+                                          "favourites": FieldValue.arrayRemove(
+                                              [dataProvider.currentSong!.id]),
+                                        });
+                                        db
+                                            .collection("Songs")
+                                            .doc(dataProvider.currentSong!.id)
+                                            .update({
+                                          "favourites":
+                                              FieldValue.arrayRemove([uid]),
+                                        });
+                                      } else {
+                                        db.collection("users").doc(uid).update({
+                                          "favourites": FieldValue.arrayUnion(
+                                              [dataProvider.currentSong!.id]),
+                                        });
+                                        db
+                                            .collection("Songs")
+                                            .doc(dataProvider.currentSong!.id)
+                                            .update({
+                                          "favourites":
+                                              FieldValue.arrayUnion([uid]),
+                                        });
+                                      }
+                                    },
+                                    child: Icon(
+                                      isFavourite
+                                          ? Icons.favorite
+                                          : Icons.favorite_outline_outlined,
+                                      color: isFavourite
+                                          ? Colors.red
+                                          : CColors.textColor,
+                                      size: 30,
+                                    ),
+                                  );
+                                }),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                              ],
+                            ),
+                            Builder(builder: (context) {
+                              UserModel? band = dataProvider
+                                  .getBand(dataProvider.currentSong!.bandId);
+
+                              return Text(
+                                "${band!.bandName!}: ${band.city}",
+                                style: const TextStyle(
+                                  color: CColors.primary,
+                                  fontSize: 10,
+                                ),
+                              );
+                            }),
+                            const SizedBox(height: 5),
+                            ProgressBar(
+                              thumbRadius: 5,
+                              barHeight: 2,
+                              baseBarColor: CColors.placeholderTextColor,
+                              bufferedBarColor: CColors.placeholderTextColor,
+                              progress: value.completed,
+                              buffered: value.bufferedTime!,
+                              total: value.total,
+                              timeLabelTextStyle: const TextStyle(
+                                color: CColors.primary,
+                                fontSize: 10,
+                              ),
+                              onSeek: (duration) {
+                                value.seek(duration);
+                                // print('User selected a new time: $duration');
+                              },
+                            ),
+                            const SizedBox(height: 2),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 2),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      );
+            );
     });
   }
+
+
 }

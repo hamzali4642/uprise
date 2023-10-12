@@ -9,6 +9,7 @@ import 'package:uprise/models/post_model.dart';
 import 'package:uprise/models/radio_station.dart';
 import 'package:uprise/models/user_model.dart';
 import '../models/event_model.dart';
+import '../models/notification_model.dart';
 import '../models/song_model.dart';
 import '../screens/dashboard/home/statistics.dart';
 
@@ -27,6 +28,8 @@ class DataProvider extends ChangeNotifier {
   List<String> genres = [];
   List<UserModel> users = [];
   List<String> cities = [];
+  List<NotificationModel> notifications = [];
+
   List<RadioStationModel> radioStations = [];
 
   DataStates profileState = DataStates.waiting;
@@ -43,6 +46,7 @@ class DataProvider extends ChangeNotifier {
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? userListSubscription;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? citySubscription;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? radioStationsStream;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? notificationstream;
 
   StreamSubscription<Duration>? duration;
 
@@ -56,6 +60,14 @@ class DataProvider extends ChangeNotifier {
   Duration? bufferedTime = const Duration(seconds: 0);
 
   String _type = "City";
+
+  int _index = 0;
+
+  int get index => _index;
+
+  set index(int value) {
+    _index = value;
+  }
 
   String get type => _type;
 
@@ -204,19 +216,14 @@ class DataProvider extends ChangeNotifier {
   }
 
   UserModel? getBand(String id) {
-
-
     UserModel? userModel;
 
     for (var user in users) {
-
       if (user.id == id) {
         userModel = user;
         break;
       }
     }
-
-
 
     return userModel;
   }
@@ -287,7 +294,6 @@ class DataProvider extends ChangeNotifier {
     return bandChartData;
   }
 
-  //TODO : Change Genre Logic Here
   Map<String, UserModel> getPopularArtistByGenre() {
     Map<String, UserModel> map = {};
     for (var genre in userModel!.selectedGenres) {
@@ -387,6 +393,8 @@ class DataProvider extends ChangeNotifier {
     duration?.cancel();
     userSubscriptions?.cancel();
     radioStationsStream?.cancel();
+    notificationstream?.cancel();
+
   }
 
   SongModel? getSong(String id) {
@@ -397,6 +405,41 @@ class DataProvider extends ChangeNotifier {
       // Handle the case where no element matches the condition.
       print("Song with ID $id not found.");
       return null; // You can return null or another appropriate value.
+    }
+  }
+
+  setSong() {
+    List<SongModel> songList = songs;
+
+    if (type == "City") {
+      songList = songs
+          .where((element) =>
+              element.genreList
+                  .any((genre) => genre == userModel!.selectedGenres.first) &&
+              element.upVotes.length < 25)
+          .toList();
+    } else if (type == "State") {
+      songList = songs
+          .where((element) =>
+              element.genreList
+                  .any((genre) => genre == userModel!.selectedGenres.first) &&
+              (element.upVotes.length >= 25 && element.upVotes.length < 75))
+          .toList();
+    } else {
+      songList = songs
+          .where((element) =>
+              element.genreList
+                  .any((genre) => genre == userModel!.selectedGenres.first) &&
+              element.upVotes.length >= 75)
+          .toList();
+    }
+
+    if (songList.isEmpty) {
+      if (currentSong != null) {
+        currentSong = null;
+      }
+    } else {
+      currentSong = songList.first;
     }
   }
 

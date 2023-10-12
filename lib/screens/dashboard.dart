@@ -8,6 +8,7 @@ import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/auth/signin.dart';
+import 'package:uprise/screens/dashboard/home/notification_screen.dart';
 import 'package:uprise/screens/dashboard/profile_details/instruments.dart';
 import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
@@ -179,9 +180,14 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ),
-          const Icon(
-            Icons.notifications,
-            color: Colors.white,
+          InkWell(
+            onTap: (){
+              context.push(child: NotificationScreen());
+            },
+            child: const Icon(
+              Icons.notifications,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(width: 10),
           PopupMenuButton(
@@ -656,6 +662,7 @@ class _DashboardState extends State<Dashboard> {
             groupValue: dataProvider.type,
             onChanged: (value) {
               dataProvider.type = value!;
+              dataProvider.setSong();
             },
           ),
           Text(
