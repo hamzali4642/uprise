@@ -49,86 +49,16 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         });
       }
 
-      if (value.currentSong == null) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
       return dataProvider.currentSong == null
-          ? const Center(child: Text("No Song Available"))
+          ? const Center(child: Text("No Song Available",style: TextStyle(color: Colors.white),))
           : GestureDetector(
-              onHorizontalDragStart: (dragStartDetails) {
-                startX = dragStartDetails.globalPosition.dx;
-              },
-              onHorizontalDragUpdate: (dragUpdateDetails) {
-                double endX = dragUpdateDetails.globalPosition.dx;
-                if (endX > startX) {
-                  isLeftToRightDrag = true;
-                } else {
-                  isLeftToRightDrag = false;
+              onHorizontalDragEnd: (dragEndDetail) {
+                while (dataProvider.songs.first == dataProvider.currentSong!) {
+                  dataProvider.songs.shuffle();
                 }
-              },
-              onHorizontalDragEnd: (dragEndDetails) {
-                if (isLeftToRightDrag) {
-                  dataProvider.stop();
-                  dataProvider.setAudio = "stopped";
-                  // int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
-                  // int nextIndex = index;
 
-                  List<SongModel> songList;
-
-                  songList = dataProvider.songs
-                      .where((element) =>
-                          element.genreList.any((genre) =>
-                              genre ==
-                              dataProvider.userModel!.selectedGenres.first) &&
-                          element.city != dataProvider.currentSong!.city &&
-                          element.id != dataProvider.currentSong!.id)
-                      .toList();
-
-                  if (dataProvider.type == "City") {
-                    songList = dataProvider.songs
-                        .where((element) =>
-                            element.genreList.any((genre) =>
-                                genre ==
-                                dataProvider.userModel!.selectedGenres.first) &&
-                            element.upVotes.length < 25 &&
-                            element.city != dataProvider.currentSong!.city &&
-                            element.id != dataProvider.currentSong!.id)
-                        .toList();
-                  } else if (dataProvider.type == "State") {
-                    songList = dataProvider.songs
-                        .where((element) =>
-                            element.genreList.any((genre) =>
-                                genre ==
-                                dataProvider.userModel!.selectedGenres.first) &&
-                            (element.upVotes.length >= 25 &&
-                                element.upVotes.length < 75) &&
-                            element.state != dataProvider.currentSong!.state &&
-                            element.id != dataProvider.currentSong!.id)
-                        .toList();
-                  } else {
-                    songList = dataProvider.songs
-                        .where((element) =>
-                            element.genreList.any((genre) =>
-                                genre ==
-                                dataProvider.userModel!.selectedGenres.first) &&
-                            element.upVotes.length >= 75 &&
-                            element.country !=
-                                dataProvider.currentSong!.country &&
-                            element.id != dataProvider.currentSong!.id)
-                        .toList();
-                  }
-
-                  songList.shuffle();
-
-                  // if (index + 1 < dataProvider.songs.length) {
-                  //   nextIndex++;
-                  // } else {
-                  //   nextIndex = 0;
-                  // }
-                  dataProvider.currentSong = songList.first;
-                  dataProvider.initializePlayer();
-                }
+                dataProvider.currentSong = dataProvider.songs.first;
+                dataProvider.initializePlayer();
               },
               onTap: () {
                 Provider.of<DashboardProvider>(context, listen: false)
@@ -231,51 +161,77 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
                                     dataProvider.setAudio = "stopped";
 
-
-                                    List<SongModel> songs = dataProvider.songs;
+                                    List<SongModel> songList = [];
 
                                     if (dataProvider.type == "City") {
-                                      songs = dataProvider.songs
-                                          .where((element) =>
-                                              element.genreList.any((genre) =>
-                                                  genre ==
-                                                  dataProvider.userModel!
-                                                      .selectedGenres.first) &&
-                                              element.upVotes.length < 25)
-                                          .toList();
+                                      for (var element in dataProvider.songs) {
+                                        if (element.genreList.first == dataProvider.userModel!.selectedGenres.first) {
+                                          if (element.upVotes.length < 25 && element.city == dataProvider.userModel!.city) {
+                                            songList.add(element);
+                                          } else if (element.upVotes.length >= 25 &&
+                                              element.upVotes.length < 75 &&
+                                              element.state == dataProvider.userModel!.state) {
+                                            songList.add(element);
+                                          } else if (element.country == dataProvider.userModel!.country &&
+                                              element.upVotes.length >= 75) {
+                                            songList.add(element);
+                                          }
+                                        }
+                                      }
+                                      // songList = songs
+                                      //     .where((element) =>
+                                      //         (element.city == userModel!.city) &&
+                                      //         element.genreList
+                                      //             .any((genre) => genre == userModel!.selectedGenres.first))
+                                      //     .toList();
                                     } else if (dataProvider.type == "State") {
-                                      songs = dataProvider.songs
-                                          .where((element) =>
-                                              element.genreList.any((genre) =>
-                                                  genre ==
-                                                  dataProvider.userModel!
-                                                      .selectedGenres.first) &&
-                                              (element.upVotes.length >= 25 &&
-                                                  element.upVotes.length < 75))
-                                          .toList();
+                                      for (var element in dataProvider.songs) {
+                                        if (element.genreList.first == dataProvider.userModel!.selectedGenres.first) {
+                                          if (element.upVotes.length >= 25 &&
+                                              element.upVotes.length < 75 &&
+                                              element.state == dataProvider.userModel!.state) {
+                                            songList.add(element);
+                                          } else if (element.country == dataProvider.userModel!.country &&
+                                              element.upVotes.length >= 75) {
+                                            songList.add(element);
+                                          }
+                                        }
+                                      }
+                                      // songList = songs
+                                      //     .where((element) =>
+                                      //         element.genreList
+                                      //             .any((genre) => genre == userModel!.selectedGenres.first) &&
+                                      //         (element.upVotes.length >= 25 && element.upVotes.length < 75))
+                                      //     .toList();
                                     } else {
-                                      songs = dataProvider.songs
-                                          .where((element) =>
-                                              element.genreList.any((genre) =>
-                                                  genre ==
-                                                  dataProvider.userModel!
-                                                      .selectedGenres.first) &&
-                                              element.upVotes.length >= 75)
-                                          .toList();
+                                      print("country");
+                                      for (var element in dataProvider.songs) {
+                                        if (element.country == dataProvider.userModel!.country &&
+                                            element.upVotes.length >= 75) {
+                                          print("here");
+                                          songList.add(element);
+                                        }
+                                      }
+                                      print(songList.length);
+                                      // songList = songs
+                                      //     .where((element) =>
+                                      //         element.genreList
+                                      //             .any((genre) => genre == userModel!.selectedGenres.first) &&
+                                      //         element.upVotes.length >= 75)
+                                      //     .toList();
                                     }
 
-
-                                    if (dataProvider.index + 1 < songs.length) {
+                                    if (dataProvider.index + 1 < songList.length) {
                                       dataProvider.index++;
                                     } else {
                                       dataProvider.index = 0;
                                     }
-                                    if (songs.isEmpty) {
+                                    if (songList.isEmpty) {
                                       print("object");
                                       dataProvider.currentSong = null;
                                     } else {
                                       dataProvider.currentSong =
-                                          songs[dataProvider.index];
+                                          songList[dataProvider.index];
                                       dataProvider.initializePlayer();
                                     }
                                   },
@@ -347,7 +303,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                   .getBand(dataProvider.currentSong!.bandId);
 
                               return Text(
-                                "${band!.bandName!}: ${band.city}",
+                                "${band!.bandName!}: ${dataProvider.currentSong!.city}",
                                 style: const TextStyle(
                                   color: CColors.primary,
                                   fontSize: 10,
@@ -383,6 +339,4 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             );
     });
   }
-
-
 }

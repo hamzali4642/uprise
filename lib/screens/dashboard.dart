@@ -181,12 +181,28 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           InkWell(
-            onTap: (){
+            onTap: () {
+              for (var element in dataProvider.notifications) {
+                FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .collection("Notification")
+                    .doc(element.id)
+                    .update({
+                  "isRead": true,
+                });
+              }
               context.push(child: NotificationScreen());
             },
-            child: const Icon(
-              Icons.notifications,
-              color: Colors.white,
+            child: Badge(
+              isLabelVisible: dataProvider.notifications
+                  .where((element) => !element.isRead)
+                  .toList()
+                  .isNotEmpty,
+              child: const Icon(
+                Icons.notifications,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(width: 10),

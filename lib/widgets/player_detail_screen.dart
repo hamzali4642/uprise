@@ -104,7 +104,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
                     context.push(child: BandDetails(band: band));
                   },
                   child: Text(
-                    "${band.bandName!}: ${band.city}",
+                    "${band.bandName!}: ${dataProvider.currentSong!.city}",
                     style: const TextStyle(
                       color: CColors.primary,
                       fontSize: 18,
