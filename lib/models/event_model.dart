@@ -4,6 +4,7 @@ class EventModel {
   late String venue;
   late String bandId;
   late String description;
+  late String genre;
   late String posterUrl;
   late DateTime startDate;
   late DateTime endDate;
@@ -19,6 +20,7 @@ class EventModel {
     required this.endDate,
     required this.latitude,
     required this.longitude,
+    required this.genre,
   });
 
   Map<String, dynamic> toMap() {
@@ -33,6 +35,7 @@ class EventModel {
       "description": description,
       "latitude": latitude,
       "longitude": longitude,
+      "genre": genre,
     };
   }
 
@@ -47,5 +50,6 @@ class EventModel {
     description = data["description"];
     latitude = data["latitude"];
     longitude = data["longitude"];
+    genre = data["genre"];
   }
 }

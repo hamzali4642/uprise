@@ -6,7 +6,7 @@ class SongModel {
   late String posterUrl;
   late String songUrl;
   late String bandId;
-  late String rid;
+   String? rid;
   late DateTime createdAt;
   late DateTime updatedAt;
   List<String> favourites = [];

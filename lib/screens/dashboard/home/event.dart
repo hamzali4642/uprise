@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uprise/models/event_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/event_widget.dart';
 import 'package:uprise/widgets/state_check.dart';
@@ -23,10 +24,11 @@ class Events extends StatelessWidget {
   }
 
   Widget events(DataProvider value) {
+    List<EventModel> events = value.events.where((element) => element.genre == value.userModel!.selectedGenres.first).toList();
     return SliverList(
       delegate: SliverChildBuilderDelegate((ctx, i) {
-        return EventWidget(eventModel: value.events[i]);
-      }, childCount: value.events.length),
+        return EventWidget(eventModel: events[i]);
+      }, childCount: events.length),
     );
   }
 }

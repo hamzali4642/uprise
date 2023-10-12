@@ -12,7 +12,6 @@ class NotificationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String path = "";
 
     return Column(
       children: [
@@ -28,7 +27,7 @@ class NotificationWidget extends StatelessWidget {
                   children: [
                     Text(
                       notification.text,
-                      style: AppTextStyles.heading(),
+                      style: AppTextStyles.popins(style: TextStyle(color: Colors.white)),
                     ),
                     const MarginWidget(factor: 0.5),
                     Timeago(
@@ -36,7 +35,7 @@ class NotificationWidget extends StatelessWidget {
                         return Text(
                           value,
                           style: AppTextStyles.message(
-                              color: Colors.black),
+                              color: Colors.white),
                         );
                       },
                       date: DateTime.fromMillisecondsSinceEpoch(

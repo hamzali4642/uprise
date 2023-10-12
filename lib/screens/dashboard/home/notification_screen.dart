@@ -36,7 +36,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Widget notificationsDisplay(DataProvider data) {
-    List<NotificationModel> notifications = [];
+    List<NotificationModel> notifications = data.notifications;
 
     return Padding(
       padding: EdgeInsets.only(left: padding, right: padding),
@@ -48,7 +48,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           );
         },
         separatorBuilder: (ctx, i) {
-          return const Divider();
+          return const Divider(color: Colors.white,);
         },
         itemCount: notifications.length,
       ),

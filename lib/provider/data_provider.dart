@@ -37,6 +37,7 @@ class DataProvider extends ChangeNotifier {
   DataStates eventState = DataStates.waiting;
   DataStates postState = DataStates.waiting;
   DataStates radioStationState = DataStates.waiting;
+  DataStates notificationState = DataStates.waiting;
 
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? userSubscriptions;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? songSubscription;
@@ -93,6 +94,7 @@ class DataProvider extends ChangeNotifier {
         getEvents();
         getPosts();
         getRadioStations();
+        getNotifications();
       }
     });
   }
@@ -154,6 +156,22 @@ class DataProvider extends ChangeNotifier {
       var cities = List.generate(songs.length, (index) => songs[index].city);
       this.cities = cities.toSet().toList();
       songsState = DataStates.success;
+      notifyListeners();
+    });
+  }
+
+  getNotifications() async {
+    notificationstream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("Notification")
+        .snapshots()
+        .listen((event) {
+      notifications = [];
+      notifications = event.docs
+          .map((doc) => NotificationModel.fromMap(doc.data()))
+          .toList();
+      notificationState = DataStates.success;
       notifyListeners();
     });
   }
@@ -394,7 +412,6 @@ class DataProvider extends ChangeNotifier {
     userSubscriptions?.cancel();
     radioStationsStream?.cancel();
     notificationstream?.cancel();
-
   }
 
   SongModel? getSong(String id) {
