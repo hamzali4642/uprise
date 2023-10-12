@@ -12,6 +12,7 @@ import 'package:utility_extensions/utility_extensions.dart';
 
 import '../generated/assets.dart';
 import '../helpers/colors.dart';
+import '../models/song_model.dart';
 
 class PlayerDetailScreen extends StatefulWidget {
   const PlayerDetailScreen({Key? key}) : super(key: key);
@@ -61,12 +62,49 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
               const SizedBox(height: 30),
               GestureDetector(
                 onHorizontalDragEnd: (dragEndDetail) {
-                  while (
-                      dataProvider.songs.first == dataProvider.currentSong!) {
-                    dataProvider.songs.shuffle();
+                  print("object");
+
+                  print("object");
+                  dataProvider.stop();
+                  dataProvider.setAudio = "stopped";
+                  // int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
+                  // int nextIndex = index;
+
+                  List<SongModel> songList;
+
+                  songList = dataProvider.songs
+                      .where((element) =>
+                  element.genreList.any((genre) =>
+                  genre ==
+                      dataProvider.userModel!.selectedGenres.first) &&
+                      element.id != dataProvider.currentSong!.id)
+                      .toList();
+
+                  if (dataProvider.type == "City") {
+                    songList = dataProvider.songs
+                        .where((element) =>
+                    element.city != dataProvider.currentSong!.city)
+                        .toList();
+                  } else if (dataProvider.type == "State") {
+                    songList = dataProvider.songs
+                        .where((element) =>
+                    element.state != dataProvider.currentSong!.state)
+                        .toList();
+                  } else {
+                    songList = dataProvider.songs
+                        .where((element) =>
+                    element.country != dataProvider.currentSong!.country)
+                        .toList();
                   }
 
-                  dataProvider.currentSong = dataProvider.songs.first;
+                  songList.shuffle();
+
+                  // if (index + 1 < dataProvider.songs.length) {
+                  //   nextIndex++;
+                  // } else {
+                  //   nextIndex = 0;
+                  // }
+                  dataProvider.currentSong = songList.first;
                   dataProvider.initializePlayer();
                 },
                 child: SizedBox(
@@ -170,15 +208,82 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
             dataProvider.stop();
 
             dataProvider.setAudio = "stopped";
-            int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
-            int nextIndex = index;
-            if (index + 1 < dataProvider.songs.length) {
-              nextIndex++;
+
+            List<SongModel> songList = [];
+
+            if (dataProvider.type == "City") {
+              for (var element in dataProvider.songs) {
+                if (element.genreList.first ==
+                    dataProvider.userModel!.selectedGenres.first) {
+                  if (element.upVotes.length < 3 &&
+                      element.city == dataProvider.userModel!.city) {
+                    songList.add(element);
+                  } else if (element.upVotes.length == 3 &&
+                      element.state == dataProvider.userModel!.state) {
+                    songList.add(element);
+                  } else if (element.country ==
+                          dataProvider.userModel!.country &&
+                      element.upVotes.length > 3) {
+                    songList.add(element);
+                  }
+                }
+              }
+              // songList = songs
+              //     .where((element) =>
+              //         (element.city == userModel!.city) &&
+              //         element.genreList
+              //             .any((genre) => genre == userModel!.selectedGenres.first))
+              //     .toList();
+            } else if (dataProvider.type == "State") {
+              for (var element in dataProvider.songs) {
+                if (element.genreList.first ==
+                    dataProvider.userModel!.selectedGenres.first) {
+                  if (element.upVotes.length == 3 &&
+                      element.state == dataProvider.userModel!.state) {
+                    songList.add(element);
+                  } else if (element.country ==
+                          dataProvider.userModel!.country &&
+                      element.upVotes.length > 3) {
+                    songList.add(element);
+                  }
+                }
+              }
+              // songList = songs
+              //     .where((element) =>
+              //         element.genreList
+              //             .any((genre) => genre == userModel!.selectedGenres.first) &&
+              //         (element.upVotes.length >= 25 && element.upVotes.length < 75))
+              //     .toList();
             } else {
-              nextIndex = 0;
+              print("country");
+              for (var element in dataProvider.songs) {
+                if (element.country == dataProvider.userModel!.country &&
+                    element.upVotes.length > 3) {
+                  print("here");
+                  songList.add(element);
+                }
+              }
+              print(songList.length);
+              // songList = songs
+              //     .where((element) =>
+              //         element.genreList
+              //             .any((genre) => genre == userModel!.selectedGenres.first) &&
+              //         element.upVotes.length >= 75)
+              //     .toList();
             }
-            dataProvider.currentSong = dataProvider.songs[nextIndex];
-            dataProvider.initializePlayer();
+
+            if (dataProvider.index + 1 < songList.length) {
+              dataProvider.index++;
+            } else {
+              dataProvider.index = 0;
+            }
+            if (songList.isEmpty) {
+              print("object");
+              dataProvider.currentSong = null;
+            } else {
+              dataProvider.currentSong = songList[dataProvider.index];
+              dataProvider.initializePlayer();
+            }
           },
           child: Image.asset(
             Assets.imagesNext,

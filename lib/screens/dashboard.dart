@@ -679,6 +679,7 @@ class _DashboardState extends State<Dashboard> {
             onChanged: (value) {
               dataProvider.type = value!;
               dataProvider.setSong();
+              dataProvider.stop();
             },
           ),
           Text(

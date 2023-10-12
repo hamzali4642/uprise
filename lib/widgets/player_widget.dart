@@ -50,15 +50,57 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       }
 
       return dataProvider.currentSong == null
-          ? const Center(child: Text("No Song Available",style: TextStyle(color: Colors.white),))
+          ? const Center(
+              child: Text(
+              "No Song Available",
+              style: TextStyle(color: Colors.white),
+            ))
           : GestureDetector(
               onHorizontalDragEnd: (dragEndDetail) {
-                while (dataProvider.songs.first == dataProvider.currentSong!) {
-                  dataProvider.songs.shuffle();
-                }
+                print("object");
 
-                dataProvider.currentSong = dataProvider.songs.first;
-                dataProvider.initializePlayer();
+                  print("object");
+                  dataProvider.stop();
+                  dataProvider.setAudio = "stopped";
+                  // int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
+                  // int nextIndex = index;
+
+                  List<SongModel> songList;
+
+                  songList = dataProvider.songs
+                      .where((element) =>
+                          element.genreList.any((genre) =>
+                              genre ==
+                              dataProvider.userModel!.selectedGenres.first) &&
+                          element.id != dataProvider.currentSong!.id)
+                      .toList();
+
+                  if (dataProvider.type == "City") {
+                    songList = dataProvider.songs
+                        .where((element) =>
+                            element.city != dataProvider.currentSong!.city)
+                        .toList();
+                  } else if (dataProvider.type == "State") {
+                    songList = dataProvider.songs
+                        .where((element) =>
+                    element.state != dataProvider.currentSong!.state)
+                        .toList();
+                  } else {
+                    songList = dataProvider.songs
+                        .where((element) =>
+                    element.country != dataProvider.currentSong!.country)
+                        .toList();
+                  }
+
+                  songList.shuffle();
+
+                  // if (index + 1 < dataProvider.songs.length) {
+                  //   nextIndex++;
+                  // } else {
+                  //   nextIndex = 0;
+                  // }
+                  dataProvider.currentSong = songList.first;
+                  dataProvider.initializePlayer();
               },
               onTap: () {
                 Provider.of<DashboardProvider>(context, listen: false)
@@ -165,15 +207,24 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
                                     if (dataProvider.type == "City") {
                                       for (var element in dataProvider.songs) {
-                                        if (element.genreList.first == dataProvider.userModel!.selectedGenres.first) {
-                                          if (element.upVotes.length < 25 && element.city == dataProvider.userModel!.city) {
+                                        if (element.genreList.first ==
+                                            dataProvider.userModel!
+                                                .selectedGenres.first) {
+                                          if (element.upVotes.length < 3 &&
+                                              element.city ==
+                                                  dataProvider
+                                                      .userModel!.city) {
                                             songList.add(element);
-                                          } else if (element.upVotes.length >= 25 &&
-                                              element.upVotes.length < 75 &&
-                                              element.state == dataProvider.userModel!.state) {
+                                          } else if (element.upVotes.length ==
+                                                  3 &&
+                                              element.state ==
+                                                  dataProvider
+                                                      .userModel!.state) {
                                             songList.add(element);
-                                          } else if (element.country == dataProvider.userModel!.country &&
-                                              element.upVotes.length >= 75) {
+                                          } else if (element.country ==
+                                                  dataProvider
+                                                      .userModel!.country &&
+                                              element.upVotes.length > 3) {
                                             songList.add(element);
                                           }
                                         }
@@ -186,13 +237,18 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                       //     .toList();
                                     } else if (dataProvider.type == "State") {
                                       for (var element in dataProvider.songs) {
-                                        if (element.genreList.first == dataProvider.userModel!.selectedGenres.first) {
-                                          if (element.upVotes.length >= 25 &&
-                                              element.upVotes.length < 75 &&
-                                              element.state == dataProvider.userModel!.state) {
+                                        if (element.genreList.first ==
+                                            dataProvider.userModel!
+                                                .selectedGenres.first) {
+                                          if (element.upVotes.length == 3 &&
+                                              element.state ==
+                                                  dataProvider
+                                                      .userModel!.state) {
                                             songList.add(element);
-                                          } else if (element.country == dataProvider.userModel!.country &&
-                                              element.upVotes.length >= 75) {
+                                          } else if (element.country ==
+                                                  dataProvider
+                                                      .userModel!.country &&
+                                              element.upVotes.length > 3) {
                                             songList.add(element);
                                           }
                                         }
@@ -206,8 +262,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                     } else {
                                       print("country");
                                       for (var element in dataProvider.songs) {
-                                        if (element.country == dataProvider.userModel!.country &&
-                                            element.upVotes.length >= 75) {
+                                        if (element.country ==
+                                                dataProvider
+                                                    .userModel!.country &&
+                                            element.upVotes.length > 3) {
                                           print("here");
                                           songList.add(element);
                                         }
@@ -221,7 +279,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                       //     .toList();
                                     }
 
-                                    if (dataProvider.index + 1 < songList.length) {
+                                    if (dataProvider.index + 1 <
+                                        songList.length) {
                                       dataProvider.index++;
                                     } else {
                                       dataProvider.index = 0;

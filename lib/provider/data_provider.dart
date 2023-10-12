@@ -432,14 +432,13 @@ class DataProvider extends ChangeNotifier {
     if (type == "City") {
       for (var element in songs) {
         if (element.genreList.first == userModel!.selectedGenres.first) {
-          if (element.upVotes.length < 25 && element.city == userModel!.city) {
+          if (element.upVotes.length < 3 && element.city == userModel!.city) {
             songList.add(element);
-          } else if (element.upVotes.length >= 25 &&
-              element.upVotes.length < 75 &&
+          } else if (element.upVotes.length == 3 &&
               element.state == userModel!.state) {
             songList.add(element);
           } else if (element.country == userModel!.country &&
-              element.upVotes.length >= 75) {
+              element.upVotes.length > 3) {
             songList.add(element);
           }
         }
@@ -453,12 +452,11 @@ class DataProvider extends ChangeNotifier {
     } else if (type == "State") {
       for (var element in songs) {
         if (element.genreList.first == userModel!.selectedGenres.first) {
-          if (element.upVotes.length >= 25 &&
-              element.upVotes.length < 75 &&
+          if (element.upVotes.length == 3 &&
               element.state == userModel!.state) {
             songList.add(element);
           } else if (element.country == userModel!.country &&
-              element.upVotes.length >= 75) {
+              element.upVotes.length > 3) {
             songList.add(element);
           }
         }
@@ -473,7 +471,7 @@ class DataProvider extends ChangeNotifier {
       print("country");
       for (var element in songs) {
         if (element.country == userModel!.country &&
-            element.upVotes.length >= 75) {
+            element.upVotes.length > 73) {
           print("here");
           songList.add(element);
         }
