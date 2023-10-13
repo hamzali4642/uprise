@@ -8,8 +8,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:utility_extensions/extensions/context_extensions.dart';
 
 import '../../../helpers/functions.dart';
+import '../../../models/address_model.dart';
 import '../../../models/user_model.dart';
 import '../../dashboard.dart';
+import '../../select_location.dart';
 import '../signin.dart';
 
 class AuthService {
@@ -21,29 +23,33 @@ class AuthService {
     try {
       Functions.showLoaderDialog(context);
 
-      Map<String, dynamic> position = await determinePosition(context);
+      var address = await context.push(child: SelectLocation());
+      if(address is AddressModel){
 
-      double lat = position["lat"];
-      double long = position["long"];
 
-      Map<String,dynamic> location = await Functions.getCityFromLatLong(lat, long);
 
-      model.city = location["city"];
-      model.state = location["state"];
-      model.country = location["country"];
+        Map<String,dynamic> location = await Functions.getCityFromLatLong(address.latitude!, address.longitude!);
 
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: model.email, password: password);
+        model.city = location["city"];
+        model.state = location["state"];
+        model.country = location["country"];
 
-      String id = FirebaseAuth.instance.currentUser!.uid;
-      DocumentReference doc = userRef.doc(id);
-      model.id = id;
-      await doc.set(model.toMap());
-      await doc.update({
-        "joinAt": DateTime.now().millisecondsSinceEpoch,
-      });
-      // ignore: use_build_context_synchronously
-      context.pushAndRemoveUntil(child: const Dashboard());
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: model.email, password: password);
+
+        String id = FirebaseAuth.instance.currentUser!.uid;
+        DocumentReference doc = userRef.doc(id);
+        model.id = id;
+        await doc.set(model.toMap());
+        await doc.update({
+          "joinAt": DateTime.now().millisecondsSinceEpoch,
+        });
+        // ignore: use_build_context_synchronously
+        context.pushAndRemoveUntil(child: const Dashboard());
+      }else{
+        context.pop();
+        Functions.showSnackBar(context, "Failed to get address");
+      }
     } on FirebaseException catch (e) {
       switch (e.code) {
         case 'invalid-email':

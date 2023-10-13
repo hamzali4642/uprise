@@ -55,7 +55,7 @@ class _FeedState extends State<Feed> {
 
     List<RadioStationModel> radioStations = dataProvider.radioStations
         .where((element) =>
-            element.genre == dataProvider.userModel!.selectedGenres.first)
+    dataProvider.userModel!.selectedGenres.isNotEmpty && element.genre == dataProvider.userModel!.selectedGenres.first)
         .toList();
 
     if (radioStations.isNotEmpty) {
@@ -125,7 +125,9 @@ class _FeedState extends State<Feed> {
     if (dataProvider.type == "City") {
       songs = dataProvider.songs
           .where((element) =>
+      element.genreList.isNotEmpty &&
       element.genreList.any((genre) =>
+      dataProvider.userModel!.selectedGenres.isNotEmpty &&
       genre ==
           dataProvider.userModel!.selectedGenres.first) &&
           element.upVotes.length < 25)
@@ -134,6 +136,7 @@ class _FeedState extends State<Feed> {
       songs = dataProvider.songs
           .where((element) =>
       element.genreList.any((genre) =>
+      dataProvider.userModel!.selectedGenres.isNotEmpty &&
       genre ==
           dataProvider.userModel!.selectedGenres.first) &&
           (element.upVotes.length >= 25 &&
@@ -143,6 +146,7 @@ class _FeedState extends State<Feed> {
       songs = dataProvider.songs
           .where((element) =>
       element.genreList.any((genre) =>
+      dataProvider.userModel!.selectedGenres.isNotEmpty &&
       genre ==
           dataProvider.userModel!.selectedGenres.first) &&
           element.upVotes.length >= 75 )

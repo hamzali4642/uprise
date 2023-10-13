@@ -60,8 +60,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                 print("object");
 
                   print("object");
-                  dataProvider.stop();
-                  dataProvider.setAudio = "stopped";
+
                   // int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
                   // int nextIndex = index;
 
@@ -75,32 +74,46 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           element.id != dataProvider.currentSong!.id)
                       .toList();
 
+                  print("-----");
+                  print(songList.length);
                   if (dataProvider.type == "City") {
                     songList = dataProvider.songs
                         .where((element) =>
                             element.city != dataProvider.currentSong!.city)
                         .toList();
                   } else if (dataProvider.type == "State") {
+                    for(var song in dataProvider.songs){
+                      print("-");
+                      print(song.state);
+                      print(song.upVotes.length);
+                    }
                     songList = dataProvider.songs
                         .where((element) =>
-                    element.state != dataProvider.currentSong!.state)
+                    element.state != dataProvider.currentSong!.state && element.upVotes.length >= 3)
                         .toList();
+
+
+                    print(songList.length);
                   } else {
                     songList = dataProvider.songs
                         .where((element) =>
-                    element.country != dataProvider.currentSong!.country)
+                    element.country != dataProvider.currentSong!.country && element.upVotes.length > 3)
                         .toList();
                   }
 
+
                   songList.shuffle();
 
-                  // if (index + 1 < dataProvider.songs.length) {
-                  //   nextIndex++;
-                  // } else {
-                  //   nextIndex = 0;
-                  // }
-                  dataProvider.currentSong = songList.first;
-                  dataProvider.initializePlayer();
+                  print("aaa");
+
+
+                  if(songList.isNotEmpty){
+                    dataProvider.stop();
+                    dataProvider.setAudio = "stopped";
+                    dataProvider.currentSong = songList.first;
+                    dataProvider.initializePlayer();
+                  }
+
               },
               onTap: () {
                 Provider.of<DashboardProvider>(context, listen: false)

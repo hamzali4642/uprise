@@ -431,7 +431,7 @@ class DataProvider extends ChangeNotifier {
 
     if (type == "City") {
       for (var element in songs) {
-        if (element.genreList.first == userModel!.selectedGenres.first) {
+        if (userModel!.selectedGenres.isNotEmpty && element.genreList.first == userModel!.selectedGenres.first) {
           if (element.upVotes.length < 3 && element.city == userModel!.city) {
             songList.add(element);
           } else if (element.upVotes.length == 3 &&
@@ -451,7 +451,7 @@ class DataProvider extends ChangeNotifier {
       //     .toList();
     } else if (type == "State") {
       for (var element in songs) {
-        if (element.genreList.first == userModel!.selectedGenres.first) {
+        if (userModel!.selectedGenres.isNotEmpty && element.genreList.first == userModel!.selectedGenres.first) {
           if (element.upVotes.length == 3 &&
               element.state == userModel!.state) {
             songList.add(element);
@@ -470,13 +470,16 @@ class DataProvider extends ChangeNotifier {
     } else {
       print("country");
       for (var element in songs) {
-        if (element.country == userModel!.country &&
-            element.upVotes.length > 73) {
+        if (
+        userModel!.selectedGenres.isNotEmpty &&
+        element.genreList.contains(userModel!.selectedGenres.first) &&
+        element.country == userModel!.country &&
+            element.upVotes.length > 3) {
           print("here");
           songList.add(element);
         }
       }
-      print(songList.length);
+
       // songList = songs
       //     .where((element) =>
       //         element.genreList
@@ -486,17 +489,12 @@ class DataProvider extends ChangeNotifier {
     }
 
     if (songList.isEmpty) {
-      print("isEmpty");
+
       if (currentSong != null) {
         currentSong = null;
       }
     } else {
       currentSong = songList.first;
-      print(currentSong!.city);
-
-      print(currentSong!.state);
-
-      print(currentSong!.upVotes.length);
     }
   }
 

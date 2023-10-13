@@ -42,41 +42,44 @@ class _DiscoveryState extends State<Discovery> {
       return Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: Constants.horizontalPadding),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CupertinoTextFieldWidget(
-                      controller: controller,
-                      hint: "Search",
-                      errorText: "",
-                      onChange: (value) {
-                        setState(() {});
-                      },
-                    ),
-                    popularBandsWidget(),
-                    popularRadioWidget(),
-                    popularSongsWidget(),
-                    Center(
-                      child: ElevatedButton(
-                          onPressed: () {
-                            context.push(child: const MapViewSection());
-                          },
-                          child: Text(
-                            "Map View Section",
-                            style: AppTextStyles.clickable(color: Colors.black),
-                          )),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 40),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CupertinoTextFieldWidget(
+                        controller: controller,
+                        hint: "Search",
+                        errorText: "",
+                        onChange: (value) {
+                          setState(() {});
+                        },
+                      ),
+                      popularBandsWidget(),
+                      popularRadioWidget(),
+                      popularSongsWidget(),
+                      Center(
+                        child: ElevatedButton(
+                            onPressed: () {
+                              context.push(child: const MapViewSection());
+                            },
+                            child: Text(
+                              "Map View Section",
+                              style: AppTextStyles.clickable(color: Colors.black),
+                            )),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const PlayerWidget(),
-          ],
+              const PlayerWidget(),
+            ],
+          ),
         ),
       );
     });
@@ -86,15 +89,14 @@ class _DiscoveryState extends State<Discovery> {
 
   Widget popularBandsWidget() {
     var bands = [];
+
+
     bands = dataProvider.users
         .where((element) =>
             element.isBand &&
             element.bandName!
                 .toLowerCase()
-                .contains(controller.text.toLowerCase()) &&
-            element.selectedGenres.isNotEmpty &&
-            element.selectedGenres.first ==
-                dataProvider.userModel!.selectedGenres.first)
+                .contains(controller.text.toLowerCase()))
         .toList();
 
     return bands.isEmpty
@@ -132,7 +134,7 @@ class _DiscoveryState extends State<Discovery> {
     var s = dataProvider.radioStations;
     var radioStations = s
         .where((element) =>
-            element.genre == dataProvider.userModel!.selectedGenres.first &&
+            // element.genre == dataProvider.userModel!.selectedGenres.first &&
             element.name.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
     return radioStations.isEmpty
@@ -174,8 +176,8 @@ class _DiscoveryState extends State<Discovery> {
     var s = dataProvider.songs;
     var songs = s
         .where((element) =>
-            element.genreList.first ==
-                dataProvider.userModel!.selectedGenres.first &&
+            // element.genreList.first ==
+                // dataProvider.userModel!.selectedGenres.first &&
             element.title.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
     return songs.isEmpty

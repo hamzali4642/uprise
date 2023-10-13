@@ -47,6 +47,7 @@ class _DashboardState extends State<Dashboard> {
     _refreshController.loadComplete();
   }
 
+  var hasCheck = false;
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, p, child) {
@@ -60,6 +61,18 @@ class _DashboardState extends State<Dashboard> {
         if (state.text.isEmpty) {
           state.text = dataProvider.userModel?.state ?? "";
         }
+
+        if(!hasCheck){
+          if(dataProvider.userModel != null && dataProvider.userModel!.selectedGenres.isEmpty){
+            Future.delayed(Duration(seconds: 1)).then((value){
+              context.push(child: RadioPreferences());
+            });
+
+            hasCheck = true;
+          }
+
+        }
+
         return WillPopScope(
           onWillPop: () {
             if (provider.selectedIndex == 0) {
@@ -72,7 +85,10 @@ class _DashboardState extends State<Dashboard> {
             floatingActionButton: provider.showOverlay
                 ? InkWell(
                     onTap: () {
-                      provider.showOverlay = !provider.showOverlay;
+                      if(dataProvider.currentSong != null){
+                        provider.showOverlay = !provider.showOverlay;
+                      }
+
                     },
                     child: SvgPicture.asset(
                       Assets.imagesClose,
@@ -273,10 +289,19 @@ class _DashboardState extends State<Dashboard> {
                   setState(() {
                     if (dataProvider.type == "City") {
                       dataProvider.type = "State";
+                      dataProvider.setSong();
+                      dataProvider.stop();
+                      dataProvider.initializePlayer();
                     } else if (dataProvider.type == "State") {
                       dataProvider.type = "Country";
+                      dataProvider.setSong();
+                      dataProvider.stop();
+                      dataProvider.initializePlayer();
                     } else {
                       dataProvider.type = "City";
+                      dataProvider.setSong();
+                      dataProvider.stop();
+                      dataProvider.initializePlayer();
                     }
                     // radioButtonItem("City"),
                     // radioButtonItem("State"),
@@ -349,7 +374,10 @@ class _DashboardState extends State<Dashboard> {
   Widget fabWidget() {
     return InkWell(
       onTap: () {
-        provider.showOverlay = !provider.showOverlay;
+        if(dataProvider.currentSong != null){
+          provider.showOverlay = !provider.showOverlay;
+        }
+
       },
       child: Container(
         margin: EdgeInsets.only(top: 3),
@@ -680,6 +708,8 @@ class _DashboardState extends State<Dashboard> {
               dataProvider.type = value!;
               dataProvider.setSong();
               dataProvider.stop();
+
+              dataProvider.initializePlayer();
             },
           ),
           Text(
