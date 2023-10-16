@@ -312,6 +312,9 @@ class _SignUpState extends State<SignUp> {
               errorText: "Donation Link is Required",
               controller: donationLink,
               hint: "Enter your Donation link",
+              validator: (val) {
+                return null;
+              },
             ),
             const SizedBox(height: 20),
             buildText("PayPal Email"),
@@ -464,7 +467,6 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-
   Widget buildText(String str, {Color color = Colors.white}) {
     return Text(
       str,
@@ -493,6 +495,4 @@ class _SignUpState extends State<SignUp> {
         .get();
     return docs.docs.isEmpty;
   }
-
-
 }
