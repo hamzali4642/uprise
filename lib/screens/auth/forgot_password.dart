@@ -89,6 +89,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               Functions.showLoaderDialog(context);
                               await FirebaseAuth.instance
                                   .sendPasswordResetEmail(email: email.text);
+
+                              Functions.showSnackBar(context, "Password reset has been sent. Please check your email.");
                               // ignore: use_build_context_synchronously
                               context.pushAndRemoveUntil(child: const SignIn());
                             } on FirebaseException catch (e) {

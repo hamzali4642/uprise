@@ -23,10 +23,14 @@ class AuthService {
     try {
       Functions.showLoaderDialog(context);
 
-      var address = await context.push(child: SelectLocation());
+      var address;
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: model.email, password: password).then((value) async {
+        address = await context.push(child: SelectLocation());
+      });
+      String id = FirebaseAuth.instance.currentUser!.uid;
+
       if(address is AddressModel){
-
-
 
         Map<String,dynamic> location = await Functions.getCityFromLatLong(address.latitude!, address.longitude!);
 
@@ -34,10 +38,7 @@ class AuthService {
         model.state = location["state"];
         model.country = location["country"];
 
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: model.email, password: password);
 
-        String id = FirebaseAuth.instance.currentUser!.uid;
         DocumentReference doc = userRef.doc(id);
         model.id = id;
         await doc.set(model.toMap());

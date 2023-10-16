@@ -35,6 +35,8 @@ class _DiscoveryState extends State<Discovery> {
     super.initState();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, value, child) {
