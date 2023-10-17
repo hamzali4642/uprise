@@ -9,6 +9,7 @@ import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/screens/auth/auth_service/auth_service.dart';
+import 'package:uprise/screens/select_location.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
@@ -98,7 +99,7 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(height: 10),
                   privacyCheckBox(),
                   const SizedBox(height: 35),
-                  signUpButton(),
+                  signUpButton(context),
                   const SizedBox(height: 10),
                   bottomRow(),
                   const SizedBox(height: 30)
@@ -425,7 +426,7 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Widget signUpButton() {
+  Widget signUpButton(BuildContext context) {
     return SizedBox(
       width: 125,
       height: 40,
@@ -442,14 +443,27 @@ class _SignUpState extends State<SignUp> {
               Functions.showSnackBar(context, "Please match the password");
             } else {
               if (await validUserName()) {
-                UserModel userModel = UserModel(
-                  username: username.text,
-                  email: email.text,
-                  isBand: registerBandArtist,
-                  bandName: registerBandArtist ? brandName.text : null,
-                  donationLink: donationLink.text,
-                );
-                await AuthService.signUp(context, userModel, password.text);
+                bool check = await Functions.doesEmailExist(email.text);
+                print(check);
+                if (check) {
+                  Functions.showSnackBar(
+                      context, "This email is already taken by another user.");
+                } else {
+                  UserModel userModel = UserModel(
+                    username: username.text,
+                    email: email.text,
+                    isBand: registerBandArtist,
+                    bandName: registerBandArtist ? brandName.text : null,
+                    donationLink: donationLink.text,
+                  );
+                  context.push(
+                    child: SelectLocation(
+                      isSignUp: true,
+                      userModel: userModel,
+                      password: password.text,
+                    ),
+                  );
+                }
               } else {
                 Functions.showSnackBar(
                     context, "This username is already taken by another user.");

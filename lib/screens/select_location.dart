@@ -7,18 +7,33 @@ import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_geocoding/google_geocoding.dart' as gc;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:uprise/models/user_model.dart';
 
 import '../helpers/colors.dart';
 import '../helpers/functions.dart';
 import '../models/address_model.dart';
-
+import 'auth/auth_service/auth_service.dart';
 
 class SelectLocation extends StatefulWidget {
   Color primary;
 
-  SelectLocation({Key? key, this.primary = CColors.primary, this.lat, this.long}) : super(key: key);
+  SelectLocation({
+    Key? key,
+    this.primary = CColors.primary,
+    this.lat,
+    this.long,
+    this.isSignUp = false,
+    this.userModel,
+    this.password,
+  }) : super(key: key);
 
   double? lat, long;
+
+  UserModel? userModel;
+  String? password;
+
+  bool isSignUp;
+
   @override
   State<SelectLocation> createState() => _SelectLocationState();
 }
@@ -40,7 +55,8 @@ class _SelectLocationState extends State<SelectLocation> {
   @override
   void initState() {
     position = CameraPosition(
-      target: LatLng(widget.lat ?? 37.42796133580664, widget.long ?? -122.085749655962),
+      target: LatLng(
+          widget.lat ?? 37.42796133580664, widget.long ?? -122.085749655962),
       zoom: 14.4746,
     );
     _loadMapStyles();
@@ -60,7 +76,6 @@ class _SelectLocationState extends State<SelectLocation> {
       body: Stack(
         children: [
           GoogleMap(
-
             zoomControlsEnabled: false,
             myLocationEnabled: true,
             onCameraIdle: () {
@@ -79,7 +94,8 @@ class _SelectLocationState extends State<SelectLocation> {
             initialCameraPosition: position,
             onMapCreated: (GoogleMapController controller) async {
               _controller = controller;
-              _darkMapStyle  = await rootBundle.loadString('assets/map/map.json');
+              _darkMapStyle =
+                  await rootBundle.loadString('assets/map/map.json');
               _controller!.setMapStyle(_darkMapStyle);
             },
             markers: Set<Marker>.of(markers.values),
@@ -154,17 +170,17 @@ class _SelectLocationState extends State<SelectLocation> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: widget.primary,
-                  padding: EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
                   shape: const StadiumBorder(),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (latLng == null || searchResults == "Search Address") {
                     Functions.showSnackBar(
                       context,
                       "Please select the location",
                     );
                   } else {
-                    if(country == "USA" || country == "United States"){
+                    if (country == "USA" || country == "United States") {
                       AddressModel model = AddressModel(
                         latitude: latLng!.latitude,
                         longitude: latLng!.longitude,
@@ -174,14 +190,19 @@ class _SelectLocationState extends State<SelectLocation> {
                         address: searchResults,
                         state: state,
                       );
-                      Navigator.of(context).pop(model);
-                    }else{
+
+                      if (widget.isSignUp) {
+                        await AuthService.signUp(
+                            context, widget.userModel!, widget.password!, model);
+                      } else {
+                        Navigator.of(context).pop(model);
+                      }
+                    } else {
                       Functions.showSnackBar(
                         context,
                         "Please select the location from USA",
                       );
                     }
-
                   }
                 },
                 child: const Text(
@@ -202,10 +223,10 @@ class _SelectLocationState extends State<SelectLocation> {
 
   getAddress() async {
     var googleGeocoding =
-    gc.GoogleGeocoding("AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk");
+        gc.GoogleGeocoding("AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk");
     var l = gc.LatLon(latLng!.latitude, latLng!.longitude);
     gc.GeocodingResponse? result =
-    await googleGeocoding.geocoding.getReverse(l);
+        await googleGeocoding.geocoding.getReverse(l);
 
     String address = "";
     searchResults = "";
@@ -232,8 +253,7 @@ class _SelectLocationState extends State<SelectLocation> {
             city = element.longName!;
           }
 
-
-          if(types.contains("administrative_area_level_1")){
+          if (types.contains("administrative_area_level_1")) {
             state = element.longName!;
           }
 
@@ -286,7 +306,7 @@ class _SelectLocationState extends State<SelectLocation> {
       postalCode = "";
 
       PlacesDetailsResponse detail =
-      await places.getDetailsByPlaceId(p.placeId!);
+          await places.getDetailsByPlaceId(p.placeId!);
       var element = detail.result;
       for (var element in element.addressComponents) {
         var types = element.types;
@@ -316,8 +336,6 @@ class _SelectLocationState extends State<SelectLocation> {
   }
 
   late String _darkMapStyle;
-  Future _loadMapStyles() async {
 
-
-  }
+  Future _loadMapStyles() async {}
 }

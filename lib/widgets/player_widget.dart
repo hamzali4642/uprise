@@ -49,6 +49,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         });
       }
 
+
       return dataProvider.currentSong == null
           ? const Center(
               child: Text(
@@ -216,6 +217,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
                                     dataProvider.setAudio = "stopped";
 
+
+
                                     List<SongModel> songList = [];
 
                                     if (dataProvider.type == "City") {
@@ -284,6 +287,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                         }
                                       }
                                       print(songList.length);
+
+
                                       // songList = songs
                                       //     .where((element) =>
                                       //         element.genreList
@@ -388,7 +393,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                               barHeight: 2,
                               baseBarColor: CColors.placeholderTextColor,
                               bufferedBarColor: CColors.placeholderTextColor,
-                              progress: value.completed,
+                              progress: value.audioState == "stopped" ? Duration(seconds: 0) : value.completed,
                               buffered: value.bufferedTime!,
                               total: value.total,
                               timeLabelTextStyle: const TextStyle(
@@ -410,5 +415,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
               ),
             );
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

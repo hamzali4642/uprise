@@ -18,39 +18,39 @@ class AuthService {
   static CollectionReference userRef =
       FirebaseFirestore.instance.collection("users");
 
-  static Future<void> signUp(
-      BuildContext context, UserModel model, String password) async {
+  static Future<void> signUp(BuildContext context, UserModel model,
+      String password, AddressModel addressModel) async {
     try {
       Functions.showLoaderDialog(context);
 
-      var address;
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: model.email, password: password).then((value) async {
-        address = await context.push(child: SelectLocation());
+      UserCredential user = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: model.email, password: password);
+
+      String id = user.user!.uid;
+
+      Map<String, dynamic> location = await Functions.getCityFromLatLong(
+          addressModel.latitude!, addressModel.longitude!);
+
+      model.city = location["city"];
+      model.state = location["state"];
+      model.country = location["country"];
+
+      DocumentReference doc = userRef.doc(id);
+      model.id = id;
+      await doc.set(model.toMap());
+      await doc.update({
+        "joinAt": DateTime.now().millisecondsSinceEpoch,
       });
-      String id = FirebaseAuth.instance.currentUser!.uid;
+      // ignore: use_build_context_synchronously
 
-      if(address is AddressModel){
-
-        Map<String,dynamic> location = await Functions.getCityFromLatLong(address.latitude!, address.longitude!);
-
-        model.city = location["city"];
-        model.state = location["state"];
-        model.country = location["country"];
-
-
-        DocumentReference doc = userRef.doc(id);
-        model.id = id;
-        await doc.set(model.toMap());
-        await doc.update({
-          "joinAt": DateTime.now().millisecondsSinceEpoch,
-        });
-        // ignore: use_build_context_synchronously
-        context.pushAndRemoveUntil(child: const Dashboard());
-      }else{
-        context.pop();
-        Functions.showSnackBar(context, "Failed to get address");
+      if(FirebaseAuth.instance.currentUser == null){
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+            email: model.email, password: password);
+        print("Null user. Signing Again");
       }
+      context.pushAndRemoveUntil(child: const Dashboard());
     } on FirebaseException catch (e) {
       switch (e.code) {
         case 'invalid-email':
@@ -75,14 +75,14 @@ class AuthService {
     }
   }
 
-
-  static Future<Map<String, double>> determinePosition(BuildContext context) async {
+  static Future<Map<String, double>> determinePosition(
+      BuildContext context) async {
     bool serviceEnabled;
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      showError('Location services are disabled.',context);
+      showError('Location services are disabled.', context);
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -95,7 +95,8 @@ class AuthService {
     }
     if (permission == LocationPermission.deniedForever) {
       showError(
-          'Location permissions are permanently denied, we cannot request permissions. Turn these on from settings',context);
+          'Location permissions are permanently denied, we cannot request permissions. Turn these on from settings',
+          context);
     }
 
     var position = await Geolocator.getCurrentPosition();
@@ -103,7 +104,7 @@ class AuthService {
     return {"lat": position.latitude, "long": position.longitude};
   }
 
-  static showError(String message,BuildContext context) {
+  static showError(String message, BuildContext context) {
     showDialog(
         context: context,
         builder: (_) {
@@ -123,7 +124,6 @@ class AuthService {
           );
         });
   }
-
 
   static Future<void> signIn(
       BuildContext context, String email, String password) async {
@@ -186,7 +186,6 @@ class AuthService {
           var ref = FirebaseFirestore.instance.collection("users").doc(id);
 
           DocumentSnapshot snapshot = await ref.get();
-
 
           if (!snapshot.exists) {
             userModel.joinAt = DateTime.now();

@@ -53,10 +53,15 @@ class _FeedState extends State<Feed> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    List<RadioStationModel> radioStations = dataProvider.radioStations
-        .where((element) =>
-    dataProvider.userModel!.selectedGenres.isNotEmpty && element.genre == dataProvider.userModel!.selectedGenres.first)
-        .toList();
+    List<RadioStationModel> radioStations = [];
+
+    if (dataProvider.userModel?.selectedGenres != null) {
+     radioStations =  dataProvider.radioStations
+          .where((element) =>
+      dataProvider.userModel!.selectedGenres.isNotEmpty && element.genre == dataProvider.userModel!.selectedGenres.first)
+          .toList();
+    }
+
 
     if (radioStations.isNotEmpty) {
       if (dataProvider.type == "City") {
