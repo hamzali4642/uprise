@@ -27,7 +27,7 @@ class NotificationWidget extends StatelessWidget {
                   children: [
                     Text(
                       notification.text,
-                      style: AppTextStyles.popins(style: TextStyle(color: Colors.white)),
+                      style: AppTextStyles.popins(style: const TextStyle(color: Colors.white)),
                     ),
                     const MarginWidget(factor: 0.5),
                     Timeago(

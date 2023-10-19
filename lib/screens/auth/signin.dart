@@ -47,9 +47,10 @@ class _SignInState extends State<SignIn> {
                     "UPRISE",
                     style: AppTextStyles.popins(
                       style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeights.bold),
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeights.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -215,11 +216,9 @@ class _SignInState extends State<SignIn> {
           "Login",
           style: AppTextStyles.popins(
             style: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeights.normal,
-              fontSize: 14
-
-            ),
+                color: Colors.black,
+                fontWeight: FontWeights.normal,
+                fontSize: 14),
           ),
         ),
       ),
