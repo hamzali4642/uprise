@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -39,7 +41,6 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-
   TextEditingController facebook = TextEditingController();
   TextEditingController instagram = TextEditingController();
   TextEditingController twitter = TextEditingController();
@@ -314,15 +315,20 @@ class _UserProfileState extends State<UserProfile> {
     return InkWell(
       onTap: () async {
         if (widget is SignIn) {
-          await FirebaseAuth.instance.signOut();
+          context.read<DataProvider>().currentSong = null;
+          await context.read<DataProvider>().audioPlayer.stop();
+          context.read<DataProvider>().setAudio = "stopped";
           await GoogleSignIn().signOut();
           await GoogleSignIn().currentUser?.clearAuthCache();
+          await FirebaseAuth.instance.signOut();
 
           var p = Provider.of<DashboardProvider>(context, listen: false);
           p.selectedIndex = 0;
           p.homeSelected = "Feed";
+          context.pushAndRemoveUntil(child: widget);
+        } else {
+          context.push(child: widget);
         }
-        context.push(child: widget);
       },
       child: Text(
         str,

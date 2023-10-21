@@ -48,6 +48,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   var hasCheck = false;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, p, child) {
@@ -62,15 +63,15 @@ class _DashboardState extends State<Dashboard> {
           state.text = dataProvider.userModel?.state ?? "";
         }
 
-        if(!hasCheck){
-          if(dataProvider.userModel != null && dataProvider.userModel!.selectedGenres.isEmpty){
-            Future.delayed(Duration(seconds: 1)).then((value){
+        if (!hasCheck) {
+          if (dataProvider.userModel != null &&
+              dataProvider.userModel!.selectedGenres.isEmpty) {
+            Future.delayed(Duration(seconds: 1)).then((value) {
               context.push(child: RadioPreferences());
             });
 
             hasCheck = true;
           }
-
         }
 
         return WillPopScope(
@@ -85,10 +86,9 @@ class _DashboardState extends State<Dashboard> {
             floatingActionButton: provider.showOverlay
                 ? InkWell(
                     onTap: () {
-                      if(dataProvider.currentSong != null){
+                      if (dataProvider.currentSong != null) {
                         provider.showOverlay = !provider.showOverlay;
                       }
-
                     },
                     child: SvgPicture.asset(
                       Assets.imagesClose,
@@ -230,11 +230,14 @@ class _DashboardState extends State<Dashboard> {
             ),
             onSelected: (value) async {
               if (value == "/logout") {
+                dataProvider.currentSong = null;
+                await dataProvider.audioPlayer.stop();
+                dataProvider.setAudio = "stopped";
                 await FirebaseAuth.instance.signOut();
                 provider.selectedIndex = 0;
                 provider.homeSelected = "Feed";
                 // ignore: use_build_context_synchronously
-                context.push(child: const SignIn());
+                context.pushAndRemoveUntil(child: const SignIn());
               } else if (value == "/discovery") {
                 provider.selectedIndex = 2;
               } else if (value == "/profile") {
@@ -374,10 +377,9 @@ class _DashboardState extends State<Dashboard> {
   Widget fabWidget() {
     return InkWell(
       onTap: () {
-        if(dataProvider.currentSong != null){
+        if (dataProvider.currentSong != null) {
           provider.showOverlay = !provider.showOverlay;
         }
-
       },
       child: Container(
         margin: EdgeInsets.only(top: 3),
@@ -721,5 +723,10 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

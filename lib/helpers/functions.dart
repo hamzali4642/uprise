@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:flutter/material.dart';
@@ -77,7 +78,8 @@ class Functions {
     return {"lat": locations.first.latitude, "long": locations.first.longitude};
   }
 
-  static Future<Map<String, String>> getCityFromLatLong(double lat, double long) async {
+  static Future<Map<String, String>> getCityFromLatLong(
+      double lat, double long) async {
     String location = "";
     String state = "";
     String country = "";
@@ -89,7 +91,7 @@ class Functions {
         Placemark placemark = placemarks[0];
         String? city = placemark.locality;
         state = placemark.administrativeArea ?? "";
-         country = placemark.country ?? "";
+        country = placemark.country ?? "";
 
         location = "$city";
       } else {
@@ -99,7 +101,22 @@ class Functions {
       print('Error getting location: $e');
     }
 
-    return {"city" : location, "state" : state, "country" : country};
+    return {"city": location, "state": state, "country": country};
   }
 
+  static Future<bool> doesEmailExist(String email) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: 'dummy_password', // Provide a dummy password
+      );
+      return true; // Email exists
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        return false; // Email does not exist
+      } else {
+        return true;
+      }
+    }
+  }
 }
