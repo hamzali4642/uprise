@@ -54,12 +54,12 @@ class _FavoritesState extends State<Favorites> {
             IntrinsicHeight(
               child: Row(
                 children: [
-                  tab("Favourite Songs", songSelected),
+                  tab("Favorite Songs", songSelected),
                   Container(
                     width: 1,
                     color: Colors.black,
                   ),
-                  tab("Favourite RadioStations", radioSelected),
+                  tab("Favorite RadioStations", radioSelected),
                 ],
               ),
             ),

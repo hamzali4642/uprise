@@ -34,7 +34,6 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
-      print(value.currentSong == null);
       dataProvider = value;
 
       if (value.songsState == DataStates.waiting) {
@@ -84,7 +83,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                   } else if (dataProvider.type == "State") {
                     for(var song in dataProvider.songs){
                       print("-");
-                      print(song.state);
+
                       print(song.upVotes.length);
                     }
                     songList = dataProvider.songs

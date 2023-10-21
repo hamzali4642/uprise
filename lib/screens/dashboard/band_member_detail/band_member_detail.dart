@@ -335,6 +335,10 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
     Map<String, double> list1 = {};
     Map<String, double> list2 = {};
 
+
+    if(list1.isEmpty || list2.isEmpty){
+      return 0.0;
+    }
     for (var songId in dataProvider.userModel!.favourites) {
       final song =
           dataProvider.songs.where((song) => songId == song.id).firstOrNull;
@@ -344,6 +348,7 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
         }
       }
     }
+
 
     final totalRepetitions = list1.values.reduce((a, b) => a + b).toDouble();
     list1.forEach((genre, count) {

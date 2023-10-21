@@ -44,7 +44,7 @@ class TextFieldWidget extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        validator: validator ??
+        validator: hint == "Enter your Donation link" ? null : validator ??
             (value) {
               if (value!.isEmpty) {
                 return errorText;
