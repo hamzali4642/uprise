@@ -79,45 +79,53 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                     ),
                   ),
                   radioWidget(),
-                  TextFieldWidget(
-                    controller: type == "City"
-                        ? city
-                        : type == "State"
-                            ? state
-                            : country,
-                    hint: "Manually Enter Location",
-                    errorText: "errorText",
-                    enable: type == "City" && city.text.isEmpty ||
-                        type == "State" && state.text.isEmpty ||
-                        type == "Country" && country.text.isEmpty,
-                    onChange: (value) async {
-                      if (value.trim().isEmpty) {
-                        responses = [];
-                      } else {
-                        responses = await autoCompleteCity(value);
-                        responses = responses.toSet().toList();
-                      }
-                      setState(() {});
-                    },
-                    suffixWidget: IconButton(
-                      onPressed: () async {
-                        var model = await context.push(
-                            child: SelectLocation(
-                          lat: latitude,
-                          long: longitude,
-                        ));
-                        if (model is AddressModel) {
-                          city.text = model.city;
-                          state.text = model.state;
-                          latitude = model.latitude;
-                          longitude = model.longitude;
-                        }
-                      },
-                      color: CColors.White,
-                      icon: const Icon(
-                        Icons.map,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFieldWidget(
+                          controller: type == "City"
+                              ? city
+                              : type == "State"
+                                  ? state
+                                  : country,
+                          hint: "Manually Enter Location",
+                          errorText: "errorText",
+                          enable: type == "City" && city.text.isEmpty ||
+                              type == "State" && state.text.isEmpty ||
+                              type == "Country" && country.text.isEmpty,
+                          onChange: (value) async {
+                            if (value.trim().isEmpty) {
+                              responses = [];
+                            } else {
+                              responses = await autoCompleteCity(value);
+                              responses = responses.toSet().toList();
+                            }
+                            setState(() {});
+                          },
+
+                        ),
                       ),
-                    ),
+                      IconButton(
+                        onPressed: () async {
+                          var model = await context.push(
+                              child: SelectLocation(
+                                lat: latitude,
+                                long: longitude,
+                              ));
+                          if (model is AddressModel) {
+                            city.text = model.city;
+                            state.text = model.state;
+                            country.text = model.country;
+                            latitude = model.latitude;
+                            longitude = model.longitude;
+                          }
+                        },
+                        color: CColors.White,
+                        icon: const Icon(
+                          Icons.map,
+                        ),
+                      )
+                    ],
                   ),
                   suggestionsWidget(),
                   const SizedBox(

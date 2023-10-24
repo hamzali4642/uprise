@@ -56,12 +56,12 @@ class _FeedState extends State<Feed> {
     List<RadioStationModel> radioStations = [];
 
     if (dataProvider.userModel?.selectedGenres != null) {
-     radioStations =  dataProvider.radioStations
+      radioStations = dataProvider.radioStations
           .where((element) =>
-      dataProvider.userModel!.selectedGenres.isNotEmpty && element.genre == dataProvider.userModel!.selectedGenres.first)
+              dataProvider.userModel!.selectedGenres.isNotEmpty &&
+              element.genre == dataProvider.userModel!.selectedGenres.first)
           .toList();
     }
-
 
     if (radioStations.isNotEmpty) {
       if (dataProvider.type == "City") {
@@ -130,31 +130,32 @@ class _FeedState extends State<Feed> {
     if (dataProvider.type == "City") {
       songs = dataProvider.songs
           .where((element) =>
-      element.genreList.isNotEmpty &&
-      element.genreList.any((genre) =>
-      dataProvider.userModel!.selectedGenres.isNotEmpty &&
-      genre ==
-          dataProvider.userModel!.selectedGenres.first) &&
-          element.upVotes.length < 25)
+              element.genreList.isNotEmpty &&
+              element.genreList.any((genre) =>
+                  dataProvider.userModel!.selectedGenres.isNotEmpty &&
+                  genre == dataProvider.userModel!.selectedGenres.first) &&
+              element.upVotes.length < 25)
           .toList();
+
+      for(var song in songs){
+        print(song.id);
+        print(song.genreList);
+      }
     } else if (dataProvider.type == "State") {
       songs = dataProvider.songs
           .where((element) =>
-      element.genreList.any((genre) =>
-      dataProvider.userModel!.selectedGenres.isNotEmpty &&
-      genre ==
-          dataProvider.userModel!.selectedGenres.first) &&
-          (element.upVotes.length >= 25 &&
-              element.upVotes.length < 75))
+              element.genreList.any((genre) =>
+                  dataProvider.userModel!.selectedGenres.isNotEmpty &&
+                  genre == dataProvider.userModel!.selectedGenres.first) &&
+              (element.upVotes.length >= 25 && element.upVotes.length < 75))
           .toList();
     } else {
       songs = dataProvider.songs
           .where((element) =>
-      element.genreList.any((genre) =>
-      dataProvider.userModel!.selectedGenres.isNotEmpty &&
-      genre ==
-          dataProvider.userModel!.selectedGenres.first) &&
-          element.upVotes.length >= 75 )
+              element.genreList.any((genre) =>
+                  dataProvider.userModel!.selectedGenres.isNotEmpty &&
+                  genre == dataProvider.userModel!.selectedGenres.first) &&
+              element.upVotes.length >= 75)
           .toList();
     }
 
