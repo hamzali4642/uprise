@@ -80,8 +80,9 @@ class _SelectLocationState extends State<SelectLocation> {
             myLocationEnabled: true,
             onCameraIdle: () {
               if (latLng != null) {
+                getAddress();
                 if (!fromPlaces) {
-                  getAddress();
+
                 }
                 fromPlaces = false;
                 addMarker(latLng!);
@@ -180,29 +181,23 @@ class _SelectLocationState extends State<SelectLocation> {
                       "Please select the location",
                     );
                   } else {
-                    if (country == "USA" || country == "United States") {
-                      AddressModel model = AddressModel(
-                        latitude: latLng!.latitude,
-                        longitude: latLng!.longitude,
-                        country: country,
-                        city: city,
-                        postalCode: postalCode,
-                        address: searchResults,
-                        state: state,
-                      );
+                    AddressModel model = AddressModel(
+                      latitude: latLng!.latitude,
+                      longitude: latLng!.longitude,
+                      country: country,
+                      city: city,
+                      postalCode: postalCode,
+                      address: searchResults,
+                      state: state,
+                    );
 
-                      if (widget.isSignUp) {
-                        await AuthService.signUp(context, widget.userModel!,
-                            widget.password!, model);
-                      } else {
-                        Navigator.of(context).pop(model);
-                      }
+                    if (widget.isSignUp) {
+                      await AuthService.signUp(context, widget.userModel!,
+                          widget.password!, model);
                     } else {
-                      Functions.showSnackBar(
-                        context,
-                        "Please select the location from USA",
-                      );
+                      Navigator.of(context).pop(model);
                     }
+
                   }
                 },
                 child: const Text(

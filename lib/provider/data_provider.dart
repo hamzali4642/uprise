@@ -492,7 +492,7 @@ class DataProvider extends ChangeNotifier {
             .where((element) =>
                 element.genreList
                     .any((genre) => genre == userModel!.selectedGenres.first) &&
-                element.upVotes.length >= 75)
+                element.upVotes.length >= 3)
             .toList();
       }
     }
