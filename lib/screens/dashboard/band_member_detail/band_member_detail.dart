@@ -8,12 +8,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/donation_view.dart';
 import 'package:uprise/widgets/player_widget.dart';
 import 'package:utility_extensions/extensions/context_extensions.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
+import 'package:utility_extensions/utility_extensions.dart';
 
 import '../../../generated/assets.dart';
 import '../../../models/song_model.dart';
@@ -87,6 +89,7 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
                               color: CColors.placeholder,
                             ),
                           ),
+
                           Container(
                             decoration: BoxDecoration(
                               color: widget.model.payPalEmail == null
@@ -99,11 +102,16 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
                                   left: 15, right: 15, top: 8, bottom: 8),
                               child: InkWell(
                                 onTap: () {
-                                  context.push(
-                                      child: DonationView(
-                                    url: widget.model.donationLink ??
-                                        "https://pub.dev/",
-                                  ));
+
+                                  if(widget.model.donationLink != null && !widget.model.donationLink!.isValidURl){
+                                    context.push(
+                                        child: DonationView(
+                                          url: widget.model.donationLink ??
+                                              "https://pub.dev/",
+                                        ));
+                                  }else{
+                                    Functions.showSnackBar(context, "member's donation link is invalid.");
+                                  }
                                 },
                                 child: const Text(
                                   "Donate Artist",

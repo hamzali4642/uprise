@@ -49,11 +49,11 @@ class _MapViewSectionState extends State<MapViewSection> {
           center: LatLng(position["lat"], position["long"]),
           circleId: CircleId(key),
           radius: 10000,
-          fillColor: value <= 5
-              ? Colors.green.withOpacity(0.5)
-              : value > 5 && value <= 20
-                  ? Colors.yellow.withOpacity(0.5)
-                  : Colors.red.withOpacity(0.5)));
+          fillColor: value <= 2
+              ? Colors.red.shade300.withOpacity(0.5)
+              : value > 2 && value <= 5
+                  ? Colors.red.shade500.withOpacity(0.5)
+                  : Colors.red.shade700.withOpacity(0.5)));
       setState(() {});
     });
   }

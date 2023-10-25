@@ -108,7 +108,7 @@ class _FeedState extends State<Feed> {
             separatorBuilder: (ctx, i) {
 
               return const SizedBox(
-                width: 20,
+
               );
             },
           ),

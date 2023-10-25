@@ -44,7 +44,7 @@ class EventModel {
     name = data["name"];
     venue = data["venue"];
     bandId = data["bandId"];
-    posterUrl = data["posterUrl"];
+    posterUrl = data["posterUrl"] ?? "";
     startDate = DateTime.fromMillisecondsSinceEpoch(data["startDate"]);
     endDate = DateTime.fromMillisecondsSinceEpoch(data["endDate"]);
     description = data["description"];
