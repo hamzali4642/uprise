@@ -100,7 +100,9 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                             if (value.trim().isEmpty) {
                               responses = [];
                             } else {
+                              print("object");
                               var res = await autoCompleteCity(value);
+                              print(res);
                               responses = res.first;
                               placeIds = res.last;
                               responses = responses.toSet().toList();
@@ -301,7 +303,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
 
   Future<List<List<String>>> autoCompleteCity(String input) async {
     final response = await http.get(Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(${type == "City" ? "cities" : "states"})&components=country:us&key=${Constants.mapKey}'));
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(cities)&components=country:us&key=${Constants.mapKey}'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

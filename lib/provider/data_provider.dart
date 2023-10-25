@@ -149,7 +149,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   getSongs() async {
-    songSubscription = db.collection("Songs").snapshots().listen((event) {
+    songSubscription = db.collection("Songs").where("isLive", isEqualTo: true).snapshots().listen((event) {
       songs = [];
       songs = event.docs.map((doc) => SongModel.fromMap(doc.data())).toList();
       this.cities = [];
