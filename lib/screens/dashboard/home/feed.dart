@@ -53,32 +53,32 @@ class _FeedState extends State<Feed> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    List<RadioStationModel> radioStations = [];
+    List<RadioStationModel> radioStations = dataProvider.radioStations;
 
-    if (dataProvider.userModel?.selectedGenres != null) {
-      radioStations = dataProvider.radioStations
-          .where((element) =>
-              dataProvider.userModel!.selectedGenres.isNotEmpty &&
-              element.genre == dataProvider.userModel!.selectedGenres.first)
-          .toList();
-    }
-
-    if (radioStations.isNotEmpty) {
-      if (dataProvider.type == "City") {
-        radioStations = radioStations
-            .where((element) => element.city == dataProvider.userModel!.city)
-            .toList();
-      } else if (dataProvider.type == "State") {
-        radioStations = radioStations
-            .where((element) => element.state == dataProvider.userModel!.state)
-            .toList();
-      } else {
-        radioStations = radioStations
-            .where(
-                (element) => element.country == dataProvider.userModel!.country)
-            .toList();
-      }
-    }
+    // if (dataProvider.userModel?.selectedGenres != null) {
+    //   radioStations = dataProvider.radioStations
+    //       .where((element) =>
+    //           dataProvider.userModel!.selectedGenres.isNotEmpty &&
+    //           element.genre == dataProvider.userModel!.selectedGenres.first)
+    //       .toList();
+    // }
+    //
+    // if (radioStations.isNotEmpty) {
+    //   if (dataProvider.type == "City") {
+    //     radioStations = radioStations
+    //         .where((element) => element.city == dataProvider.userModel!.city)
+    //         .toList();
+    //   } else if (dataProvider.type == "State") {
+    //     radioStations = radioStations
+    //         .where((element) => element.state == dataProvider.userModel!.state)
+    //         .toList();
+    //   } else {
+    //     radioStations = radioStations
+    //         .where(
+    //             (element) => element.country == dataProvider.userModel!.country)
+    //         .toList();
+    //   }
+    // }
 
     if (radioStations.isEmpty) {
       return const SizedBox();
