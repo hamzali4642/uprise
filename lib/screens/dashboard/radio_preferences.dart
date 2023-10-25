@@ -14,7 +14,9 @@ import 'package:utility_extensions/utility_extensions.dart';
 import '../../helpers/colors.dart';
 import '../../models/address_model.dart';
 import '../../provider/dashboard_provider.dart';
-
+import 'package:google_api_headers/google_api_headers.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:google_geocoding/google_geocoding.dart' as gc;
 class RadioPreferences extends StatefulWidget {
   const RadioPreferences({super.key});
 
@@ -89,16 +91,20 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                                   ? state
                                   : country,
                           hint: "Manually Enter Location",
-                          errorText: "errorText",
-                          enable: type == "City" && city.text.isEmpty ||
-                              type == "State" && state.text.isEmpty ||
-                              type == "Country" && country.text.isEmpty,
+                          errorText: "",
+                          enable: true,
+                          // type == "City" && city.text.isEmpty ||
+                          //     type == "State" && state.text.isEmpty ||
+                          //     type == "Country" && country.text.isEmpty,
                           onChange: (value) async {
                             if (value.trim().isEmpty) {
                               responses = [];
                             } else {
-                              responses = await autoCompleteCity(value);
+                              var res = await autoCompleteCity(value);
+                              responses = res.first;
+                              placeIds = res.last;
                               responses = responses.toSet().toList();
+                              placeIds = placeIds.toSet().toList();
                             }
                             setState(() {});
                           },
@@ -223,16 +229,40 @@ class _RadioPreferencesState extends State<RadioPreferences> {
   }
 
   List<String> responses = [];
+  List<String> placeIds = [];
 
   Widget suggestionsWidget() {
     return Column(
       children: [
-        for (var response in responses)
+        for (int i = 0 ; i  < responses.length; i++)
           InkWell(
-            onTap: () {
-              city.text = response.split(",")[0];
-              state.text = response.split(",")[1];
+            onTap: () async {
+              print(responses[i]);
+
+              Functions.showLoaderDialog(context);
+
+              GoogleMapsPlaces places = GoogleMapsPlaces(
+                  apiKey: "AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk",
+                  apiHeaders: await const GoogleApiHeaders().getHeaders(),
+              );
+
+              PlacesDetailsResponse detail =
+                  await places.getDetailsByPlaceId(placeIds[i]);
+
+              if(detail.result.geometry != null){
+                await getAddress(detail.result.geometry!.location.lat, detail.result.geometry!.location.lng);
+                context.pop();
+              }else{
+                city.text = responses[i].split(",")[0];
+                state.text = responses[i].split(",")[1];
+                country.text = responses[i].split(",")[2];
+
+                context.pop();
+              }
+
+
               responses = [];
+              placeIds = [];
               longitude = null;
               latitude = null;
               FocusScope.of(context).unfocus();
@@ -248,7 +278,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      response,
+                      responses[i],
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -268,7 +298,8 @@ class _RadioPreferencesState extends State<RadioPreferences> {
     );
   }
 
-  Future<List<String>> autoCompleteCity(String input) async {
+
+  Future<List<List<String>>> autoCompleteCity(String input) async {
     final response = await http.get(Uri.parse(
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(${type == "City" ? "cities" : "states"})&components=country:us&key=${Constants.mapKey}'));
 
@@ -277,13 +308,52 @@ class _RadioPreferencesState extends State<RadioPreferences> {
       final predictions = data['predictions'] as List<dynamic>;
 
       List<String> citySuggestions = [];
+      List<String> placeIds = [];
       for (var prediction in predictions) {
+        print(prediction);
         citySuggestions.add(prediction['description']);
+        placeIds.add(prediction["place_id"]);
       }
 
-      return citySuggestions;
+      return [citySuggestions, placeIds];
     } else {
       throw Exception('Failed to load city suggestions');
+    }
+  }
+
+
+
+  getAddress(double lat, double lng) async {
+    var googleGeocoding =
+    gc.GoogleGeocoding("AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk");
+    var l = gc.LatLon(lat, lng);
+    gc.GeocodingResponse? result =
+    await googleGeocoding.geocoding.getReverse(l);
+
+    if (result != null &&
+        result.results != null &&
+        result.results!.isNotEmpty) {
+      var element = result.results![0];
+      if (element.addressComponents != null) {
+        for (var element in element.addressComponents!) {
+          if (element.types == null || element.longName == null) {
+            return;
+          }
+          var types = element.types!;
+          print(types);
+          print(element.longName);
+          if (types.contains("locality")) {
+            city.text = element.longName!;
+          }
+
+          if (types.contains("administrative_area_level_1")) {
+            state.text = element.longName!;
+          }
+          if (types.contains("country")) {
+            country.text = element.longName!;
+          }
+        }
+      }
     }
   }
 }
