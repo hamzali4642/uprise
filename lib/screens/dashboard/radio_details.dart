@@ -104,7 +104,7 @@ class _RadioDetailsState extends State<RadioDetails> {
             Builder(builder: (context) {
               var songs = dataProvider.songs
                   .where(
-                      (element) => element.rid != null && element.rid  == widget.radioStationModel.id)
+                      (element) => element.city == widget.radioStationModel.name || element.genreList.contains(widget.radioStationModel.name))
                   .toList();
               return Expanded(
                 child: ListView.builder(

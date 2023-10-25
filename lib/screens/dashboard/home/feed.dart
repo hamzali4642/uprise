@@ -106,9 +106,7 @@ class _FeedState extends State<Feed> {
             },
             itemCount: radioStations.length,
             separatorBuilder: (ctx, i) {
-              if (i == 0) {
-                return const SizedBox();
-              }
+
               return const SizedBox(
                 width: 20,
               );
