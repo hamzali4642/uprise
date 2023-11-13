@@ -76,15 +76,11 @@ class _StatisticsState extends State<Statistics> {
         horizontal: Constants.horizontalPadding,
         vertical: 10,
       ),
-      decoration: const BoxDecoration(
-        color: CColors.statisticsBgColor,
-      ),
+      decoration: const BoxDecoration(color: CColors.statisticsBgColor),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const HeadingWidget(
-            text: "Users",
-          ),
+          const HeadingWidget(text: "Users"),
           const SizedBox(
             height: 20,
           ),
@@ -319,9 +315,7 @@ class _StatisticsState extends State<Statistics> {
                     }
                   }
                   return Column(children: [
-                    for (var widget in widgets) ...[
-                      widget
-                    ]
+                    for (var widget in widgets) ...[widget]
                   ]);
                 }),
               ),
@@ -425,7 +419,7 @@ class _StatisticsState extends State<Statistics> {
   Widget popularArtistWidget() {
     var band = provider.getPopularBand();
 
-    if(band == null){
+    if (band == null) {
       return SizedBox();
     }
     return Container(
@@ -477,7 +471,7 @@ class _StatisticsState extends State<Statistics> {
   }
 
   Widget popularArtistPerGenreWidget() {
-    if(provider.getPopularArtistByGenre().isEmpty){
+    if (provider.getPopularArtistByGenre().isEmpty) {
       return SizedBox();
     }
     return Container(

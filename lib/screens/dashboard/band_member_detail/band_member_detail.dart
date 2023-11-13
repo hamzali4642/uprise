@@ -4,14 +4,17 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/functions.dart';
+import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/donation_view.dart';
+import 'package:uprise/widgets/margin_widget.dart';
 import 'package:uprise/widgets/player_widget.dart';
 import 'package:utility_extensions/extensions/context_extensions.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
@@ -71,13 +74,15 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
                         style: const TextStyle(
                             color: Colors.white, fontWeight: FontWeights.bold),
                       ),
-                      true ? SizedBox() : Text(
-                        "Comparison Score:\t${calculatePearsonCorrelation().toStringAsFixed(2)}",
-                        style: const TextStyle(
-                            fontSize: 22,
-                            color: Colors.white,
-                            fontWeight: FontWeights.medium),
-                      ),
+                      true
+                          ? SizedBox()
+                          : Text(
+                              "Comparison Score:\t${calculatePearsonCorrelation().toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                  fontSize: 22,
+                                  color: Colors.white,
+                                  fontWeight: FontWeights.medium),
+                            ),
                       const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,7 +94,6 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
                               color: CColors.placeholder,
                             ),
                           ),
-
                           Container(
                             decoration: BoxDecoration(
                               color: widget.model.payPalEmail == null
@@ -102,16 +106,11 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
                                   left: 15, right: 15, top: 8, bottom: 8),
                               child: InkWell(
                                 onTap: () {
-
-                                  if(widget.model.donationLink != null && !widget.model.donationLink!.isValidURl){
-                                    context.push(
-                                        child: DonationView(
-                                          url: widget.model.donationLink ??
-                                              "https://pub.dev/",
-                                        ));
-                                  }else{
-                                    Functions.showSnackBar(context, "member's donation link is invalid.");
-                                  }
+                                  showDialog(
+                                      context: context,
+                                      builder: (ctx) {
+                                        return donationDialog(context);
+                                      });
                                 },
                                 child: const Text(
                                   "Donate Artist",
@@ -155,6 +154,69 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
             const PlayerWidget(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget donationDialog(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.black.withOpacity(0.5),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Donation Link:",
+            style: AppTextStyles.popins(style: const TextStyle(color: Colors.white)),
+          ),
+          Row(
+            children: [
+              Text(
+                widget.model.donationLink!,
+                style: AppTextStyles.message(color: Colors.blue),
+              ),
+              IconButton(
+                onPressed: () {
+                  Clipboard.setData(
+                      ClipboardData(text: widget.model.donationLink!));
+                  Functions.showSnackBar(context, "Url Successfully copied");
+                },
+                icon: const Icon(
+                  Icons.copy,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          const MarginWidget(),
+          if (!widget.model.donationLink!.isValidURl) ...[
+            Align(
+              alignment: Alignment.center,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (widget.model.donationLink != null &&
+                      !widget.model.donationLink!.isValidURl) {
+                    context.push(
+                        child: DonationView(
+                      url: widget.model.donationLink ?? "https://pub.dev/",
+                    ));
+                  } else {
+                    Functions.showSnackBar(
+                        context, "member's donation link is invalid.");
+                  }
+                },
+                child: const Text("Donate Artist"),
+              ),
+            )
+          ] else ...[
+            Text(
+              "Invalid URL",
+              style: AppTextStyles.popins(
+                  style: const TextStyle(color: Colors.red)),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -343,8 +405,7 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
     Map<String, double> list1 = {};
     Map<String, double> list2 = {};
 
-
-    if(list1.isEmpty || list2.isEmpty){
+    if (list1.isEmpty || list2.isEmpty) {
       return 0.0;
     }
     for (var songId in dataProvider.userModel!.favourites) {
@@ -356,7 +417,6 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
         }
       }
     }
-
 
     final totalRepetitions = list1.values.reduce((a, b) => a + b).toDouble();
     list1.forEach((genre, count) {
@@ -373,9 +433,10 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
       }
     }
 
-    final totalRepetitions1 = list2.values.isEmpty ? 0.0 : list2.values.reduce((a, b) => a + b);
+    final totalRepetitions1 =
+        list2.values.isEmpty ? 0.0 : list2.values.reduce((a, b) => a + b);
     list2.forEach((genre, count) {
-        list2[genre] = count / totalRepetitions1;
+      list2[genre] = count / totalRepetitions1;
     });
 
     for (var element in dataProvider.genres) {
@@ -389,7 +450,6 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
         list2[element] = 0;
       }
     }
-
 
     List<double> listA = [];
     List<double> listB = [];

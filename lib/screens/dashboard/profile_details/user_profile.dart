@@ -474,17 +474,17 @@ class _UserProfileState extends State<UserProfile> {
           width: 10,
         ),
         const SizedBox(width: 20),
-        Expanded(
-          child: Text(
-            textAlign: TextAlign.center,
-            "Activity Points: ${provider.userModel!.favourites.length}",
-            // "Activity Points:\t${getComparisonScore()}",
-            style: const TextStyle(
-                fontSize: 22,
-                color: Colors.white,
-                fontWeight: FontWeights.medium),
-          ),
-        ),
+        // Expanded(
+        //   child: Text(
+        //     textAlign: TextAlign.center,
+        //     "Activity Points: ${provider.userModel!.favourites.length}",
+        //     // "Activity Points:\t${getComparisonScore()}",
+        //     style: const TextStyle(
+        //         fontSize: 22,
+        //         color: Colors.white,
+        //         fontWeight: FontWeights.medium),
+        //   ),
+        // ),
       ],
     );
   }

@@ -53,7 +53,11 @@ class _FeedState extends State<Feed> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    List<RadioStationModel> radioStations = dataProvider.radioStations;
+    List<RadioStationModel> radioStations = dataProvider.radioStations
+        .where((element) =>
+            element.name == dataProvider.userModel!.selectedGenres.first ||
+            element.name == dataProvider.userModel!.city)
+        .toList();
 
     // if (dataProvider.userModel?.selectedGenres != null) {
     //   radioStations = dataProvider.radioStations
@@ -106,10 +110,7 @@ class _FeedState extends State<Feed> {
             },
             itemCount: radioStations.length,
             separatorBuilder: (ctx, i) {
-
-              return const SizedBox(
-
-              );
+              return const SizedBox();
             },
           ),
         ),
@@ -120,41 +121,75 @@ class _FeedState extends State<Feed> {
   Widget newReleasesWidget() {
     List<SongModel> songs = [];
 
-    songs = dataProvider.songs
-        .where((element) => dataProvider.userModel!.following
-            .any((follow) => follow == element.bandId))
-        .toList();
+    // songs = dataProvider.songs
+    //     .where((element) => dataProvider.userModel!.following
+    //         .any((follow) => follow == element.bandId))
+    //     .toList();
 
     if (dataProvider.type == "City") {
-      songs = dataProvider.songs
-          .where((element) =>
-              element.genreList.isNotEmpty &&
-              element.genreList.any((genre) =>
-                  dataProvider.userModel!.selectedGenres.isNotEmpty &&
-                  genre == dataProvider.userModel!.selectedGenres.first) &&
-              element.upVotes.length < 25)
-          .toList();
-
-      for(var song in songs){
-        print(song.id);
-        print(song.genreList);
+      for (var element in dataProvider.songs) {
+        if (element.genreList.first ==
+            dataProvider.userModel!.selectedGenres.first) {
+          if (element.upVotes.length < 3 &&
+              element.city == dataProvider.userModel!.city) {
+            songs.add(element);
+          } else if (element.upVotes.length == 3 &&
+              element.state == dataProvider.userModel!.state) {
+            songs.add(element);
+          } else if (element.country == dataProvider.userModel!.country &&
+              element.upVotes.length > 3) {
+            songs.add(element);
+          }
+        }
       }
+      // songs = dataProvider.songs
+      //     .where((element) =>
+      //         element.genreList.isNotEmpty &&
+      //         element.genreList.any((genre) =>
+      //             dataProvider.userModel!.selectedGenres.isNotEmpty &&
+      //             genre == dataProvider.userModel!.selectedGenres.first) &&
+      //         element.upVotes.length < 25)
+      //     .toList();
+      //
+      // for (var song in songs) {
+      //   print(song.id);
+      //   print(song.genreList);
+      // }
     } else if (dataProvider.type == "State") {
-      songs = dataProvider.songs
-          .where((element) =>
-              element.genreList.any((genre) =>
-                  dataProvider.userModel!.selectedGenres.isNotEmpty &&
-                  genre == dataProvider.userModel!.selectedGenres.first) &&
-              (element.upVotes.length >= 25 && element.upVotes.length < 75))
-          .toList();
+      for (var element in dataProvider.songs) {
+        if (element.genreList.first ==
+            dataProvider.userModel!.selectedGenres.first) {
+          if (element.upVotes.length == 3 &&
+              element.state == dataProvider.userModel!.state) {
+            songs.add(element);
+          } else if (element.country == dataProvider.userModel!.country &&
+              element.upVotes.length > 3) {
+            songs.add(element);
+          }
+        }
+      }
+      // songs = dataProvider.songs
+      //     .where((element) =>
+      //         element.genreList.any((genre) =>
+      //             dataProvider.userModel!.selectedGenres.isNotEmpty &&
+      //             genre == dataProvider.userModel!.selectedGenres.first) &&
+      //         (element.upVotes.length >= 25 && element.upVotes.length < 75))
+      //     .toList();
     } else {
-      songs = dataProvider.songs
-          .where((element) =>
-              element.genreList.any((genre) =>
-                  dataProvider.userModel!.selectedGenres.isNotEmpty &&
-                  genre == dataProvider.userModel!.selectedGenres.first) &&
-              element.upVotes.length >= 75)
-          .toList();
+      for (var element in dataProvider.songs) {
+        if (element.country == dataProvider.userModel!.country &&
+            element.upVotes.length > 3) {
+          print("here");
+          songs.add(element);
+        }
+      }
+      // songs = dataProvider.songs
+      //     .where((element) =>
+      //         element.genreList.any((genre) =>
+      //             dataProvider.userModel!.selectedGenres.isNotEmpty &&
+      //             genre == dataProvider.userModel!.selectedGenres.first) &&
+      //         element.upVotes.length >= 75)
+      //     .toList();
     }
 
     songs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -196,9 +231,45 @@ class _FeedState extends State<Feed> {
   Widget blastedSongs() {
     List<SongModel> songs = [];
 
-    songs = dataProvider.songs
-        .where((element) => element.blasts.isNotEmpty)
-        .toList();
+    if (dataProvider.type == "City") {
+      for (var element in dataProvider.songs) {
+        if (element.genreList.first ==
+            dataProvider.userModel!.selectedGenres.first) {
+          if (element.upVotes.length < 3 &&
+              element.city == dataProvider.userModel!.city) {
+            songs.add(element);
+          } else if (element.upVotes.length == 3 &&
+              element.state == dataProvider.userModel!.state) {
+            songs.add(element);
+          } else if (element.country == dataProvider.userModel!.country &&
+              element.upVotes.length > 3) {
+            songs.add(element);
+          }
+        }
+      }
+    } else if (dataProvider.type == "State") {
+      for (var element in dataProvider.songs) {
+        if (element.genreList.first ==
+            dataProvider.userModel!.selectedGenres.first) {
+          if (element.upVotes.length == 3 &&
+              element.state == dataProvider.userModel!.state) {
+            songs.add(element);
+          } else if (element.country == dataProvider.userModel!.country &&
+              element.upVotes.length > 3) {
+            songs.add(element);
+          }
+        }
+      }
+    } else {
+      for (var element in dataProvider.songs) {
+        if (element.country == dataProvider.userModel!.country &&
+            element.upVotes.length > 3) {
+          songs.add(element);
+        }
+      }
+    }
+
+    songs = songs.where((element) => element.blasts.isNotEmpty).toList();
 
     if (songs.isEmpty) {
       return const SizedBox();

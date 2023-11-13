@@ -2,15 +2,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/discovery/map_view_section.dart';
 import 'package:uprise/screens/popular_songs.dart';
 import 'package:uprise/widgets/cupertino_textfield.dart';
+import 'package:uprise/widgets/playlist_songs.dart';
+import 'package:uprise/widgets/radio_station_cover.dart';
 import 'package:uprise/widgets/songs_widget.dart';
-import 'package:uprise/widgets/textfield_widget.dart';
-import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 
 import '../../helpers/constants.dart';
@@ -34,8 +35,6 @@ class _DiscoveryState extends State<Discovery> {
   void initState() {
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +61,7 @@ class _DiscoveryState extends State<Discovery> {
                         },
                       ),
                       popularBandsWidget(),
+                      playList(),
                       popularRadioWidget(),
                       popularSongsWidget(),
                       Center(
@@ -71,7 +71,8 @@ class _DiscoveryState extends State<Discovery> {
                             },
                             child: Text(
                               "Map View Section",
-                              style: AppTextStyles.clickable(color: Colors.black),
+                              style:
+                                  AppTextStyles.clickable(color: Colors.black),
                             )),
                       ),
                       const SizedBox(height: 20),
@@ -87,11 +88,43 @@ class _DiscoveryState extends State<Discovery> {
     });
   }
 
+  Widget playList() {
+
+    String playList = "";
+    if (dataProvider.type == "City") {
+      playList = dataProvider.userModel!.city!;
+    }  else if (dataProvider.type == "State") {
+      playList = dataProvider.userModel!.state;
+    }  else{
+      playList = dataProvider.userModel!.country;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const HeadingWidget(
+          text: "Playlist",
+        ),
+        const SizedBox(height: 20),
+         InkWell(
+           onTap: (){
+             context.push(child: const PlaylistSongs());
+           },
+           child: SizedBox(
+            height: 170,
+            width: 170,
+            child: RadioStationCover(name: playList, color: Colors.white,textColor: Colors.black,),
+        ),
+         ),
+        Container(),
+      ],
+    );
+  }
+
   var height = 250.0;
 
   Widget popularBandsWidget() {
     var bands = [];
-
 
     bands = dataProvider.users
         .where((element) =>
@@ -179,7 +212,7 @@ class _DiscoveryState extends State<Discovery> {
     var songs = s
         .where((element) =>
             // element.genreList.first ==
-                // dataProvider.userModel!.selectedGenres.first &&
+            // dataProvider.userModel!.selectedGenres.first &&
             element.title.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
     return songs.isEmpty

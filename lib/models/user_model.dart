@@ -45,6 +45,7 @@ class UserModel {
   String? fBand;
   String? fArtist;
   String? fMixes;
+  late bool isFPlaylist;
 
   int totalUpVotes = 0;
 
@@ -65,6 +66,7 @@ class UserModel {
     this.fArtist,
     this.fMixes,
     this.donationLink,
+    this.isFPlaylist = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -116,6 +118,8 @@ class UserModel {
     fBand = data["fBand"];
     fArtist = data["fArtist"];
     fMixes = data["fMixes"];
+
+    isFPlaylist = data["isFPlaylist"] ?? false;
 
     donationLink = data["donationLink"];
 

@@ -17,6 +17,7 @@ import '../../provider/dashboard_provider.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_geocoding/google_geocoding.dart' as gc;
+
 class RadioPreferences extends StatefulWidget {
   const RadioPreferences({super.key});
 
@@ -110,16 +111,15 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                             }
                             setState(() {});
                           },
-
                         ),
                       ),
                       IconButton(
                         onPressed: () async {
                           var model = await context.push(
                               child: SelectLocation(
-                                lat: latitude,
-                                long: longitude,
-                              ));
+                            lat: latitude,
+                            long: longitude,
+                          ));
                           if (model is AddressModel) {
                             city.text = model.city;
                             state.text = model.state;
@@ -165,17 +165,26 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        await dataProvider.updateUserPref({
-                          "selectedGenres": dashboardProvider.selectedGenres,
-                          "city": city.text,
-                          "country": country.text,
-                          "state": state.text,
-                          "latitude": latitude,
-                          "longitude": longitude,
-                        });
-                        context.pop();
-                        Functions.showSnackBar(
-                            context, "Data successfully saved");
+                        if (type == "City" && city.text.isEmpty) {
+                          Functions.showSnackBar(context, "Invalid City Name");
+                        } else if (type == "State" && state.text.isEmpty) {
+                          Functions.showSnackBar(context, "Invalid State Name");
+                        } else if (type == "Country" && country.text.isEmpty) {
+                          Functions.showSnackBar(
+                              context, "Invalid Country Name");
+                        } else {
+                          await dataProvider.updateUserPref({
+                            "selectedGenres": dashboardProvider.selectedGenres,
+                            "city": city.text,
+                            "country": country.text,
+                            "state": state.text,
+                            "latitude": latitude,
+                            "longitude": longitude,
+                          });
+                          context.pop();
+                          Functions.showSnackBar(
+                              context, "Data successfully saved");
+                        }
                       },
                       child: const Text(
                         "Save",
@@ -236,7 +245,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
   Widget suggestionsWidget() {
     return Column(
       children: [
-        for (int i = 0 ; i  < responses.length; i++)
+        for (int i = 0; i < responses.length; i++)
           InkWell(
             onTap: () async {
               print(responses[i]);
@@ -244,24 +253,24 @@ class _RadioPreferencesState extends State<RadioPreferences> {
               Functions.showLoaderDialog(context);
 
               GoogleMapsPlaces places = GoogleMapsPlaces(
-                  apiKey: "AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk",
-                  apiHeaders: await const GoogleApiHeaders().getHeaders(),
+                apiKey: "AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk",
+                apiHeaders: await const GoogleApiHeaders().getHeaders(),
               );
 
               PlacesDetailsResponse detail =
                   await places.getDetailsByPlaceId(placeIds[i]);
 
-              if(detail.result.geometry != null){
-                await getAddress(detail.result.geometry!.location.lat, detail.result.geometry!.location.lng);
+              if (detail.result.geometry != null) {
+                await getAddress(detail.result.geometry!.location.lat,
+                    detail.result.geometry!.location.lng);
                 context.pop();
-              }else{
+              } else {
                 city.text = responses[i].split(",")[0];
                 state.text = responses[i].split(",")[1];
                 country.text = responses[i].split(",")[2];
 
                 context.pop();
               }
-
 
               responses = [];
               placeIds = [];
@@ -300,7 +309,6 @@ class _RadioPreferencesState extends State<RadioPreferences> {
     );
   }
 
-
   Future<List<List<String>>> autoCompleteCity(String input) async {
     final response = await http.get(Uri.parse(
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(cities)&components=country:us&key=${Constants.mapKey}'));
@@ -323,14 +331,12 @@ class _RadioPreferencesState extends State<RadioPreferences> {
     }
   }
 
-
-
   getAddress(double lat, double lng) async {
     var googleGeocoding =
-    gc.GoogleGeocoding("AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk");
+        gc.GoogleGeocoding("AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk");
     var l = gc.LatLon(lat, lng);
     gc.GeocodingResponse? result =
-    await googleGeocoding.geocoding.getReverse(l);
+        await googleGeocoding.geocoding.getReverse(l);
 
     if (result != null &&
         result.results != null &&

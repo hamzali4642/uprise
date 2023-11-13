@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -8,7 +7,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:uprise/models/user_model.dart';
-
 import '../helpers/colors.dart';
 import '../helpers/functions.dart';
 import '../models/address_model.dart';
@@ -81,9 +79,7 @@ class _SelectLocationState extends State<SelectLocation> {
             onCameraIdle: () {
               if (latLng != null) {
                 getAddress();
-                if (!fromPlaces) {
-
-                }
+                if (!fromPlaces) {}
                 fromPlaces = false;
                 addMarker(latLng!);
               }
@@ -120,9 +116,7 @@ class _SelectLocationState extends State<SelectLocation> {
                 ),
                 types: [],
                 strictbounds: false,
-                components: [
-                  // Component(Component.country, "pk"),
-                ],
+                components: [],
               );
               displayPrediction(p);
             },
@@ -183,7 +177,7 @@ class _SelectLocationState extends State<SelectLocation> {
                   } else {
                     AddressModel model = AddressModel(
                       latitude: latLng!.latitude,
-                      longitude: latLng!.longitude,
+                       longitude: latLng!.longitude,
                       country: country,
                       city: city,
                       postalCode: postalCode,
@@ -192,12 +186,11 @@ class _SelectLocationState extends State<SelectLocation> {
                     );
 
                     if (widget.isSignUp) {
-                      await AuthService.signUp(context, widget.userModel!,
-                          widget.password!, model);
+                      await AuthService.signUp(
+                          context, widget.userModel!, widget.password!, model);
                     } else {
                       Navigator.of(context).pop(model);
                     }
-
                   }
                 },
                 child: const Text(
