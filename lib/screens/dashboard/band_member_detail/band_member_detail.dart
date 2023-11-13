@@ -71,7 +71,7 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
                         style: const TextStyle(
                             color: Colors.white, fontWeight: FontWeights.bold),
                       ),
-                      Text(
+                      true ? SizedBox() : Text(
                         "Comparison Score:\t${calculatePearsonCorrelation().toStringAsFixed(2)}",
                         style: const TextStyle(
                             fontSize: 22,

@@ -168,7 +168,7 @@ class _UserProfileState extends State<UserProfile> {
                   const SizedBox(height: 20),
                   platform("Twitter:", twitter),
                   const SizedBox(height: 30),
-                  platform("Favourite Genre:", fGenre),
+                  platform("Favorite Genre:", fGenre),
                   const SizedBox(height: 30),
                   platform("Favourite Commercial Band:", fBand),
                   const SizedBox(height: 30),

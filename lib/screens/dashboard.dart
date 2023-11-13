@@ -49,6 +49,20 @@ class _DashboardState extends State<Dashboard> {
 
   var hasCheck = false;
 
+
+
+  goNext(){
+    if (dataProvider.userModel != null &&
+        dataProvider.userModel!.selectedGenres.isEmpty) {
+      Future.delayed(const Duration(seconds: 1)).then((value) {
+        context.push(child: const RadioPreferences()).then((value){
+          goNext();
+        });
+      });
+
+      hasCheck = true;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, p, child) {
@@ -64,14 +78,7 @@ class _DashboardState extends State<Dashboard> {
         }
 
         if (!hasCheck) {
-          if (dataProvider.userModel != null &&
-              dataProvider.userModel!.selectedGenres.isEmpty) {
-            Future.delayed(Duration(seconds: 1)).then((value) {
-              context.push(child: RadioPreferences());
-            });
-
-            hasCheck = true;
-          }
+          goNext();
         }
 
         return WillPopScope(
@@ -358,7 +365,7 @@ class _DashboardState extends State<Dashboard> {
               ),
             ],
           ),
-          SingleChildScrollView(
+          true ? SizedBox() : SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [

@@ -140,7 +140,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                     height: 10,
                   ),
                   const Text(
-                    "Pick your favourite Genre",
+                    "Pick your favorite Genre",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeights.bold,
