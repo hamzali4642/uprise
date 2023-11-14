@@ -149,7 +149,11 @@ class DataProvider extends ChangeNotifier {
   }
 
   getSongs() async {
-    songSubscription = db.collection("Songs").where("isLive", isEqualTo: true).snapshots().listen((event) {
+    songSubscription = db
+        .collection("Songs")
+        .where("isLive", isEqualTo: true)
+        .snapshots()
+        .listen((event) {
       songs = [];
       songs = event.docs.map((doc) => SongModel.fromMap(doc.data())).toList();
       this.cities = [];
@@ -332,20 +336,38 @@ class DataProvider extends ChangeNotifier {
     var max = 0;
     UserModel? band;
     for (var user in users.where((element) => element.isBand)) {
-      user.totalUpVotes = 0;
-      for (var song in songs
-          .where((element) =>
-              genre == null ? true : element.genreList.contains(genre))
-          .where((element) => element.bandId == user.id)) {
-        user.totalUpVotes += song.upVotes.length;
-      }
+      if (genre == null &&
+          user.selectedGenres.isNotEmpty &&
+          user.selectedGenres.first == userModel!.selectedGenres.first) {
+        if (type == "City" && userModel!.city == user.city ||
+            type == "State" && userModel!.state == user.state ||
+            type == "Country" && userModel!.country == user.country) {
+          user.totalUpVotes = 0;
+          for (var song in songs
+              .where((element) =>
+                  genre == null ? true : element.genreList.contains(genre))
+              .where((element) => element.bandId == user.id)) {
+            user.totalUpVotes += song.upVotes.length;
+          }
 
-      if (user.totalUpVotes > max) {
-        band = user;
-        // print(user.id);
-        // print(max);
-        // print(user.totalUpVotes);
-        max = user.totalUpVotes;
+          if (user.totalUpVotes > max) {
+            band = user;
+            max = user.totalUpVotes;
+          }
+        }
+      } else {
+        user.totalUpVotes = 0;
+        for (var song in songs
+            .where((element) =>
+                genre == null ? true : element.genreList.contains(genre))
+            .where((element) => element.bandId == user.id)) {
+          user.totalUpVotes += song.upVotes.length;
+        }
+
+        if (user.totalUpVotes > max) {
+          band = user;
+          max = user.totalUpVotes;
+        }
       }
     }
 

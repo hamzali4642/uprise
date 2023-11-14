@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/heading_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
@@ -58,17 +59,44 @@ class _StatisticsState extends State<Statistics> {
   }
 
   Widget usersWidget() {
-    var artists = provider.users.where((element) => element.isBand).length;
-    var listeners = provider.users.where((element) => !element.isBand).length;
+    List<UserModel> artists = [];
+    UserModel user = provider.userModel!;
+    for (var art in provider.users) {
+      if (art.isBand &&
+          art.selectedGenres.isNotEmpty &&
+          art.selectedGenres.first ==
+              provider.userModel!.selectedGenres.first) {
+        if (provider.type == "City" && art.city == user.city ||
+            provider.type == "State" && art.state == user.state ||
+            provider.type == "Country" && art.country == user.country) {
+          artists.add(art);
+        }
+      }
+    }
+
+    List<UserModel> listeners = [];
+
+    for (var art in provider.users) {
+      if (!art.isBand &&
+          art.selectedGenres.isNotEmpty &&
+          art.selectedGenres.first ==
+              provider.userModel!.selectedGenres.first) {
+        if (provider.type == "City" && art.city == user.city ||
+            provider.type == "State" && art.state == user.state ||
+            provider.type == "Country" && art.country == user.country) {
+          listeners.add(art);
+        }
+      }
+    }
 
     List<PieData> pieData = [
       PieData(
         "",
-        artists,
+        artists.length,
       ),
       PieData(
         "",
-        listeners,
+        listeners.length,
       ),
     ];
     return Container(
@@ -107,8 +135,10 @@ class _StatisticsState extends State<Statistics> {
               Expanded(
                 child: Column(
                   children: [
-                    pieDetailsWidget("$artists Artists", Colors.blue.shade800),
-                    pieDetailsWidget("$listeners Listeners", Colors.blue),
+                    pieDetailsWidget(
+                        "${artists.length} Artists", Colors.blue.shade800),
+                    pieDetailsWidget(
+                        "${listeners.length} Listeners", Colors.blue),
                   ],
                 ),
               ),

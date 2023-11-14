@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:utility_extensions/utility_extensions.dart';
-
 import '../generated/assets.dart';
 import '../screens/dashboard/band_details.dart';
 
@@ -17,9 +15,7 @@ class BandWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         context.push(
-          child: BandDetails(
-            band: band,
-          ),
+          child: BandDetails(band: band),
         );
       },
       child: Column(
@@ -32,7 +28,7 @@ class BandWidget extends StatelessWidget {
               ),
               child: Image(
                 image: band.bandProfile == null
-                    ? AssetImage(Assets.imagesBandImg)
+                    ? const AssetImage(Assets.imagesBandImg)
                     : NetworkImage(
                         band.bandProfile!,
                       ) as ImageProvider,
@@ -40,9 +36,7 @@ class BandWidget extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           Text(
             band.bandName!,
             style: AppTextStyles.clickable(

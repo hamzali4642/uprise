@@ -12,6 +12,7 @@ import 'package:utility_extensions/extensions/context_extensions.dart';
 import '../../../helpers/colors.dart';
 import '../../../helpers/constants.dart';
 import '../../../widgets/custom_asset_image.dart';
+import '../../../widgets/playlist_songs.dart';
 import '../radio_details.dart';
 
 typedef UserCallBack = void Function(int);
@@ -28,8 +29,7 @@ class Favorites extends StatefulWidget {
 class _FavoritesState extends State<Favorites> {
   late DataProvider dataProvider;
 
-  bool songSelected = true, radioSelected = false;
-
+String selected = "Songs";
   @override
   void initState() {
     super.initState();
@@ -54,17 +54,23 @@ class _FavoritesState extends State<Favorites> {
             IntrinsicHeight(
               child: Row(
                 children: [
-                  tab("Favorite Songs", songSelected),
+                  tab("Songs"),
                   Container(
                     width: 1,
                     color: Colors.black,
                   ),
-                  tab("Favorite RadioStations", radioSelected),
+                  tab("RadioStations"),
+                  Container(
+                    width: 1,
+                    color: Colors.black,
+                  ),
+                  tab("PlayList"),
+
                 ],
               ),
             ),
             const SizedBox(height: 20),
-            if (songSelected) ...[
+            if (selected == "Songs") ...[
               const Text(
                 "Your Favorites Songs list",
                 style: TextStyle(
@@ -75,7 +81,7 @@ class _FavoritesState extends State<Favorites> {
               const SizedBox(height: 20),
               songs(),
               const SizedBox(height: 20),
-            ] else ...[
+            ] else if(selected == "RadioStations") ...[
               const Text(
                 "Your Favorites RadioStation list",
                 style: TextStyle(
@@ -86,6 +92,25 @@ class _FavoritesState extends State<Favorites> {
               const SizedBox(height: 20),
               radioStations(),
               const SizedBox(height: 20),
+            ]else...[
+              if(dataProvider.userModel!.isFPlaylist)...[
+                const Text(
+                  "Your Favorites Playlist",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: CColors.textColor,
+                  ),
+                ),
+                const Expanded(child: PlaylistSongs(isFavoriteScreen: true)),
+              ]else...[
+                const Text(
+                  "No Favorite Playlist",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: CColors.textColor,
+                  ),
+                ),
+              ],
             ],
           ],
         ),
@@ -93,24 +118,23 @@ class _FavoritesState extends State<Favorites> {
     });
   }
 
-  Widget tab(String header, bool value) {
+  Widget tab(String header) {
     return Expanded(
       child: InkWell(
         onTap: () {
           setState(() {
-            songSelected = !songSelected;
-            radioSelected = !radioSelected;
+            selected = header;
           });
         },
         child: Container(
           width: double.infinity,
-          color: value ? CColors.primary : CColors.placeholder,
+          color: selected == header ? CColors.primary : CColors.placeholder,
           padding: const EdgeInsets.all(10),
           alignment: Alignment.center,
           child: Text(
             header,
             style: AppTextStyles.message(
-                color: value ? Colors.black : Colors.white),
+                color: selected == header ? Colors.black : Colors.white),
           ),
         ),
       ),

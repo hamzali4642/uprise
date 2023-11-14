@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/provider/dashboard_provider.dart';
 import 'package:uprise/widgets/home_chip_widget.dart';
-import '../../helpers/constants.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});

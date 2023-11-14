@@ -15,7 +15,10 @@ import '../helpers/constants.dart';
 import '../models/song_model.dart';
 
 class PlaylistSongs extends StatefulWidget {
-  const PlaylistSongs({Key? key}) : super(key: key);
+  const PlaylistSongs({Key? key, this.isFavoriteScreen = false})
+      : super(key: key);
+
+  final bool isFavoriteScreen;
 
   @override
   State<PlaylistSongs> createState() => _PlaylistSongsState();
@@ -33,8 +36,10 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            headerWidget(),
-            const MarginWidget(),
+            if (!widget.isFavoriteScreen) ...[
+              headerWidget(),
+              const MarginWidget(),
+            ],
             favouriteRow(),
             songsWidget(value),
             const PlayerWidget(),
@@ -135,6 +140,18 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
   }
 
   Widget headerWidget() {
+    String name = "";
+    if (dataProvider.type == "City") {
+      name =
+          "${dataProvider.userModel!.city}: ${dataProvider.userModel!.selectedGenres.first}";
+    } else if (dataProvider.type == "State") {
+      name =
+          "${dataProvider.userModel!.state}: ${dataProvider.userModel!.selectedGenres.first}";
+    } else {
+      name =
+          "${dataProvider.userModel!.country}: ${dataProvider.userModel!.selectedGenres.first}";
+    }
+
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(top: context.topPadding),
@@ -145,31 +162,27 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
         children: [
           Align(
             alignment: Alignment.centerRight,
-            child: SvgPicture.asset(
-              Assets.imagesFullRadioStation,
-            ),
+            child: SvgPicture.asset(Assets.imagesFullRadioStation),
           ),
           Positioned.fill(
             left: 0,
             bottom: 10,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  BackButton(color: Colors.black),
+                  const BackButton(color: Colors.black),
                   Text(
-                    "Songs Playlist",
-                    style: TextStyle(
+                    name,
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 24,
                       fontWeight: FontWeights.bold,
                     ),
                   ),
-                  SizedBox(
-                    height: 24,
-                  ),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),

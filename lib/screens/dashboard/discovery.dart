@@ -1,19 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:uprise/helpers/colors.dart';
-import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/discovery/map_view_section.dart';
 import 'package:uprise/screens/popular_songs.dart';
 import 'package:uprise/widgets/cupertino_textfield.dart';
+import 'package:uprise/widgets/margin_widget.dart';
 import 'package:uprise/widgets/playlist_songs.dart';
 import 'package:uprise/widgets/radio_station_cover.dart';
 import 'package:uprise/widgets/songs_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
-
 import '../../helpers/constants.dart';
 import '../../widgets/band_widget.dart';
 import '../../widgets/heading_widget.dart';
@@ -66,14 +63,14 @@ class _DiscoveryState extends State<Discovery> {
                       popularSongsWidget(),
                       Center(
                         child: ElevatedButton(
-                            onPressed: () {
-                              context.push(child: const MapViewSection());
-                            },
-                            child: Text(
-                              "Map View Section",
-                              style:
-                                  AppTextStyles.clickable(color: Colors.black),
-                            )),
+                          onPressed: () {
+                            context.push(child: const MapViewSection());
+                          },
+                          child: Text(
+                            "Map View Section",
+                            style: AppTextStyles.clickable(color: Colors.black),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 20),
                     ],
@@ -89,13 +86,12 @@ class _DiscoveryState extends State<Discovery> {
   }
 
   Widget playList() {
-
     String playList = "";
     if (dataProvider.type == "City") {
       playList = dataProvider.userModel!.city!;
-    }  else if (dataProvider.type == "State") {
+    } else if (dataProvider.type == "State") {
       playList = dataProvider.userModel!.state;
-    }  else{
+    } else {
       playList = dataProvider.userModel!.country;
     }
 
@@ -106,17 +102,21 @@ class _DiscoveryState extends State<Discovery> {
           text: "Playlist",
         ),
         const SizedBox(height: 20),
-         InkWell(
-           onTap: (){
-             context.push(child: const PlaylistSongs());
-           },
-           child: SizedBox(
+        InkWell(
+          onTap: () {
+            context.push(child: const PlaylistSongs());
+          },
+          child: SizedBox(
             height: 170,
             width: 170,
-            child: RadioStationCover(name: playList, color: Colors.white,textColor: Colors.black,),
+            child: RadioStationCover(
+              name: playList,
+              color: Colors.white,
+              textColor: Colors.black,
+            ),
+          ),
         ),
-         ),
-        Container(),
+        const MarginWidget(factor: 1.5),
       ],
     );
   }
@@ -223,9 +223,7 @@ class _DiscoveryState extends State<Discovery> {
               Row(
                 children: [
                   const Expanded(
-                    child: HeadingWidget(
-                      text: "Popular Songs",
-                    ),
+                    child: HeadingWidget(text: "Popular Songs"),
                   ),
                   InkWell(
                     onTap: () {
