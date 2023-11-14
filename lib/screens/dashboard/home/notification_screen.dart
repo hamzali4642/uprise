@@ -28,7 +28,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return Consumer<DataProvider>(builder: (context, data, child) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Notifications",style: TextStyle(color: Colors.white),),
+          title: const Text(
+            "Notifications",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
         body: notificationsDisplay(data),
       );
@@ -48,7 +51,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
           );
         },
         separatorBuilder: (ctx, i) {
-          return const Divider(color: Colors.white,);
+          return const Divider(
+            color: Colors.white,
+          );
         },
         itemCount: notifications.length,
       ),

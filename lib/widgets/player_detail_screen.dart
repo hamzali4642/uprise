@@ -2,14 +2,12 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/band_details.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:utility_extensions/utility_extensions.dart';
-
 import '../generated/assets.dart';
 import '../helpers/colors.dart';
 import '../models/song_model.dart';
@@ -206,7 +204,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
       children: [
         InkWell(
           onTap: () {
-           nextSong();
+            nextSong();
           },
           child: Image.asset(
             Assets.imagesNext,
@@ -270,7 +268,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
     );
   }
 
-  nextSong(){
+  nextSong() {
     dataProvider.stop();
 
     dataProvider.setAudio = "stopped";
@@ -287,8 +285,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
           } else if (element.upVotes.length == 3 &&
               element.state == dataProvider.userModel!.state) {
             songList.add(element);
-          } else if (element.country ==
-              dataProvider.userModel!.country &&
+          } else if (element.country == dataProvider.userModel!.country &&
               element.upVotes.length > 3) {
             songList.add(element);
           }
@@ -307,8 +304,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
           if (element.upVotes.length == 3 &&
               element.state == dataProvider.userModel!.state) {
             songList.add(element);
-          } else if (element.country ==
-              dataProvider.userModel!.country &&
+          } else if (element.country == dataProvider.userModel!.country &&
               element.upVotes.length > 3) {
             songList.add(element);
           }

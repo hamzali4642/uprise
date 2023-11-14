@@ -27,15 +27,13 @@ class PopularSongs extends StatelessWidget {
             ),
             centerTitle: false,
           ),
-          body: Container(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
-              itemBuilder: (ctx, i) {
-                return Center(child: NewSongWidget(song: value.songs[i],));
-              },
-              itemCount: value.songs.length,
-            ),
+          body: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2),
+            itemBuilder: (ctx, i) {
+              return Center(child: NewSongWidget(song: value.songs[i],));
+            },
+            itemCount: value.songs.length,
           ),
         );
       }
