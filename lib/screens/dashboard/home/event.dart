@@ -24,7 +24,23 @@ class Events extends StatelessWidget {
   }
 
   Widget events(DataProvider value) {
-    List<EventModel> events = value.events.where((element) => element.genre == value.userModel!.selectedGenres.first).toList();
+    List<EventModel> events = [];
+
+    for (var element in value.events) {
+      if (element.genre == value.userModel!.selectedGenres.first) {
+        if (value.type == "City" && value.userModel!.city == element.city) {
+          events.add(element);
+        } else if (value.type == "State" &&
+            value.userModel!.state == element.state) {
+          events.add(element);
+        } else if (value.type == "Country" &&
+            value.userModel!.country == element.country) {
+          events.add(element);
+        }
+      }
+    }
+    // value.events.where((element) => element.genre == value.userModel!.selectedGenres.first).toList();
+
     return SliverList(
       delegate: SliverChildBuilderDelegate((ctx, i) {
         return EventWidget(eventModel: events[i]);

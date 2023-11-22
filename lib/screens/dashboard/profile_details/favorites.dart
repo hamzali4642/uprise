@@ -4,14 +4,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/textstyles.dart';
+import 'package:uprise/models/favourite_playlist.dart';
 import 'package:uprise/models/radio_station.dart';
 import 'package:uprise/models/song_model.dart';
 import 'package:uprise/provider/data_provider.dart';
+import 'package:uprise/widgets/margin_widget.dart';
+import 'package:uprise/widgets/player_widget.dart';
 import 'package:utility_extensions/extensions/context_extensions.dart';
-
 import '../../../helpers/colors.dart';
 import '../../../helpers/constants.dart';
-import '../../../widgets/custom_asset_image.dart';
 import '../../../widgets/playlist_songs.dart';
 import '../radio_details.dart';
 
@@ -29,7 +30,8 @@ class Favorites extends StatefulWidget {
 class _FavoritesState extends State<Favorites> {
   late DataProvider dataProvider;
 
-String selected = "Songs";
+  String selected = "Songs";
+
   @override
   void initState() {
     super.initState();
@@ -65,7 +67,6 @@ String selected = "Songs";
                     color: Colors.black,
                   ),
                   tab("PlayList"),
-
                 ],
               ),
             ),
@@ -81,7 +82,7 @@ String selected = "Songs";
               const SizedBox(height: 20),
               songs(),
               const SizedBox(height: 20),
-            ] else if(selected == "RadioStations") ...[
+            ] else if (selected == "RadioStations") ...[
               const Text(
                 "Your Favorites RadioStation list",
                 style: TextStyle(
@@ -92,8 +93,8 @@ String selected = "Songs";
               const SizedBox(height: 20),
               radioStations(),
               const SizedBox(height: 20),
-            ]else...[
-              if(dataProvider.userModel!.isFPlaylist)...[
+            ] else ...[
+              if (dataProvider.userModel!.favouritePlayLists.isNotEmpty) ...[
                 const Text(
                   "Your Favorites Playlist",
                   style: TextStyle(
@@ -101,8 +102,8 @@ String selected = "Songs";
                     color: CColors.textColor,
                   ),
                 ),
-                const Expanded(child: PlaylistSongs(isFavoriteScreen: true)),
-              ]else...[
+                listSongs(),
+              ] else ...[
                 const Text(
                   "No Favorite Playlist",
                   style: TextStyle(
@@ -116,6 +117,41 @@ String selected = "Songs";
         ),
       );
     });
+  }
+
+  Widget listSongs() {
+    return Expanded(
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.separated(
+              padding: EdgeInsets.zero,
+              itemBuilder: (ctx, index) {
+                FavouritePlayList playList =
+                    dataProvider.userModel!.favouritePlayLists[index];
+                // return  FavouritePlaylistSongs(fList: playList,);
+                return InkWell(
+                  onTap: () {
+                    context.push(
+                        child: PlaylistSongs(
+                      favouritePlayList: playList,
+                    ));
+                  },
+                  child: row(index,
+                      "${playList.city ?? playList.state ?? playList.country}: ${playList.genre}"),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(height: 20);
+              },
+              itemCount: dataProvider.userModel!.favouritePlayLists.length,
+            ),
+          ),
+          const PlayerWidget(),
+          const MarginWidget(),
+        ],
+      ),
+    );
   }
 
   Widget tab(String header) {
@@ -189,38 +225,7 @@ String selected = "Songs";
       },
       child: Column(
         children: [
-          Row(
-            children: [
-              Image(
-                height: 50,
-                width: 50,
-                fit: BoxFit.cover,
-                image: NetworkImage(model.posterUrl),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      model.title,
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      dataProvider.getBand(model.bandId)!.bandName!,
-                      style: const TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(
-                Icons.favorite,
-                color: CColors.error,
-              )
-            ],
-          ),
+          widgetTile(model),
           const SizedBox(height: 10),
           const Divider(color: CColors.textColor),
         ],
@@ -228,58 +233,92 @@ String selected = "Songs";
     );
   }
 
+  Widget widgetTile(SongModel model) {
+    return Row(
+      children: [
+        Image(
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+          image: NetworkImage(model.posterUrl),
+        ),
+        const SizedBox(width: 20),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                model.title,
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                dataProvider.getBand(model.bandId)!.bandName!,
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+        const Icon(
+          Icons.favorite,
+          color: CColors.error,
+        )
+      ],
+    );
+  }
+
   Widget radioWidget(RadioStationModel model, int index) {
     return InkWell(
       onTap: () {
         context.push(
-            child: RadioDetails(
-          radioStationModel: model,
-          index: index,
-        ));
+          child: RadioDetails(
+            radioStationModel: model,
+            index: index,
+          ),
+        );
       },
       child: Column(
         children: [
-          Row(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Constants.colors[index % Constants.colors.length],
-                ),
-                alignment: Alignment.topCenter,
-                child: SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: SvgPicture.asset(
-                    Assets.imagesRadioStations,
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: Text(
-                  model.name,
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
-                ),
-              ),
-              Builder(builder: (context) {
-                bool isFavourite = dataProvider
-                    .userModel!.favouriteRadioStations
-                    .contains(model.id);
-
-                return Icon(
-                  isFavourite
-                      ? Icons.favorite
-                      : Icons.favorite_outline_outlined,
-                  color: isFavourite ? Colors.red : CColors.textColor,
-                );
-              })
-            ],
-          ),
+          row(index, model.name),
           const SizedBox(height: 10),
           const Divider(color: CColors.textColor),
         ],
       ),
+    );
+  }
+
+  Widget row(int index, String name) {
+    return Row(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Constants.colors[index % Constants.colors.length],
+          ),
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: SvgPicture.asset(
+              Assets.imagesRadioStations,
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+        ),
+        const SizedBox(width: 20),
+        Expanded(
+          child: Text(
+            name,
+            style: const TextStyle(color: Colors.white, fontSize: 14),
+          ),
+        ),
+        Builder(builder: (context) {
+          return Icon(
+            Icons.favorite,
+            color: Colors.red,
+          );
+        })
+      ],
     );
   }
 }

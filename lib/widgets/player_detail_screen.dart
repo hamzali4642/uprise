@@ -61,50 +61,6 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
               GestureDetector(
                 onHorizontalDragEnd: (dragEndDetail) {
                   nextSong();
-                  // print("object");
-                  //
-                  // print("object");
-                  // dataProvider.stop();
-                  // dataProvider.setAudio = "stopped";
-                  // // int index = dataProvider.songs.indexOf(dataProvider.currentSong!);
-                  // // int nextIndex = index;
-                  //
-                  // List<SongModel> songList;
-                  //
-                  // songList = dataProvider.songs
-                  //     .where((element) =>
-                  // element.genreList.any((genre) =>
-                  // genre ==
-                  //     dataProvider.userModel!.selectedGenres.first) &&
-                  //     element.id != dataProvider.currentSong!.id)
-                  //     .toList();
-                  //
-                  // if (dataProvider.type == "City") {
-                  //   songList = dataProvider.songs
-                  //       .where((element) =>
-                  //   element.city != dataProvider.currentSong!.city)
-                  //       .toList();
-                  // } else if (dataProvider.type == "State") {
-                  //   songList = dataProvider.songs
-                  //       .where((element) =>
-                  //   element.state != dataProvider.currentSong!.state)
-                  //       .toList();
-                  // } else {
-                  //   songList = dataProvider.songs
-                  //       .where((element) =>
-                  //   element.country != dataProvider.currentSong!.country)
-                  //       .toList();
-                  // }
-                  //
-                  // songList.shuffle();
-                  //
-                  // // if (index + 1 < dataProvider.songs.length) {
-                  // //   nextIndex++;
-                  // // } else {
-                  // //   nextIndex = 0;
-                  // // }
-                  // dataProvider.currentSong = songList.first;
-                  // dataProvider.initializePlayer();
                 },
                 child: SizedBox(
                   width: double.infinity,
@@ -283,10 +239,13 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
               element.city == dataProvider.userModel!.city) {
             songList.add(element);
           } else if (element.upVotes.length == 3 &&
-              element.state == dataProvider.userModel!.state) {
+              element.state == dataProvider.userModel!.state &&
+              element.city == dataProvider.userModel!.city) {
             songList.add(element);
           } else if (element.country == dataProvider.userModel!.country &&
-              element.upVotes.length > 3) {
+              element.upVotes.length > 3 &&
+              element.state == dataProvider.userModel!.state &&
+              element.city == dataProvider.userModel!.city) {
             songList.add(element);
           }
         }
@@ -305,7 +264,8 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
               element.state == dataProvider.userModel!.state) {
             songList.add(element);
           } else if (element.country == dataProvider.userModel!.country &&
-              element.upVotes.length > 3) {
+              element.upVotes.length > 3 &&
+              element.state == dataProvider.userModel!.state) {
             songList.add(element);
           }
         }
@@ -317,15 +277,12 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
       //         (element.upVotes.length >= 25 && element.upVotes.length < 75))
       //     .toList();
     } else {
-      print("country");
       for (var element in dataProvider.songs) {
         if (element.country == dataProvider.userModel!.country &&
             element.upVotes.length > 3) {
-          print("here");
           songList.add(element);
         }
       }
-      print(songList.length);
       // songList = songs
       //     .where((element) =>
       //         element.genreList
@@ -340,7 +297,6 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
       dataProvider.index = 0;
     }
     if (songList.isEmpty) {
-      print("object");
       dataProvider.currentSong = null;
     } else {
       dataProvider.currentSong = songList[dataProvider.index];

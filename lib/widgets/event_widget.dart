@@ -16,9 +16,10 @@ import '../models/user_model.dart';
 import '../screens/dashboard/band_details.dart';
 
 class EventWidget extends StatefulWidget {
-  const EventWidget({super.key, required this.eventModel});
+  const EventWidget({super.key, required this.eventModel, this.isDiscovery = false});
 
   final EventModel eventModel;
+  final bool isDiscovery;
 
   @override
   State<EventWidget> createState() => _EventWidgetState();
@@ -125,68 +126,72 @@ class _EventWidgetState extends State<EventWidget> {
                             }),
                           ],
                         ),
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              Assets.imagesBandVector,
-                              height: 15,
-                            ),
-                            const SizedBox(width: 4),
-                            Builder(
-                              builder: (context) {
+                        if(!widget.isDiscovery)...[
+                          Row(
+                            children: [
+                              SvgPicture.asset(
+                                Assets.imagesBandVector,
+                                height: 15,
+                              ),
+                              const SizedBox(width: 4),
+                              Builder(
+                                  builder: (context) {
 
-                                UserModel? band =
-                                dataProvider.getBand(widget.eventModel.bandId);
+                                    UserModel? band =
+                                    dataProvider.getBand(widget.eventModel.bandId);
 
-                                return InkWell(
-                                  onTap: (){
+                                    return InkWell(
+                                      onTap: (){
 
-                                    context.push(
-                                      child: BandDetails(
-                                        band: band!,
+                                        context.push(
+                                          child: BandDetails(
+                                            band: band!,
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        band!.bandName ?? "",
+                                        style: AppTextStyles.title(
+                                            color: CColors.primary,
+                                            fontSize: 14,
+                                            fontWeight: FontWeights.normal),
                                       ),
                                     );
-                                  },
-                                  child: Text(
-                                    band!.bandName ?? "",
-                                    style: AppTextStyles.title(
-                                        color: CColors.primary,
-                                        fontSize: 14,
-                                        fontWeight: FontWeights.normal),
-                                  ),
-                                );
-                              }
-                            ),
-                          ],
-                        ),
+                                  }
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            "Description: ${widget.eventModel.description}",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: AppTextStyles.clickable(
+                                color: CColors.Grey,
+                                fontSize: 13,
+                                weight: FontWeights.normal),
+                          ),
+                          const SizedBox(height: 8),
+                          itemWidget(
+                            widget.eventModel.venue,
+                            Icons.location_pin,
+                          ),
+                          const SizedBox(height: 8),
+                          itemWidget(
+                            DateFormat('hh:mm a')
+                                .format(widget.eventModel.startDate),
+                            Icons.access_time_outlined,
+                          ),
+                          const SizedBox(height: 8),
+                          itemWidget(
+                            DateFormat('EEEE, MMMM d, y')
+                                .format(widget.eventModel.startDate),
+                            Icons.calendar_month,
+                          ),
+                        ],
                         const SizedBox(height: 5),
-                        Text(
-                          "Description: ${widget.eventModel.description}",
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: AppTextStyles.clickable(
-                              color: CColors.Grey,
-                              fontSize: 13,
-                              weight: FontWeights.normal),
-                        ),
-                        const SizedBox(height: 8),
-                        itemWidget(
-                          widget.eventModel.venue,
-                          Icons.location_pin,
-                        ),
-                        const SizedBox(height: 8),
-                        itemWidget(
-                          DateFormat('hh:mm a')
-                              .format(widget.eventModel.startDate),
-                          Icons.access_time_outlined,
-                        ),
-                        const SizedBox(height: 8),
-                        itemWidget(
-                          DateFormat('EEEE, MMMM d, y')
-                              .format(widget.eventModel.startDate),
-                          Icons.calendar_month,
-                        ),
-                        const SizedBox(height: 5),
+
+
                       ],
                     ),
                   ),

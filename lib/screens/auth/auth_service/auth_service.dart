@@ -19,7 +19,7 @@ class AuthService {
       FirebaseFirestore.instance.collection("users");
 
   static Future<void> signUp(BuildContext context, UserModel model,
-      String password, AddressModel addressModel) async {
+      String password) async {
     try {
       Functions.showLoaderDialog(context);
 
@@ -29,12 +29,12 @@ class AuthService {
 
       String id = user.user!.uid;
 
-      Map<String, dynamic> location = await Functions.getCityFromLatLong(
-          addressModel.latitude!, addressModel.longitude!);
-
-      model.city = location["city"];
-      model.state = location["state"];
-      model.country = location["country"];
+      // Map<String, dynamic> location = await Functions.getCityFromLatLong(
+      //     addressModel.latitude!, addressModel.longitude!);
+      //
+      // model.city = location["city"];
+      // model.state = location["state"];
+      // model.country = location["country"];
 
       DocumentReference doc = userRef.doc(id);
       model.id = id;
@@ -44,10 +44,9 @@ class AuthService {
       });
       // ignore: use_build_context_synchronously
 
-      if(FirebaseAuth.instance.currentUser == null){
+      if (FirebaseAuth.instance.currentUser == null) {
         await FirebaseAuth.instance
-            .signInWithEmailAndPassword(
-            email: model.email, password: password);
+            .signInWithEmailAndPassword(email: model.email, password: password);
         print("Null user. Signing Again");
       }
       context.pushAndRemoveUntil(child: const Dashboard());
@@ -74,35 +73,35 @@ class AuthService {
       print(e.message);
     }
   }
-
-  static Future<Map<String, double>> determinePosition(
-      BuildContext context) async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      showError('Location services are disabled.', context);
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        if (permission == LocationPermission.deniedForever) {
-          showError('Location permissions are denied', context);
-        }
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      showError(
-          'Location permissions are permanently denied, we cannot request permissions. Turn these on from settings',
-          context);
-    }
-
-    var position = await Geolocator.getCurrentPosition();
-
-    return {"lat": position.latitude, "long": position.longitude};
-  }
+  //
+  // static Future<Map<String, double>> determinePosition(
+  //     BuildContext context) async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     showError('Location services are disabled.', context);
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       if (permission == LocationPermission.deniedForever) {
+  //         showError('Location permissions are denied', context);
+  //       }
+  //     }
+  //   }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     showError(
+  //         'Location permissions are permanently denied, we cannot request permissions. Turn these on from settings',
+  //         context);
+  //   }
+  //
+  //   var position = await Geolocator.getCurrentPosition();
+  //
+  //   return {"lat": position.latitude, "long": position.longitude};
+  // }
 
   static showError(String message, BuildContext context) {
     showDialog(
@@ -116,7 +115,7 @@ class AuthService {
               TextButton(
                 onPressed: () {
                   context.pop();
-                  determinePosition(context);
+                  // determinePosition(context);
                 },
                 child: Text("Retry"),
               ),

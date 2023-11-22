@@ -136,9 +136,7 @@ class _RadioDetailsState extends State<RadioDetails> {
         children: [
           Align(
             alignment: Alignment.centerRight,
-            child: SvgPicture.asset(
-              Assets.imagesFullRadioStation,
-            ),
+            child: SvgPicture.asset(Assets.imagesFullRadioStation),
           ),
           Positioned.fill(
             left: 0,
@@ -149,9 +147,7 @@ class _RadioDetailsState extends State<RadioDetails> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const BackButton(
-                    color: Colors.white,
-                  ),
+                  const BackButton(color: Colors.white),
                   Text(
                     widget.radioStationModel.name,
                     style: const TextStyle(
@@ -160,9 +156,7 @@ class _RadioDetailsState extends State<RadioDetails> {
                       fontWeight: FontWeights.bold,
                     ),
                   ),
-                  const SizedBox(
-                    height: 24,
-                  ),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),

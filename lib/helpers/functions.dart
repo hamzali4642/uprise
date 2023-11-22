@@ -1,11 +1,15 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geocoding/geocoding.dart';
-
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_geocoding/google_geocoding.dart' hide Location;
+import 'package:google_geocoding/google_geocoding.dart' as gc;
 
 import 'colors.dart';
+import 'constants.dart';
 
 class Functions {
   static showSnackBar(BuildContext context, String message) {
@@ -118,5 +122,85 @@ class Functions {
         return true;
       }
     }
+  }
+
+  static Future<List<List<String>>> autoCompleteCity(String input) async {
+    final response = await http.get(Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(cities)&components=country:us&key=${Constants.mapKey}'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final predictions = data['predictions'] as List<dynamic>;
+
+      List<String> citySuggestions = [];
+      List<String> placeIds = [];
+      for (var prediction in predictions) {
+        print(prediction);
+        citySuggestions.add(prediction['description']);
+        placeIds.add(prediction["place_id"]);
+      }
+
+      return [citySuggestions, placeIds];
+    } else {
+      throw Exception('Failed to load city suggestions');
+    }
+  }
+
+  static getAddress(double lat, double lng) async {
+    var googleGeocoding =
+        gc.GoogleGeocoding("AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk");
+    var l = gc.LatLon(lat, lng);
+    gc.GeocodingResponse? result =
+        await googleGeocoding.geocoding.getReverse(l);
+
+    if (result != null &&
+        result.results != null &&
+        result.results!.isNotEmpty) {
+      var element = result.results![0];
+      return element.addressComponents;
+    }
+  }
+
+  static Future<Map<String, double>> determinePosition(
+      BuildContext context) async {
+    bool serviceEnabled;
+
+
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      showError('Location services are disabled.', context);
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        if (permission == LocationPermission.deniedForever) {
+          showError('Location permissions are denied', context);
+        }
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      showError(
+          'Location permissions are permanently denied, we cannot request permissions. Turn these on from settings',
+          context);
+    }
+
+    var position = await Geolocator.getCurrentPosition();
+
+    return {"lat": position.latitude, "long": position.longitude};
+  }
+
+  static showError(String message, BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            content: Text(
+              message,
+            ),
+          );
+        });
   }
 }

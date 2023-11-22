@@ -10,6 +10,10 @@ class EventModel {
   late DateTime endDate;
   late double latitude;
   late double longitude;
+  late String city;
+  late String state;
+  late String country;
+
 
   EventModel({
     this.id,
@@ -21,6 +25,9 @@ class EventModel {
     required this.latitude,
     required this.longitude,
     required this.genre,
+    required this.country,
+    required this.state,
+    required this.city,
   });
 
   Map<String, dynamic> toMap() {
@@ -36,6 +43,9 @@ class EventModel {
       "latitude": latitude,
       "longitude": longitude,
       "genre": genre,
+      "city" : city,
+      "state" : state,
+      "country" : country
     };
   }
 
@@ -51,5 +61,8 @@ class EventModel {
     latitude = data["latitude"];
     longitude = data["longitude"];
     genre = data["genre"];
+    city = data["city"];
+    state = data["state"];
+    country = data["country"];
   }
 }

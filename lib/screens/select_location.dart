@@ -186,8 +186,8 @@ class _SelectLocationState extends State<SelectLocation> {
                     );
 
                     if (widget.isSignUp) {
-                      await AuthService.signUp(
-                          context, widget.userModel!, widget.password!, model);
+                      // await AuthService.signUp(
+                      //     context, widget.userModel!, widget.password!, model);
                     } else {
                       Navigator.of(context).pop(model);
                     }

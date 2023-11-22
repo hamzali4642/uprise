@@ -6,12 +6,14 @@ import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/discovery/map_view_section.dart';
 import 'package:uprise/screens/popular_songs.dart';
 import 'package:uprise/widgets/cupertino_textfield.dart';
+import 'package:uprise/widgets/event_widget.dart';
 import 'package:uprise/widgets/margin_widget.dart';
 import 'package:uprise/widgets/playlist_songs.dart';
 import 'package:uprise/widgets/radio_station_cover.dart';
 import 'package:uprise/widgets/songs_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 import '../../helpers/constants.dart';
+import '../../models/event_model.dart';
 import '../../widgets/band_widget.dart';
 import '../../widgets/heading_widget.dart';
 import '../../widgets/player_widget.dart';
@@ -61,6 +63,8 @@ class _DiscoveryState extends State<Discovery> {
                       playList(),
                       popularRadioWidget(),
                       popularSongsWidget(),
+                      events(),
+                      const SizedBox(height: 20),
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
@@ -85,6 +89,81 @@ class _DiscoveryState extends State<Discovery> {
     });
   }
 
+  Widget events() {
+    List<EventModel> events = [];
+
+    for (var element in dataProvider.events) {
+      if (element.genre == dataProvider.userModel!.selectedGenres.first) {
+        if (dataProvider.type == "City" &&
+            dataProvider.userModel!.city == element.city) {
+          events.add(element);
+        } else if (dataProvider.type == "State" &&
+            dataProvider.userModel!.state == element.state) {
+          events.add(element);
+        } else if (dataProvider.type == "Country" &&
+            dataProvider.userModel!.country == element.country) {
+          events.add(element);
+        }
+      }
+    }
+    return events.isEmpty
+        ? const SizedBox()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HeadingWidget(
+                text: "Events",
+              ),
+              const SizedBox(height: 20),
+              CarouselSlider.builder(
+                itemCount: events.length,
+                itemBuilder: (ctx, i, j) {
+                  return EventWidget(
+                    eventModel: events[i],
+                    isDiscovery: true,
+                  );
+                  //   BandWidget(
+                  //   band: bands[i],
+                  // );
+                },
+                options: CarouselOptions(
+                    initialPage: 0,
+                    height: height,
+                    viewportFraction: 0.8,
+                    enlargeCenterPage: true,
+                    enlargeFactor: 0.5,
+                    enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                    enableInfiniteScroll: false),
+              ),
+            ],
+          );
+  }
+
+  // Widget events(DataProvider value) {
+  //   List<EventModel> events = [];
+  //
+  //   for (var element in value.events) {
+  //     if (element.genre == value.userModel!.selectedGenres.first) {
+  //       if (value.type == "City" && value.userModel!.city == element.city) {
+  //         events.add(element);
+  //       } else if (value.type == "State" &&
+  //           value.userModel!.state == element.state) {
+  //         events.add(element);
+  //       } else if (value.type == "Country" &&
+  //           value.userModel!.country == element.country) {
+  //         events.add(element);
+  //       }
+  //     }
+  //   }
+  //   // value.events.where((element) => element.genre == value.userModel!.selectedGenres.first).toList();
+  //
+  //   return SliverList(
+  //     delegate: SliverChildBuilderDelegate((ctx, i) {
+  //       return EventWidget(eventModel: events[i]);
+  //     }, childCount: events.length),
+  //   );
+  // }
+
   Widget playList() {
     String playList = "";
     if (dataProvider.type == "City") {
@@ -102,17 +181,20 @@ class _DiscoveryState extends State<Discovery> {
           text: "Playlist",
         ),
         const SizedBox(height: 20),
-        InkWell(
-          onTap: () {
-            context.push(child: const PlaylistSongs());
-          },
-          child: SizedBox(
-            height: 170,
-            width: 170,
-            child: RadioStationCover(
-              name: playList,
-              color: Colors.white,
-              textColor: Colors.black,
+        Center(
+          child: InkWell(
+            onTap: () {
+              context.push(child: const PlaylistSongs());
+            },
+            child: SizedBox(
+              height: 170,
+              width: 170,
+              child: RadioStationCover(
+                name:
+                    "$playList : ${dataProvider.userModel!.selectedGenres.first}",
+                color: Colors.white,
+                textColor: Colors.black,
+              ),
             ),
           ),
         ),
@@ -194,10 +276,19 @@ class _DiscoveryState extends State<Discovery> {
                     ),
                   );
                 },
+
+                // options: CarouselOptions(
+                //     initialPage: 0,
+                //     height: height,
+                //     viewportFraction: 0.5,
+                //     enlargeCenterPage: true,
+                //     enlargeFactor: 0.5,
+                //     enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                //     enableInfiniteScroll: false),
                 options: CarouselOptions(
                     initialPage: 0,
                     height: height - 30,
-                    viewportFraction: 0.5,
+                    viewportFraction: 0.6,
                     enlargeCenterPage: true,
                     enlargeFactor: 0.5,
                     enlargeStrategy: CenterPageEnlargeStrategy.scale,

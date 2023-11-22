@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
@@ -13,9 +12,10 @@ import 'package:uprise/screens/select_location.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
-
 import '../../widgets/google_login.dart';
 import '../../widgets/textfield_widget.dart';
+import 'package:google_api_headers/google_api_headers.dart';
+import 'package:google_maps_webservice/places.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -37,6 +37,11 @@ class _SignUpState extends State<SignUp> {
 
   TextEditingController donationLink = TextEditingController();
 
+  TextEditingController location = TextEditingController();
+
+  List<String> responses = [];
+  List<String> placeIds = [];
+
   bool emailError = false;
   bool passwordError = false;
 
@@ -47,6 +52,12 @@ class _SignUpState extends State<SignUp> {
   bool hideCPassword = true;
 
   String? accountType;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentLatLong();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -297,6 +308,37 @@ class _SignUpState extends State<SignUp> {
               return null;
             },
           ),
+          header("Location"),
+          const SizedBox(height: 2),
+          TextFieldWidget(
+            controller: location,
+            hint: "Manually Enter Location",
+            errorText: "",
+            enable: true,
+            onChange: (value) async {
+              if (value.trim().isEmpty) {
+                responses = [];
+              } else {
+                var res = await Functions.autoCompleteCity(value);
+                responses = res.first;
+                placeIds = res.last;
+                responses = responses.toSet().toList();
+                placeIds = placeIds.toSet().toList();
+              }
+              setState(() {});
+            },
+            validator: (val){
+              if (val!.isEmpty) {
+                return "Location is required";
+              }
+              if (val.split(",").length < 3) {
+                return "Please add city,state,country in same format";
+              }
+            },
+          ),
+          suggestionsWidget(),
+
+          const SizedBox(height: 20),
           if (registerBandArtist) ...[
             const SizedBox(height: 20),
             header("Band name"),
@@ -449,6 +491,8 @@ class _SignUpState extends State<SignUp> {
                   Functions.showSnackBar(
                       context, "This email is already taken by another user.");
                 } else {
+
+
                   UserModel userModel = UserModel(
                     username: username.text,
                     email: email.text,
@@ -456,13 +500,23 @@ class _SignUpState extends State<SignUp> {
                     bandName: registerBandArtist ? brandName.text : null,
                     donationLink: donationLink.text,
                   );
-                  context.push(
-                    child: SelectLocation(
-                      isSignUp: true,
-                      userModel: userModel,
-                      password: password.text,
-                    ),
-                  );
+
+                  List locationText = location.text.split(",");
+                  userModel.city = locationText[0];
+                  userModel.state = locationText[1];
+                  userModel.country = locationText[2];
+
+
+
+                  await AuthService.signUp(
+                      context, userModel, password.text);
+                  // context.push(
+                  //   child: SelectLocation(
+                  //     isSignUp: true,
+                  //     userModel: userModel,
+                  //     password: password.text,
+                  //   ),
+                  // );
                 }
               } else {
                 Functions.showSnackBar(
@@ -508,5 +562,91 @@ class _SignUpState extends State<SignUp> {
         .where("username", isEqualTo: username.text)
         .get();
     return docs.docs.isEmpty;
+  }
+
+  Widget suggestionsWidget() {
+    return Column(
+      children: [
+        for (int i = 0; i < responses.length; i++)
+          InkWell(
+            onTap: () async {
+              Functions.showLoaderDialog(context);
+
+              GoogleMapsPlaces places = GoogleMapsPlaces(
+                apiKey: "AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk",
+                apiHeaders: await const GoogleApiHeaders().getHeaders(),
+              );
+
+              PlacesDetailsResponse detail =
+              await places.getDetailsByPlaceId(placeIds[i]);
+
+              if (detail.result.geometry != null) {
+                await getAddressFunction(detail.result.geometry!.location.lat,
+                    detail.result.geometry!.location.lng);
+                context.pop();
+              } else {
+                location.text = "${responses[i].split(",")[0]},${responses[i].split(",")[1]},${responses[i].split(",")[2]}";
+                context.pop();
+              }
+
+              responses = [];
+              placeIds = [];
+              FocusScope.of(context).unfocus();
+              setState(() {});
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                color: CColors.screenContainer,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      responses[i],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                    height: 1,
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  getAddressFunction(double lat, double lng) async {
+    var addressComponent = await  Functions.getAddress(lat, lng);
+    if (addressComponent != null) {
+      for (var element in addressComponent!) {
+        if (element.types == null || element.longName == null) {
+          return;
+        }
+        var types = element.types!;
+        if (types.contains("locality")) {
+          location.text = element.longName!;
+        }
+        if (types.contains("administrative_area_level_1")) {
+          location.text = "${location.text},${element.longName!}";
+        }
+        if (types.contains("country")) {
+          location.text = "${location.text},${element.longName!}";
+        }
+      }
+    }
+  }
+
+  getCurrentLatLong() async{
+    Map<String,dynamic> location = await Functions.determinePosition(context);
+    getAddressFunction(location["lat"], location["long"]);
   }
 }

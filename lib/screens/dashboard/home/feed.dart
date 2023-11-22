@@ -134,10 +134,13 @@ class _FeedState extends State<Feed> {
               element.city == dataProvider.userModel!.city) {
             songs.add(element);
           } else if (element.upVotes.length == 3 &&
-              element.state == dataProvider.userModel!.state) {
+              element.state == dataProvider.userModel!.state &&
+              element.city == dataProvider.userModel!.city) {
             songs.add(element);
           } else if (element.country == dataProvider.userModel!.country &&
-              element.upVotes.length > 3) {
+              element.upVotes.length > 3 &&
+              element.state == dataProvider.userModel!.state &&
+              element.city == dataProvider.userModel!.city) {
             songs.add(element);
           }
         }
@@ -163,7 +166,8 @@ class _FeedState extends State<Feed> {
               element.state == dataProvider.userModel!.state) {
             songs.add(element);
           } else if (element.country == dataProvider.userModel!.country &&
-              element.upVotes.length > 3) {
+              element.upVotes.length > 3 &&
+              element.state == dataProvider.userModel!.state) {
             songs.add(element);
           }
         }
@@ -179,7 +183,6 @@ class _FeedState extends State<Feed> {
       for (var element in dataProvider.songs) {
         if (element.country == dataProvider.userModel!.country &&
             element.upVotes.length > 3) {
-          print("here");
           songs.add(element);
         }
       }
@@ -239,10 +242,13 @@ class _FeedState extends State<Feed> {
               element.city == dataProvider.userModel!.city) {
             songs.add(element);
           } else if (element.upVotes.length == 3 &&
-              element.state == dataProvider.userModel!.state) {
+              element.state == dataProvider.userModel!.state &&
+              element.city == dataProvider.userModel!.city) {
             songs.add(element);
           } else if (element.country == dataProvider.userModel!.country &&
-              element.upVotes.length > 3) {
+              element.upVotes.length > 3 &&
+              element.state == dataProvider.userModel!.state &&
+              element.city == dataProvider.userModel!.city) {
             songs.add(element);
           }
         }
@@ -255,7 +261,8 @@ class _FeedState extends State<Feed> {
               element.state == dataProvider.userModel!.state) {
             songs.add(element);
           } else if (element.country == dataProvider.userModel!.country &&
-              element.upVotes.length > 3) {
+              element.upVotes.length > 3 &&
+              element.state == dataProvider.userModel!.state) {
             songs.add(element);
           }
         }

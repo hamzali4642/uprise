@@ -40,13 +40,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   Widget notificationsDisplay(DataProvider data) {
     List<NotificationModel> notifications = data.notifications;
+    data.notifications.sort((a, b) => b.time.compareTo(a.time));
+
+    Set<int> uniqueTimeValues = <int>{};
+
+    // Filter the list to keep only unique NotificationModel objects
+    List<NotificationModel> uniqueNotifications = notifications
+        .where((notification) => uniqueTimeValues.add(notification.time))
+        .toList();
 
     return Padding(
       padding: EdgeInsets.only(left: padding, right: padding),
       child: ListView.separated(
         itemBuilder: (ctx, i) {
           return NotificationWidget(
-            notification: notifications[i],
+            notification: uniqueNotifications[i],
             key: Key("${Random().nextInt(10000)}"),
           );
         },
@@ -55,7 +63,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             color: Colors.white,
           );
         },
-        itemCount: notifications.length,
+        itemCount: uniqueNotifications.length,
       ),
     );
   }

@@ -49,20 +49,18 @@ class _DashboardState extends State<Dashboard> {
 
   var hasCheck = false;
 
-
-
-  goNext(){
+  goNext() {
     if (dataProvider.userModel != null &&
         dataProvider.userModel!.selectedGenres.isEmpty) {
+      hasCheck = true;
       Future.delayed(const Duration(seconds: 1)).then((value) {
-        context.push(child: const RadioPreferences()).then((value){
+        context.push(child: const RadioPreferences()).then((value) {
           goNext();
         });
       });
-
-      hasCheck = true;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, p, child) {
@@ -81,6 +79,13 @@ class _DashboardState extends State<Dashboard> {
           goNext();
         }
 
+        if (dataProvider.userModel == null ||
+            dataProvider.userModel!.selectedGenres.isEmpty) {
+          return Container(
+            width: double.infinity,
+            color: Colors.black,
+          );
+        }
         return WillPopScope(
           onWillPop: () {
             if (provider.selectedIndex == 0) {
@@ -313,16 +318,16 @@ class _DashboardState extends State<Dashboard> {
                       dataProvider.stop();
                       dataProvider.initializePlayer();
                     }
+
                     // radioButtonItem("City"),
                     // radioButtonItem("State"),
                     // radioButtonItem("Country"),
                   });
+
                   // context.push(child: const RadioPreferences());
                 },
                 color: Colors.white,
-                icon: const Icon(
-                  Icons.edit,
-                ),
+                icon: const Icon(Icons.edit),
               ),
             ],
           ),
@@ -365,17 +370,20 @@ class _DashboardState extends State<Dashboard> {
               ),
             ],
           ),
-          true ? SizedBox() : SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                for (var genre in dataProvider.userModel?.selectedGenres ?? [])
-                  ChipWidget(
-                    text: genre,
+          true
+              ? SizedBox()
+              : SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      for (var genre
+                          in dataProvider.userModel?.selectedGenres ?? [])
+                        ChipWidget(
+                          text: genre,
+                        ),
+                    ],
                   ),
-              ],
-            ),
-          ),
+                ),
         ],
       ),
     );
@@ -717,15 +725,12 @@ class _DashboardState extends State<Dashboard> {
               dataProvider.type = value!;
               dataProvider.setSong();
               dataProvider.stop();
-
               dataProvider.initializePlayer();
             },
           ),
           Text(
             text,
-            style: const TextStyle(
-              color: CColors.White,
-            ),
+            style: const TextStyle(color: CColors.White),
           ),
         ],
       ),

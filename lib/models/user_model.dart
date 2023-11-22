@@ -1,3 +1,5 @@
+import 'package:uprise/models/favourite_playlist.dart';
+
 import 'calendar_model.dart';
 
 class UserModel {
@@ -31,6 +33,10 @@ class UserModel {
   List<String> following = [];
   List<String> favourites = [];
   List<String> favouriteRadioStations = [];
+  List<FavouritePlayList> favouritePlayLists = [];
+
+  String? defaultGenre;
+  String? defaultCity;
 
   List<String> blasts = [];
   List<String> listen = [];
@@ -45,7 +51,7 @@ class UserModel {
   String? fBand;
   String? fArtist;
   String? fMixes;
-  late bool isFPlaylist;
+  // late bool isFPlaylist;
 
   int totalUpVotes = 0;
 
@@ -66,7 +72,9 @@ class UserModel {
     this.fArtist,
     this.fMixes,
     this.donationLink,
-    this.isFPlaylist = false,
+
+    // this.isFPlaylist = false,
+
   });
 
   Map<String, dynamic> toMap() {
@@ -89,10 +97,17 @@ class UserModel {
       "city": city,
       "state": state,
       "country": country,
+      "defaultGenre" : defaultGenre,
+      "defaultCity" : defaultCity,
+      "favouritePlayList" : favouritePlayLists.map((e) => e.toMap()).toList()
     };
   }
 
   UserModel.fromMap(Map<String, dynamic> data) {
+    // print('-----------');
+    // print(data);
+    // print('-----------');
+
     id = data["id"];
     username = data["username"] ?? "";
     email = data["email"] ?? "";
@@ -114,12 +129,21 @@ class UserModel {
     payPalEmail = data["payPalEmail"];
     accountType = data["accountType"];
 
+    defaultGenre = data["defaultGenre"];
+    defaultCity = data["defaultCity"];
+
+    if (data["favouritePlaylists"] != null) {
+
+      List favouritePlayList = data["favouritePlaylists"] as List;
+      favouritePlayLists = favouritePlayList.map((e) => FavouritePlayList.fromMap(e)).toList();
+
+    }
+
     fGenre = data["fGenre"];
     fBand = data["fBand"];
     fArtist = data["fArtist"];
     fMixes = data["fMixes"];
 
-    isFPlaylist = data["isFPlaylist"] ?? false;
 
     donationLink = data["donationLink"];
 

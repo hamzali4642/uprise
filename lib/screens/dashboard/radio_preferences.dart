@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
@@ -9,14 +8,12 @@ import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/select_location.dart';
 import 'package:uprise/widgets/genere_tile_widget.dart';
 import 'package:uprise/widgets/textfield_widget.dart';
-import 'package:http/http.dart' as http;
 import 'package:utility_extensions/utility_extensions.dart';
 import '../../helpers/colors.dart';
 import '../../models/address_model.dart';
 import '../../provider/dashboard_provider.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:google_geocoding/google_geocoding.dart' as gc;
 
 class RadioPreferences extends StatefulWidget {
   const RadioPreferences({super.key});
@@ -102,7 +99,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                               responses = [];
                             } else {
                               print("object");
-                              var res = await autoCompleteCity(value);
+                              var res = await Functions.autoCompleteCity(value);
                               print(res);
                               responses = res.first;
                               placeIds = res.last;
@@ -173,17 +170,43 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                           Functions.showSnackBar(
                               context, "Invalid Country Name");
                         } else {
-                          await dataProvider.updateUserPref({
-                            "selectedGenres": dashboardProvider.selectedGenres,
-                            "city": city.text,
-                            "country": country.text,
-                            "state": state.text,
-                            "latitude": latitude,
-                            "longitude": longitude,
+                          Functions.showLoaderDialog(context);
+
+                          late Map<String, dynamic> data;
+
+                          if (dataProvider.userModel!.defaultGenre == null) {
+                            data = {
+                              "selectedGenres":
+                                  dashboardProvider.selectedGenres,
+                              "city": city.text,
+                              "country": country.text,
+                              "state": state.text,
+                              "latitude": latitude,
+                              "longitude": longitude,
+                              "defaultGenre":
+                                  dashboardProvider.selectedGenres.first,
+                              "defaultCity": city.text,
+                            };
+                          } else {
+                            data = {
+                              "selectedGenres":
+                                  dashboardProvider.selectedGenres,
+                              "city": city.text,
+                              "country": country.text,
+                              "state": state.text,
+                              "latitude": latitude,
+                              "longitude": longitude,
+                            };
+                          }
+                          await dataProvider.updateUserPref(data);
+                          Future.delayed(const Duration(seconds: 1), () {
+                            dataProvider.setSong();
+                            dataProvider.stop();
+                            context.pop();
+                            context.pop();
+                            Functions.showSnackBar(
+                                context, "Data successfully saved");
                           });
-                          context.pop();
-                          Functions.showSnackBar(
-                              context, "Data successfully saved");
                         }
                       },
                       child: const Text(
@@ -261,7 +284,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                   await places.getDetailsByPlaceId(placeIds[i]);
 
               if (detail.result.geometry != null) {
-                await getAddress(detail.result.geometry!.location.lat,
+                await getAddressWidget(detail.result.geometry!.location.lat,
                     detail.result.geometry!.location.lng);
                 context.pop();
               } else {
@@ -309,57 +332,23 @@ class _RadioPreferencesState extends State<RadioPreferences> {
     );
   }
 
-  Future<List<List<String>>> autoCompleteCity(String input) async {
-    final response = await http.get(Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(cities)&components=country:us&key=${Constants.mapKey}'));
+  getAddressWidget(double lat, double lng) async {
+    var addressComponent = await Functions.getAddress(lat, lng);
+    if (addressComponent != null) {
+      for (var element in addressComponent!) {
+        if (element.types == null || element.longName == null) {
+          return;
+        }
+        var types = element.types!;
+        if (types.contains("locality")) {
+          city.text = element.longName!;
+        }
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final predictions = data['predictions'] as List<dynamic>;
-
-      List<String> citySuggestions = [];
-      List<String> placeIds = [];
-      for (var prediction in predictions) {
-        print(prediction);
-        citySuggestions.add(prediction['description']);
-        placeIds.add(prediction["place_id"]);
-      }
-
-      return [citySuggestions, placeIds];
-    } else {
-      throw Exception('Failed to load city suggestions');
-    }
-  }
-
-  getAddress(double lat, double lng) async {
-    var googleGeocoding =
-        gc.GoogleGeocoding("AIzaSyDielMrqePDtgCxZUHSbWkKr4SyTZjXWAk");
-    var l = gc.LatLon(lat, lng);
-    gc.GeocodingResponse? result =
-        await googleGeocoding.geocoding.getReverse(l);
-
-    if (result != null &&
-        result.results != null &&
-        result.results!.isNotEmpty) {
-      var element = result.results![0];
-      if (element.addressComponents != null) {
-        for (var element in element.addressComponents!) {
-          if (element.types == null || element.longName == null) {
-            return;
-          }
-          var types = element.types!;
-          print(types);
-          print(element.longName);
-          if (types.contains("locality")) {
-            city.text = element.longName!;
-          }
-
-          if (types.contains("administrative_area_level_1")) {
-            state.text = element.longName!;
-          }
-          if (types.contains("country")) {
-            country.text = element.longName!;
-          }
+        if (types.contains("administrative_area_level_1")) {
+          state.text = element.longName!;
+        }
+        if (types.contains("country")) {
+          country.text = element.longName!;
         }
       }
     }
