@@ -6,6 +6,7 @@ import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/discovery/map_view_section.dart';
 import 'package:uprise/screens/popular_songs.dart';
 import 'package:uprise/widgets/cupertino_textfield.dart';
+import 'package:uprise/widgets/discovery_event_cover.dart';
 import 'package:uprise/widgets/event_widget.dart';
 import 'package:uprise/widgets/margin_widget.dart';
 import 'package:uprise/widgets/playlist_songs.dart';
@@ -14,6 +15,7 @@ import 'package:uprise/widgets/songs_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 import '../../helpers/constants.dart';
 import '../../models/event_model.dart';
+import '../../models/radio_station.dart';
 import '../../widgets/band_widget.dart';
 import '../../widgets/heading_widget.dart';
 import '../../widgets/player_widget.dart';
@@ -118,18 +120,14 @@ class _DiscoveryState extends State<Discovery> {
               CarouselSlider.builder(
                 itemCount: events.length,
                 itemBuilder: (ctx, i, j) {
-                  return EventWidget(
+                  return DiscoveryEventCover(
                     eventModel: events[i],
-                    isDiscovery: true,
                   );
-                  //   BandWidget(
-                  //   band: bands[i],
-                  // );
                 },
                 options: CarouselOptions(
                     initialPage: 0,
                     height: height,
-                    viewportFraction: 0.8,
+                    viewportFraction: 0.5,
                     enlargeCenterPage: true,
                     enlargeFactor: 0.5,
                     enlargeStrategy: CenterPageEnlargeStrategy.scale,
@@ -254,7 +252,20 @@ class _DiscoveryState extends State<Discovery> {
             // element.genre == dataProvider.userModel!.selectedGenres.first &&
             element.name.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
-    return radioStations.isEmpty
+
+    List<RadioStationModel> updateStations = [];
+
+    for (var element in radioStations) {
+      var songs = dataProvider.songs
+          .where((songElement) =>
+      songElement.city == element.name ||
+          songElement.genreList.contains(element.name))
+          .toList();
+      if (songs.isNotEmpty) {
+        updateStations.add(element);
+      }
+    }
+    return updateStations.isEmpty
         ? const SizedBox()
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,29 +277,21 @@ class _DiscoveryState extends State<Discovery> {
                 height: 20,
               ),
               CarouselSlider.builder(
-                itemCount: radioStations.length,
+                itemCount: updateStations.length,
                 itemBuilder: (ctx, i, j) {
                   return Align(
                     alignment: Alignment.topCenter,
                     child: RadioWidget(
-                      radioStationModel: radioStations[i],
+                      radioStationModel: updateStations[i],
                       index: i,
                     ),
                   );
                 },
 
-                // options: CarouselOptions(
-                //     initialPage: 0,
-                //     height: height,
-                //     viewportFraction: 0.5,
-                //     enlargeCenterPage: true,
-                //     enlargeFactor: 0.5,
-                //     enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                //     enableInfiniteScroll: false),
                 options: CarouselOptions(
                     initialPage: 0,
-                    height: height - 30,
-                    viewportFraction: 0.6,
+                    height: height,
+                    viewportFraction: 0.5,
                     enlargeCenterPage: true,
                     enlargeFactor: 0.5,
                     enlargeStrategy: CenterPageEnlargeStrategy.scale,

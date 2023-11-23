@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:regexed_validator/regexed_validator.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/functions.dart';
@@ -167,12 +168,13 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
         children: [
           Text(
             "Donation Link:",
-            style: AppTextStyles.popins(style: const TextStyle(color: Colors.white)),
+            style: AppTextStyles.popins(
+                style: const TextStyle(color: Colors.white)),
           ),
           Row(
             children: [
               Text(
-                widget.model.donationLink!,
+                widget.model.donationLink ?? "",
                 style: AppTextStyles.message(color: Colors.blue),
               ),
               IconButton(
@@ -190,32 +192,27 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
             ],
           ),
           const MarginWidget(),
-          if (!widget.model.donationLink!.isValidURl) ...[
-            Align(
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (widget.model.donationLink != null &&
-                      !widget.model.donationLink!.isValidURl) {
-                    context.push(
-                        child: DonationView(
-                      url: widget.model.donationLink ?? "https://pub.dev/",
-                    ));
-                  } else {
-                    Functions.showSnackBar(
-                        context, "member's donation link is invalid.");
-                  }
-                },
-                child: const Text("Donate Artist"),
-              ),
-            )
-          ] else ...[
-            Text(
-              "Invalid URL",
-              style: AppTextStyles.popins(
-                  style: const TextStyle(color: Colors.red)),
+          Align(
+            alignment: Alignment.center,
+            child: ElevatedButton(
+              onPressed: () {
+                if (!(widget.model.donationLink != null &&
+                    Functions.isValidUrl(widget.model.donationLink!))) {
+                  Functions.showSnackBar(context, "Invalid Url provided");
+                } else {
+
+                  
+                  context.push(
+                    child: DonationView(
+                      // url: "https://tasks.hubstaff.com/app/organizations/45008/projects/323569",
+                      url: Functions.ensureHttps(widget.model.donationLink!),
+                    ),
+                  );
+                }
+              },
+              child: const Text("Donate Artist"),
             ),
-          ],
+          )
         ],
       ),
     );

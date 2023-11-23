@@ -239,6 +239,9 @@ class _BandDetailsState extends State<BandDetails>
           horizontal: Constants.horizontalPadding,
         ),
         itemBuilder: (ctx, i) {
+          UserModel? userModel =
+              dataProvider.getBand(widget.band.bandMembers[i]);
+
           return InkWell(
             onTap: () {
               context.push(child: BandMemberDetail(model: widget.band));
@@ -259,7 +262,7 @@ class _BandDetailsState extends State<BandDetails>
                   ),
                 ),
                 Text(
-                  widget.band.username,
+                  userModel!.username,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 12,
@@ -275,7 +278,7 @@ class _BandDetailsState extends State<BandDetails>
             width: 10,
           );
         },
-        itemCount: 1,
+        itemCount: widget.band.bandMembers.length,
       ),
     );
   }

@@ -165,7 +165,6 @@ class Functions {
       BuildContext context) async {
     bool serviceEnabled;
 
-
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -202,5 +201,26 @@ class Functions {
             ),
           );
         });
+  }
+
+  static bool isValidUrl(String url) {
+    // Regular expression to match a URL
+    final RegExp urlRegExp = RegExp(
+      r'^(http(s)?:\/\/)?' // Optional scheme (http:// or https://)
+      r'([a-zA-Z0-9-]+\.)*[a-zA-Z]{2,}' // Domain (with optional subdomains)
+      r'(\.[a-zA-Z]{2,})+' // Top-level domain (e.g., .com, .net)
+      r'(:[0-9]+)?' // Optional port
+      r'(/[^\s]*)?' // Optional path
+      r'$',
+    );
+
+    return urlRegExp.hasMatch(url);
+  }
+
+  static String ensureHttps(String url) {
+    if (!url.startsWith('https://')) {
+      return 'https://$url';
+    }
+    return url;
   }
 }

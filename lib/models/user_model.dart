@@ -34,6 +34,7 @@ class UserModel {
   List<String> favourites = [];
   List<String> favouriteRadioStations = [];
   List<FavouritePlayList> favouritePlayLists = [];
+  List<String> bandMembers = [];
 
   String? defaultGenre;
   String? defaultCity;
@@ -145,7 +146,7 @@ class UserModel {
     fMixes = data["fMixes"];
 
 
-    donationLink = data["donationLink"];
+    donationLink = data["donationLink"] ?? "No url provided";
 
     var joinAt = data["joinAt"];
     this.joinAt = joinAt == null
@@ -179,6 +180,12 @@ class UserModel {
 
     this.favouriteRadioStations = List.generate(favouriteRadioStations.length,
         (index) => favouriteRadioStations[index]);
+
+
+    List bandMembers = data["bandMembers"] ?? [];
+
+    this.bandMembers = List.generate(bandMembers.length,
+            (index) => bandMembers[index]);
 
     List blasts = data["blasts"] ?? [];
     this.blasts = List.generate(blasts.length, (index) => blasts[index]);
