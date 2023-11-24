@@ -1,9 +1,7 @@
 import 'dart:math';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utility_extensions/utility_extensions.dart';
-
 import '../../../models/notification_model.dart';
 import '../../../provider/data_provider.dart';
 import '../../../widgets/notification_widget.dart';

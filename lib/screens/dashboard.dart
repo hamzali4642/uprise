@@ -17,6 +17,7 @@ import 'package:utility_extensions/utility_extensions.dart';
 import '../generated/assets.dart';
 import '../helpers/colors.dart';
 import '../helpers/textstyles.dart';
+import '../models/song_model.dart';
 import '../widgets/bottom_nav.dart';
 
 class Dashboard extends StatefulWidget {
@@ -98,9 +99,9 @@ class _DashboardState extends State<Dashboard> {
             floatingActionButton: provider.showOverlay
                 ? InkWell(
                     onTap: () {
-                      if (dataProvider.currentSong != null) {
-                        provider.showOverlay = !provider.showOverlay;
-                      }
+                      // if (dataProvider.currentSong != null) {
+                      provider.showOverlay = !provider.showOverlay;
+                      // }
                     },
                     child: SvgPicture.asset(
                       Assets.imagesClose,
@@ -392,9 +393,9 @@ class _DashboardState extends State<Dashboard> {
   Widget fabWidget() {
     return InkWell(
       onTap: () {
-        if (dataProvider.currentSong != null) {
-          provider.showOverlay = !provider.showOverlay;
-        }
+        // if (dataProvider.currentSong != null) {
+        provider.showOverlay = !provider.showOverlay;
+        // }
       },
       child: Container(
         margin: EdgeInsets.only(top: 3),
@@ -442,8 +443,11 @@ class _DashboardState extends State<Dashboard> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Builder(builder: (context) {
-              bool isBlast = dataProvider.userModel!.blasts
-                  .contains(dataProvider.currentSong!.id);
+              bool isBlast = false;
+              if (dataProvider.currentSong != null) {
+                isBlast = dataProvider.userModel!.blasts
+                    .contains(dataProvider.currentSong!.id);
+              }
 
               return overlayItemWidget(
                 "Skip",
@@ -451,51 +455,137 @@ class _DashboardState extends State<Dashboard> {
                 Assets.imagesSkip,
                 isBlast ? Assets.imagesUnBlast : Assets.imagesBlast,
                 () {
-                  while (
-                      dataProvider.songs.first == dataProvider.currentSong!) {
-                    dataProvider.songs.shuffle();
-                  }
-                  dataProvider.stop();
-                  dataProvider.currentSong = dataProvider.songs.first;
+                  if (dataProvider.currentSong != null) {
+                    dataProvider.stop();
 
-                  // dataProvider.initializePlayer();
+                    dataProvider.setAudio = "stopped";
+
+                    List<SongModel> songList = [];
+
+                    List<SongModel> temp = dataProvider.songs
+                        .where((element) => element.genreList.any((genre) =>
+                            genre ==
+                            dataProvider.userModel!.selectedGenres.first))
+                        .toList();
+
+                    if (provider.selectedIndex == 0) {
+                      if (dataProvider.type == "City") {
+                        for (var element in temp) {
+                          if (element.upVotes.length < 3 &&
+                              element.city == dataProvider.userModel!.city) {
+                            songList.add(element);
+                          } else if (element.upVotes.length == 3 &&
+                              element.state == dataProvider.userModel!.state &&
+                              element.city == dataProvider.userModel!.city) {
+                            songList.add(element);
+                          } else if (element.country ==
+                                  dataProvider.userModel!.country &&
+                              element.upVotes.length > 3 &&
+                              element.state == dataProvider.userModel!.state &&
+                              element.city == dataProvider.userModel!.city) {
+                            songList.add(element);
+                          }
+                        }
+                      } else if (dataProvider.type == "State") {
+                        for (var element in temp) {
+                          if (element.genreList.first ==
+                              dataProvider.userModel!.selectedGenres.first) {
+                            if (element.upVotes.length == 3 &&
+                                element.state ==
+                                    dataProvider.userModel!.state) {
+                              songList.add(element);
+                            } else if (element.country ==
+                                    dataProvider.userModel!.country &&
+                                element.upVotes.length > 3 &&
+                                element.state ==
+                                    dataProvider.userModel!.state) {
+                              songList.add(element);
+                            }
+                          }
+                        }
+                      } else {
+                        for (var element in temp) {
+                          if (element.country ==
+                                  dataProvider.userModel!.country &&
+                              element.upVotes.length > 3) {
+                            songList.add(element);
+                          }
+                        }
+                      }
+                    } else if (provider.selectedIndex == 2) {
+                      if (dataProvider.type == "City") {
+                        for (var element in temp) {
+                          songList.add(element);
+                        }
+                      } else if (dataProvider.type == "State") {
+                        for (var element in temp) {
+                          if (element.genreList.first ==
+                              dataProvider.userModel!.selectedGenres.first) {
+                            if (element.upVotes.length >= 3) {
+                              songList.add(element);
+                            }
+                          }
+                        }
+                      } else {
+                        for (var element in temp) {
+                          if (element.upVotes.length > 3) {
+                            songList.add(element);
+                          }
+                        }
+                      }
+                    }
+
+                    if (dataProvider.index + 1 < songList.length) {
+                      dataProvider.index++;
+                    } else {
+                      dataProvider.index = 0;
+                    }
+                    if (songList.isEmpty) {
+                      dataProvider.currentSong = null;
+                    } else {
+                      dataProvider.currentSong = songList[dataProvider.index];
+                      dataProvider.initializePlayer();
+                    }
+                  }
                 },
                 () {
-                  var uid = FirebaseAuth.instance.currentUser!.uid;
-                  var db = FirebaseFirestore.instance;
-                  if (isBlast) {
-                    db.collection("users").doc(uid).update({
-                      "blasts": FieldValue.arrayRemove(
-                          [dataProvider.currentSong!.id]),
-                    });
-                    db
-                        .collection("Songs")
-                        .doc(dataProvider.currentSong!.id)
-                        .update({
-                      "blasts": FieldValue.arrayRemove([uid]),
-                    });
-                  } else {
-                    db.collection("users").doc(uid).update({
-                      "favourites":
-                          FieldValue.arrayUnion([dataProvider.currentSong!.id]),
-                    });
-                    db
-                        .collection("Songs")
-                        .doc(dataProvider.currentSong!.id)
-                        .update({
-                      "favourites": FieldValue.arrayUnion([uid]),
-                    });
+                  if (dataProvider.currentSong != null) {
+                    var uid = FirebaseAuth.instance.currentUser!.uid;
+                    var db = FirebaseFirestore.instance;
+                    if (isBlast) {
+                      db.collection("users").doc(uid).update({
+                        "blasts": FieldValue.arrayRemove(
+                            [dataProvider.currentSong!.id]),
+                      });
+                      db
+                          .collection("Songs")
+                          .doc(dataProvider.currentSong!.id)
+                          .update({
+                        "blasts": FieldValue.arrayRemove([uid]),
+                      });
+                    } else {
+                      db.collection("users").doc(uid).update({
+                        "favourites": FieldValue.arrayUnion(
+                            [dataProvider.currentSong!.id]),
+                      });
+                      db
+                          .collection("Songs")
+                          .doc(dataProvider.currentSong!.id)
+                          .update({
+                        "favourites": FieldValue.arrayUnion([uid]),
+                      });
 
-                    db.collection("users").doc(uid).update({
-                      "blasts":
-                          FieldValue.arrayUnion([dataProvider.currentSong!.id]),
-                    });
-                    db
-                        .collection("Songs")
-                        .doc(dataProvider.currentSong!.id)
-                        .update({
-                      "blasts": FieldValue.arrayUnion([uid]),
-                    });
+                      db.collection("users").doc(uid).update({
+                        "blasts": FieldValue.arrayUnion(
+                            [dataProvider.currentSong!.id]),
+                      });
+                      db
+                          .collection("Songs")
+                          .doc(dataProvider.currentSong!.id)
+                          .update({
+                        "blasts": FieldValue.arrayUnion([uid]),
+                      });
+                    }
                   }
                 },
                 20.0,
@@ -503,12 +593,16 @@ class _DashboardState extends State<Dashboard> {
             }),
             Builder(builder: (context) {
               var uid = FirebaseAuth.instance.currentUser!.uid;
-              var band = dataProvider.users
-                  .where((element) =>
-                      element.id == dataProvider.currentSong!.bandId)
-                  .first;
-              var isFollowed = band.followers.contains(uid);
 
+              var isFollowed = false;
+              var band;
+              if (dataProvider.currentSong != null) {
+                band = dataProvider.users
+                    .where((element) =>
+                        element.id == dataProvider.currentSong!.bandId)
+                    .first;
+                isFollowed = band.followers.contains(uid);
+              }
               return overlayItemWidget(
                 "Report",
                 isFollowed ? "Unfollow" : "Follow",
@@ -516,69 +610,79 @@ class _DashboardState extends State<Dashboard> {
                 isFollowed ? Assets.imagesUnFollow : Assets.imagesFollow,
                 () {},
                 () {
-                  var my =
-                      FirebaseFirestore.instance.collection("users").doc(uid);
-                  var other = FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(band.id);
-                  if (isFollowed) {
-                    my.update({
-                      "following": FieldValue.arrayRemove([other.id])
-                    });
-                    other.update({
-                      "followers": FieldValue.arrayRemove([my.id])
-                    });
+                  if (dataProvider.currentSong != null) {
+                    var my =
+                        FirebaseFirestore.instance.collection("users").doc(uid);
+                    var other = FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(band.id);
+                    if (isFollowed) {
+                      my.update({
+                        "following": FieldValue.arrayRemove([other.id])
+                      });
+                      other.update({
+                        "followers": FieldValue.arrayRemove([my.id])
+                      });
 
-                    band.followers.remove(my.id);
-                    dataProvider.userModel!.following.remove(my.id);
+                      band.followers.remove(my.id);
+                      dataProvider.userModel!.following.remove(my.id);
 
-                    dataProvider.notifyListeners();
-                  } else {
-                    my.update({
-                      "following": FieldValue.arrayUnion([other.id])
-                    });
-                    other.update({
-                      "followers": FieldValue.arrayUnion([my.id])
-                    });
+                      dataProvider.notifyListeners();
+                    } else {
+                      my.update({
+                        "following": FieldValue.arrayUnion([other.id])
+                      });
+                      other.update({
+                        "followers": FieldValue.arrayUnion([my.id])
+                      });
 
-                    band.followers.add(my.id);
-                    dataProvider.userModel!.following.add(my.id);
+                      band.followers.add(my.id);
+                      dataProvider.userModel!.following.add(my.id);
 
-                    dataProvider.notifyListeners();
+                      dataProvider.notifyListeners();
+                    }
                   }
                 },
                 90.0,
               );
             }),
             Builder(builder: (context) {
-              var uid = FirebaseAuth.instance.currentUser!.uid;
-              var isUpvote = dataProvider.userModel!.upVotes
-                  .contains(dataProvider.currentSong!.id);
-              var isDownVote = dataProvider.userModel!.downVotes
-                  .contains(dataProvider.currentSong!.id);
+              bool isDisable = false;
+              bool isDisable1 = false;
 
-              var my = FirebaseFirestore.instance.collection("users").doc(uid);
-              var other = FirebaseFirestore.instance
-                  .collection("Songs")
-                  .doc(dataProvider.currentSong!.id);
+              var other;
+              var my;
+              var isUpvote;
+              var isDownVote;
+              var uid;
 
-              bool isDisable;
-              bool isDisable1;
+              if (dataProvider.currentSong != null) {
+                var uid = FirebaseAuth.instance.currentUser!.uid;
+                isUpvote = dataProvider.userModel!.upVotes
+                    .contains(dataProvider.currentSong!.id);
+                isDownVote = dataProvider.userModel!.downVotes
+                    .contains(dataProvider.currentSong!.id);
 
-              if (isUpvote ||
-                  dataProvider.currentSong?.city !=
-                      dataProvider.userModel?.city) {
-                isDisable = true;
-              } else {
-                isDisable = false;
-              }
+                my = FirebaseFirestore.instance.collection("users").doc(uid);
+                other = FirebaseFirestore.instance
+                    .collection("Songs")
+                    .doc(dataProvider.currentSong!.id);
 
-              if (isDownVote ||
-                  dataProvider.currentSong?.city !=
-                      dataProvider.userModel?.city) {
-                isDisable1 = true;
-              } else {
-                isDisable1 = false;
+                if (isUpvote ||
+                    dataProvider.currentSong?.city !=
+                        dataProvider.userModel?.city) {
+                  isDisable = true;
+                } else {
+                  isDisable = false;
+                }
+
+                if (isDownVote ||
+                    dataProvider.currentSong?.city !=
+                        dataProvider.userModel?.city) {
+                  isDisable1 = true;
+                } else {
+                  isDisable1 = false;
+                }
               }
 
               return overlayItemWidget(
@@ -591,9 +695,8 @@ class _DashboardState extends State<Dashboard> {
                     ? Assets.imagesDisableUpVoteIcon
                     : Assets.imagesUpvote,
                 () {
-                  print(dataProvider.currentSong!.id);
-
-                  if (!isDownVote &&
+                  if (dataProvider.currentSong != null &&
+                      !isDownVote &&
                       dataProvider.currentSong?.city ==
                           dataProvider.userModel?.city) {
                     my.update({
@@ -611,7 +714,8 @@ class _DashboardState extends State<Dashboard> {
                   }
                 },
                 () {
-                  if (!isUpvote &&
+                  if (dataProvider.currentSong != null &&
+                      !isUpvote &&
                       dataProvider.currentSong?.city ==
                           dataProvider.userModel?.city) {
                     my.update({
@@ -668,8 +772,11 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  SvgPicture.asset(
-                    image1,
+                  Opacity(
+                    opacity: dataProvider.currentSong == null ? 0.4 : 1,
+                    child: SvgPicture.asset(
+                      image1,
+                    ),
                   ),
                 ],
               ),
@@ -684,8 +791,11 @@ class _DashboardState extends State<Dashboard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SvgPicture.asset(
-                    image2,
+                  Opacity(
+                    opacity: dataProvider.currentSong == null ? 0.4 : 1,
+                    child: SvgPicture.asset(
+                      image2,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Text(
