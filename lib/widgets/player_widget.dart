@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -55,37 +56,37 @@ class _PlayerWidgetState extends State<PlayerWidget> {
               return GestureDetector(
                 onHorizontalDragEnd: dp.selectedIndex == 2
                     ? (dragEndDetail) {
-                        List<SongModel> songList;
+                        dataProvider.stop();
 
-                        songList = dataProvider.songs
-                            .where((element) =>
-                                element.genreList.any((genre) =>
-                                    genre ==
-                                    dataProvider
-                                        .userModel!.selectedGenres.first) &&
-                                element.id != dataProvider.currentSong!.id)
+                        dataProvider.setAudio = "stopped";
+
+                        List<SongModel> songList = [];
+
+                        List<SongModel> temp = dataProvider.songs
+                            .where((element) => element.genreList.any((genre) =>
+                                genre ==
+                                dataProvider.userModel!.selectedGenres.first))
                             .toList();
 
                         if (dataProvider.type == "City") {
-                          songList = dataProvider.songs
-                              .where((element) =>
-                                  element.city !=
-                                  dataProvider.currentSong!.city)
-                              .toList();
+                          for (var element in temp) {
+                            songList.add(element);
+                          }
                         } else if (dataProvider.type == "State") {
-                          songList = dataProvider.songs
-                              .where((element) =>
-                                  element.state !=
-                                      dataProvider.currentSong!.state &&
-                                  element.upVotes.length >= 3)
-                              .toList();
+                          for (var element in temp) {
+                            if (element.genreList.first ==
+                                dataProvider.userModel!.selectedGenres.first) {
+                              if (element.upVotes.length >= 3) {
+                                songList.add(element);
+                              }
+                            }
+                          }
                         } else {
-                          songList = dataProvider.songs
-                              .where((element) =>
-                                  element.country !=
-                                      dataProvider.currentSong!.country &&
-                                  element.upVotes.length > 3)
-                              .toList();
+                          for (var element in temp) {
+                            if (element.upVotes.length > 3) {
+                              songList.add(element);
+                            }
+                          }
                         }
 
                         songList.shuffle();
@@ -93,7 +94,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         if (songList.isNotEmpty) {
                           dataProvider.stop();
                           dataProvider.setAudio = "stopped";
-                          dataProvider.currentSong = songList.first;
+                          SongModel prev = dataProvider.currentSong!;
+                          SongModel songModel = getRandomValue(songList, prev);
+                          dataProvider.currentSong = songModel;
                           dataProvider.initializePlayer();
                         }
                       }
@@ -374,7 +377,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                 baseBarColor: CColors.placeholderTextColor,
                                 bufferedBarColor: CColors.placeholderTextColor,
                                 progress: value.audioState == "stopped"
-                                    ? Duration(seconds: 0)
+                                    ? const Duration(seconds: 0)
                                     : value.completed,
                                 buffered: value.bufferedTime!,
                                 total: value.total,
@@ -398,6 +401,17 @@ class _PlayerWidgetState extends State<PlayerWidget> {
               );
             });
     });
+  }
+
+  SongModel getRandomValue(List<SongModel> songs, SongModel previous) {
+    Random random = Random();
+    int randomIndex;
+
+    do {
+      randomIndex = random.nextInt(songs.length);
+    } while (songs[randomIndex] == previous && songs.length > 1);
+
+    return songs[randomIndex];
   }
 
   @override

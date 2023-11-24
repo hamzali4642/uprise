@@ -52,6 +52,7 @@ class UserModel {
   String? fBand;
   String? fArtist;
   String? fMixes;
+
   // late bool isFPlaylist;
 
   int totalUpVotes = 0;
@@ -75,7 +76,6 @@ class UserModel {
     this.donationLink,
 
     // this.isFPlaylist = false,
-
   });
 
   Map<String, dynamic> toMap() {
@@ -98,9 +98,9 @@ class UserModel {
       "city": city,
       "state": state,
       "country": country,
-      "defaultGenre" : defaultGenre,
-      "defaultCity" : defaultCity,
-      "favouritePlayList" : favouritePlayLists.map((e) => e.toMap()).toList()
+      "defaultGenre": defaultGenre,
+      "defaultCity": defaultCity,
+      "favouritePlayList": favouritePlayLists.map((e) => e.toMap()).toList()
     };
   }
 
@@ -134,17 +134,15 @@ class UserModel {
     defaultCity = data["defaultCity"];
 
     if (data["favouritePlaylists"] != null) {
-
       List favouritePlayList = data["favouritePlaylists"] as List;
-      favouritePlayLists = favouritePlayList.map((e) => FavouritePlayList.fromMap(e)).toList();
-
+      favouritePlayLists =
+          favouritePlayList.map((e) => FavouritePlayList.fromMap(e)).toList();
     }
 
     fGenre = data["fGenre"];
     fBand = data["fBand"];
     fArtist = data["fArtist"];
     fMixes = data["fMixes"];
-
 
     donationLink = data["donationLink"] ?? "No url provided";
 
@@ -181,11 +179,10 @@ class UserModel {
     this.favouriteRadioStations = List.generate(favouriteRadioStations.length,
         (index) => favouriteRadioStations[index]);
 
-
     List bandMembers = data["bandMembers"] ?? [];
 
-    this.bandMembers = List.generate(bandMembers.length,
-            (index) => bandMembers[index]);
+    this.bandMembers =
+        List.generate(bandMembers.length, (index) => bandMembers[index]);
 
     List blasts = data["blasts"] ?? [];
     this.blasts = List.generate(blasts.length, (index) => blasts[index]);
