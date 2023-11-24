@@ -486,7 +486,6 @@ class _SignUpState extends State<SignUp> {
             } else {
               if (await validUserName()) {
                 bool check = await Functions.doesEmailExist(email.text);
-                print(check);
                 if (check) {
                   Functions.showSnackBar(
                       context, "This email is already taken by another user.");

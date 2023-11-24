@@ -162,6 +162,9 @@ class DataProvider extends ChangeNotifier {
       songsState = DataStates.success;
       notifyListeners();
     });
+
+
+
   }
 
   getNotifications() async {

@@ -235,8 +235,6 @@ class _SelectLocationState extends State<SelectLocation> {
             return;
           }
           var types = element.types!;
-          print(types);
-          print(element.longName);
           if (types.contains("locality")) {
             city = element.longName!;
           }

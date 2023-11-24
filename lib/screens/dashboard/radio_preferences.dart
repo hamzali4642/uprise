@@ -98,9 +98,7 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                             if (value.trim().isEmpty) {
                               responses = [];
                             } else {
-                              print("object");
                               var res = await Functions.autoCompleteCity(value);
-                              print(res);
                               responses = res.first;
                               placeIds = res.last;
                               responses = responses.toSet().toList();
@@ -271,7 +269,6 @@ class _RadioPreferencesState extends State<RadioPreferences> {
         for (int i = 0; i < responses.length; i++)
           InkWell(
             onTap: () async {
-              print(responses[i]);
 
               Functions.showLoaderDialog(context);
 

@@ -49,6 +49,14 @@ class _FeedState extends State<Feed> {
   }
 
   Widget recommendedRadioWidget() {
+
+    print("------------------");
+    for (var element in dataProvider.songs) {
+      if (element.city != "Austin") {
+        print('${element.city} : ${element.genreList.first}');
+      }
+    }
+    print("------------------");
     if (dataProvider.radioStationState == DataStates.waiting) {
       return const Center(child: CircularProgressIndicator());
     }

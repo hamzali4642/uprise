@@ -43,7 +43,6 @@ class _ProfileCalendarState extends State<ProfileCalendar> {
       var cal = provider.userModel!.calendar
           .where((element) => element.date == f.parse(f.format(_selectedDay)))
           .toList();
-      print(cal);
       List<String> ids = List.generate(cal.length, (index) => cal[index].event);
       var events =
           provider.events.where((element) => ids.contains(element.id)).toList();

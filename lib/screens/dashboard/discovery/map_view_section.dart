@@ -41,8 +41,6 @@ class _MapViewSectionState extends State<MapViewSection> {
     cities.forEach((key, value) async {
       Map<String, dynamic> position =
           await Functions.getLatLongFromAddress(key);
-      print("$key $value");
-      print(position);
 
       circles.add(Circle(
           strokeWidth: 1,
