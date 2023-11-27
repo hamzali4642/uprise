@@ -68,7 +68,7 @@ class _BandDetailsState extends State<BandDetails>
                 slivers: [
                   Image(
                     image: widget.band.bandProfile == null
-                        ? AssetImage(Assets.imagesBandImg)
+                        ? const AssetImage(Assets.imagesBandImg)
                         : NetworkImage(
                             widget.band.bandProfile!,
                           ) as ImageProvider,
@@ -244,7 +244,7 @@ class _BandDetailsState extends State<BandDetails>
 
           return InkWell(
             onTap: () {
-              context.push(child: BandMemberDetail(model: widget.band));
+              context.push(child: BandMemberDetail(model: userModel));
             },
             child: Column(
               children: [

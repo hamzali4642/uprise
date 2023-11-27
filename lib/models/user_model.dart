@@ -145,6 +145,9 @@ class UserModel {
     fMixes = data["fMixes"];
 
     donationLink = data["donationLink"] ?? "No url provided";
+    if (donationLink!.isEmpty) {
+      donationLink = "No url provided";
+    }
 
     var joinAt = data["joinAt"];
     this.joinAt = joinAt == null

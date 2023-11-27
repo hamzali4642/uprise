@@ -52,7 +52,7 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
       appBar: AppBar(
         centerTitle: false,
         title: Text(
-          "${widget.model.bandName}",
+          widget.model.bandName ?? "",
           style: const TextStyle(color: Colors.white),
         ),
       ),
@@ -76,7 +76,7 @@ class _BandMemberDetailState extends State<BandMemberDetail> {
                             color: Colors.white, fontWeight: FontWeights.bold),
                       ),
                       true
-                          ? SizedBox()
+                          ? const SizedBox()
                           : Text(
                               "Comparison Score:\t${calculatePearsonCorrelation().toStringAsFixed(2)}",
                               style: const TextStyle(

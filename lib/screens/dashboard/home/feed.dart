@@ -50,13 +50,6 @@ class _FeedState extends State<Feed> {
 
   Widget recommendedRadioWidget() {
 
-    print("------------------");
-    for (var element in dataProvider.songs) {
-      if (element.city != "Austin") {
-        print('${element.city} : ${element.genreList.first}');
-      }
-    }
-    print("------------------");
     if (dataProvider.radioStationState == DataStates.waiting) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -67,30 +60,6 @@ class _FeedState extends State<Feed> {
             element.name == dataProvider.userModel!.city)
         .toList();
 
-    // if (dataProvider.userModel?.selectedGenres != null) {
-    //   radioStations = dataProvider.radioStations
-    //       .where((element) =>
-    //           dataProvider.userModel!.selectedGenres.isNotEmpty &&
-    //           element.genre == dataProvider.userModel!.selectedGenres.first)
-    //       .toList();
-    // }
-    //
-    // if (radioStations.isNotEmpty) {
-    //   if (dataProvider.type == "City") {
-    //     radioStations = radioStations
-    //         .where((element) => element.city == dataProvider.userModel!.city)
-    //         .toList();
-    //   } else if (dataProvider.type == "State") {
-    //     radioStations = radioStations
-    //         .where((element) => element.state == dataProvider.userModel!.state)
-    //         .toList();
-    //   } else {
-    //     radioStations = radioStations
-    //         .where(
-    //             (element) => element.country == dataProvider.userModel!.country)
-    //         .toList();
-    //   }
-    // }
 
     if (radioStations.isEmpty) {
       return const SizedBox();
