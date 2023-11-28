@@ -294,7 +294,7 @@ class _DashboardState extends State<Dashboard> {
                     horizontal: 10,
                   ),
                   child: Text(
-                    "${dataProvider.userModel?.city}, ${dataProvider.userModel?.state}, ${dataProvider.userModel?.selectedGenres.first}, Uprise",
+                    "${dataProvider.userModel?.city}, ${dataProvider.userModel?.state} ${dataProvider.userModel?.selectedGenres.first} Uprise",
                     style: AppTextStyles.message(
                         color: Colors.white, fontSize: 15),
                   ),
