@@ -328,7 +328,7 @@ class _DashboardState extends State<Dashboard> {
                   // context.push(child: const RadioPreferences());
                 },
                 color: Colors.white,
-                icon: const Icon(Icons.edit),
+                icon: const Icon(Icons.share_location_sharp),
               ),
             ],
           ),
