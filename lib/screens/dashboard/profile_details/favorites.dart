@@ -66,7 +66,7 @@ class _FavoritesState extends State<Favorites> {
                     width: 1,
                     color: Colors.black,
                   ),
-                  tab("PlayList"),
+                  // tab("PlayList"),
                 ],
               ),
             ),

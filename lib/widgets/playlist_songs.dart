@@ -228,7 +228,7 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
       }
     } else {
       for (var element in dataProvider.songs) {
-        if (element.country == dataProvider.userModel!.country) {
+        if (element.country == dataProvider.userModel!.country && element.upVotes.length > 3) {
           songList.add(element);
         }
       }
@@ -264,7 +264,7 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
       }
     } else {
       for (var element in dataProvider.songs) {
-        if (element.country == widget.favouritePlayList!.country) {
+        if (element.country == widget.favouritePlayList!.country  && element.upVotes.length > 3) {
           songList.add(element);
         }
       }

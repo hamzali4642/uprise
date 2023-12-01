@@ -62,7 +62,8 @@ class _DiscoveryState extends State<Discovery> {
                         },
                       ),
                       popularBandsWidget(),
-                      playList(),
+                      //TODO : Discovery songs playlist
+                      //playList(),
                       popularRadioWidget(),
                       popularSongsWidget(),
                       events(),
@@ -301,7 +302,7 @@ class _DiscoveryState extends State<Discovery> {
           );
   }
 
-  Widget popularSongsWidget() {
+  Widget  popularSongsWidget() {
     var s = dataProvider.songs;
     var songs = s
         .where((element) =>
