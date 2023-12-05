@@ -338,7 +338,7 @@ class _DiscoveryState extends State<Discovery> {
                 height: 20,
               ),
               CarouselSlider.builder(
-                itemCount: songs.length,
+                itemCount: songs.length > 4 ? 4 : songs.length,
                 itemBuilder: (ctx, i, j) {
                   return SongsWidget(
                     fromCarousel: true,
