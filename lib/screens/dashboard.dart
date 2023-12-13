@@ -549,8 +549,8 @@ class _DashboardState extends State<Dashboard> {
                   }
                 },
                 () {
+                  var uid = FirebaseAuth.instance.currentUser!.uid;
                   if (dataProvider.currentSong != null) {
-                    var uid = FirebaseAuth.instance.currentUser!.uid;
                     var db = FirebaseFirestore.instance;
                     if (isBlast) {
                       db.collection("users").doc(uid).update({
@@ -654,10 +654,11 @@ class _DashboardState extends State<Dashboard> {
               var my;
               var isUpvote;
               var isDownVote;
-              var uid;
+              // var uid;
+
+             var uid = FirebaseAuth.instance.currentUser!.uid;
 
               if (dataProvider.currentSong != null) {
-                var uid = FirebaseAuth.instance.currentUser!.uid;
                 isUpvote = dataProvider.userModel!.upVotes
                     .contains(dataProvider.currentSong!.id);
                 isDownVote = dataProvider.userModel!.downVotes
@@ -699,6 +700,8 @@ class _DashboardState extends State<Dashboard> {
                       !isDownVote &&
                       dataProvider.currentSong?.city ==
                           dataProvider.userModel?.city) {
+
+
                     my.update({
                       "upVotes": FieldValue.arrayRemove(
                           [dataProvider.currentSong!.id]),
@@ -710,7 +713,6 @@ class _DashboardState extends State<Dashboard> {
                       "upVotes": FieldValue.arrayRemove([uid]),
                       "downVotes": FieldValue.arrayUnion([uid]),
                     });
-                    // }
                   }
                 },
                 () {
@@ -718,6 +720,7 @@ class _DashboardState extends State<Dashboard> {
                       !isUpvote &&
                       dataProvider.currentSong?.city ==
                           dataProvider.userModel?.city) {
+
                     my.update({
                       "upVotes":
                           FieldValue.arrayUnion([dataProvider.currentSong!.id]),

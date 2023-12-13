@@ -59,7 +59,6 @@ class SongModel {
     bandId = data["bandId"];
     rid = data["rid"];
 
-    print(rid);
     genreList = List<String>.from(
         data["genre"]); // Assuming data["genre"] is a List<dynamic>
     posterUrl = data["posterUrl"];
