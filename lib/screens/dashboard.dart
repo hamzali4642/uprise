@@ -656,7 +656,7 @@ class _DashboardState extends State<Dashboard> {
               var isDownVote;
               // var uid;
 
-             var uid = FirebaseAuth.instance.currentUser!.uid;
+              var uid = FirebaseAuth.instance.currentUser!.uid;
 
               if (dataProvider.currentSong != null) {
                 isUpvote = dataProvider.userModel!.upVotes
@@ -700,8 +700,6 @@ class _DashboardState extends State<Dashboard> {
                       !isDownVote &&
                       dataProvider.currentSong?.city ==
                           dataProvider.userModel?.city) {
-
-
                     my.update({
                       "upVotes": FieldValue.arrayRemove(
                           [dataProvider.currentSong!.id]),
@@ -720,7 +718,6 @@ class _DashboardState extends State<Dashboard> {
                       !isUpvote &&
                       dataProvider.currentSong?.city ==
                           dataProvider.userModel?.city) {
-
                     my.update({
                       "upVotes":
                           FieldValue.arrayUnion([dataProvider.currentSong!.id]),
