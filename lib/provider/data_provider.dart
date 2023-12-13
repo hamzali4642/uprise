@@ -156,6 +156,7 @@ class DataProvider extends ChangeNotifier {
         .listen((event) {
       songs = [];
       songs = event.docs.map((doc) => SongModel.fromMap(doc.data())).toList();
+      print("songs:${songs.length}");
       this.cities = [];
       var cities = List.generate(songs.length, (index) => songs[index].city);
       this.cities = cities.toSet().toList();
