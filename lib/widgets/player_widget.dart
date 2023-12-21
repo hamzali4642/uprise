@@ -371,24 +371,27 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                 );
                               }),
                               const SizedBox(height: 5),
-                              ProgressBar(
-                                thumbRadius: 5,
-                                barHeight: 2,
-                                baseBarColor: CColors.placeholderTextColor,
-                                bufferedBarColor: CColors.placeholderTextColor,
-                                progress: value.audioState == "stopped"
-                                    ? const Duration(seconds: 0)
-                                    : value.completed,
-                                buffered: value.bufferedTime!,
-                                total: value.total,
-                                timeLabelTextStyle: const TextStyle(
-                                  color: CColors.primary,
-                                  fontSize: 10,
+                              AbsorbPointer(
+                                absorbing: true,
+                                child: ProgressBar(
+                                  thumbRadius: 5,
+                                  barHeight: 2,
+                                  baseBarColor: CColors.placeholderTextColor,
+                                  bufferedBarColor: CColors.placeholderTextColor,
+                                  progress: value.audioState == "stopped"
+                                      ? const Duration(seconds: 0)
+                                      : value.completed,
+                                  buffered: value.bufferedTime!,
+                                  total: value.total,
+                                  timeLabelTextStyle: const TextStyle(
+                                    color: CColors.primary,
+                                    fontSize: 10,
+                                  ),
+                                  onSeek: (duration) {
+                                    value.seek(duration);
+                                    // print('User selected a new time: $duration');
+                                  },
                                 ),
-                                onSeek: (duration) {
-                                  value.seek(duration);
-                                  // print('User selected a new time: $duration');
-                                },
                               ),
                               const SizedBox(height: 2),
                             ],

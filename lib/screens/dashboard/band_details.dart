@@ -12,7 +12,6 @@ import 'package:uprise/widgets/event_widget.dart';
 import 'package:uprise/widgets/player_widget.dart';
 import 'package:uprise/widgets/songs_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
-
 import '../../helpers/colors.dart';
 import '../../widgets/state_check.dart';
 
@@ -126,7 +125,7 @@ class _BandDetailsState extends State<BandDetails>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Brand Name:",
+                  "Band Name:",
                   style: TextStyle(
                     color: CColors.textColor,
                     fontSize: 16,

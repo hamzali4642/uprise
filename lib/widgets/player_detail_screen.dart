@@ -106,22 +106,25 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
                 );
               }),
               const SizedBox(height: 40),
-              ProgressBar(
-                thumbRadius: 10,
-                barHeight: 5,
-                baseBarColor: CColors.placeholderTextColor,
-                bufferedBarColor: CColors.placeholderTextColor,
-                progress: value.completed,
-                buffered: value.bufferedTime!,
-                total: value.total,
-                timeLabelTextStyle: const TextStyle(
-                  color: CColors.primary,
-                  fontSize: 10,
+              AbsorbPointer(
+                absorbing: true,
+                child: ProgressBar(
+                  thumbRadius: 10,
+                  barHeight: 5,
+                  baseBarColor: CColors.placeholderTextColor,
+                  bufferedBarColor: CColors.placeholderTextColor,
+                  progress: value.completed,
+                  buffered: value.bufferedTime!,
+                  total: value.total,
+                  timeLabelTextStyle: const TextStyle(
+                    color: CColors.primary,
+                    fontSize: 10,
+                  ),
+                  onSeek: (duration) {
+                    value.seek(duration);
+                    print('User selected a new time: $duration');
+                  },
                 ),
-                onSeek: (duration) {
-                  value.seek(duration);
-                  print('User selected a new time: $duration');
-                },
               ),
               const SizedBox(height: 40),
               controllers(value),
