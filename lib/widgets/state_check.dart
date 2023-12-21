@@ -11,14 +11,14 @@ Widget? stateCheck(DataStates state, List list) {
   } else if (state == DataStates.fail) {
     return const Expanded(
       child: Center(
-        child: Text("Something Went Wrong."),
+        child: Text("Something Went Wrong.",style: TextStyle(color: Colors.white)),
       ),
     );
   } else if (state == DataStates.success) {
     if (list.isEmpty) {
       return const Expanded(
         child: Center(
-          child: Text("No Data Found."),
+          child: Text("No Data Found.",style: TextStyle(color: Colors.white),),
         ),
       );
     }

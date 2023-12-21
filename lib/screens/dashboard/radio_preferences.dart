@@ -83,17 +83,17 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                     children: [
                       Expanded(
                         child: TextFieldWidget(
-                          controller: type == "City"
+                          controller: type == "City Wide"
                               ? city
-                              : type == "State"
+                              : type == "State Wide"
                                   ? state
                                   : country,
                           hint: "Manually Enter Location",
                           errorText: "",
                           enable: true,
-                          // type == "City" && city.text.isEmpty ||
-                          //     type == "State" && state.text.isEmpty ||
-                          //     type == "Country" && country.text.isEmpty,
+                          // type == "City Wide" && city.text.isEmpty ||
+                          //     type == "State Wide" && state.text.isEmpty ||
+                          //     type == "Country Wide" && country.text.isEmpty,
                           onChange: (value) async {
                             if (value.trim().isEmpty) {
                               responses = [];
@@ -160,11 +160,11 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        if (type == "City" && city.text.isEmpty) {
+                        if (type == "City Wide" && city.text.isEmpty) {
                           Functions.showSnackBar(context, "Invalid City Name");
-                        } else if (type == "State" && state.text.isEmpty) {
+                        } else if (type == "State Wide" && state.text.isEmpty) {
                           Functions.showSnackBar(context, "Invalid State Name");
-                        } else if (type == "Country" && country.text.isEmpty) {
+                        } else if (type == "Country Wide" && country.text.isEmpty) {
                           Functions.showSnackBar(
                               context, "Invalid Country Name");
                         } else {
@@ -221,14 +221,14 @@ class _RadioPreferencesState extends State<RadioPreferences> {
     });
   }
 
-  String type = "City";
+  String type = "City Wide";
 
   Widget radioWidget() {
     return Row(
       children: [
-        radioButtonItem("City"),
-        radioButtonItem("State"),
-        radioButtonItem("Country"),
+        radioButtonItem("City Wide"),
+        radioButtonItem("State Wide"),
+        radioButtonItem("Country Wide"),
       ],
     );
   }

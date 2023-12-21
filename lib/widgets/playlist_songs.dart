@@ -101,9 +101,9 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
         .toList();
     FavouritePlayList fPlaylist =
         FavouritePlayList(genre: dataProvider.userModel!.selectedGenres.first);
-    if (dataProvider.type == "City") {
+    if (dataProvider.type == "City Wide") {
       fPlaylist.city = dataProvider.userModel!.city;
-    } else if (dataProvider.type == "State") {
+    } else if (dataProvider.type == "State Wide") {
       fPlaylist.state = dataProvider.userModel!.state;
     } else {
       fPlaylist.country = dataProvider.userModel!.country;
@@ -115,15 +115,15 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
           i++) {
         if (dataProvider.userModel!.favouritePlayLists[i].genre ==
             widget.favouritePlayList!.genre) {
-          if (dataProvider.type == "City" &&
+          if (dataProvider.type == "City Wide" &&
               widget.favouritePlayList!.city ==
                   dataProvider.userModel!.favouritePlayLists[i].city) {
             index = i;
-          } else if (dataProvider.type == "State" &&
+          } else if (dataProvider.type == "State Wide" &&
               widget.favouritePlayList!.state ==
                   dataProvider.userModel!.favouritePlayLists[i].state) {
             index = i;
-          } else if (dataProvider.type == "Country" &&
+          } else if (dataProvider.type == "Country Wide" &&
               widget.favouritePlayList!.country ==
                   dataProvider.userModel!.favouritePlayLists[i].country) {
             index = i;
@@ -151,9 +151,9 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
         .toList();
     FavouritePlayList fPlaylist =
         FavouritePlayList(genre: dataProvider.userModel!.selectedGenres.first);
-    if (dataProvider.type == "City") {
+    if (dataProvider.type == "City Wide") {
       fPlaylist.city = dataProvider.userModel!.city;
-    } else if (dataProvider.type == "State") {
+    } else if (dataProvider.type == "State Wide") {
       fPlaylist.state = dataProvider.userModel!.state;
     } else {
       fPlaylist.country = dataProvider.userModel!.country;
@@ -165,15 +165,15 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
           i++) {
         if (dataProvider.userModel!.favouritePlayLists[i].genre ==
             dataProvider.userModel!.selectedGenres.first) {
-          if (dataProvider.type == "City" &&
+          if (dataProvider.type == "City Wide" &&
               dataProvider.userModel!.city ==
                   dataProvider.userModel!.favouritePlayLists[i].city) {
             index = i;
-          } else if (dataProvider.type == "State" &&
+          } else if (dataProvider.type == "State Wide" &&
               dataProvider.userModel!.state ==
                   dataProvider.userModel!.favouritePlayLists[i].state) {
             index = i;
-          } else if (dataProvider.type == "Country" &&
+          } else if (dataProvider.type == "Country Wide" &&
               dataProvider.userModel!.country ==
                   dataProvider.userModel!.favouritePlayLists[i].country) {
             index = i;
@@ -193,7 +193,7 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
 
   List<SongModel> discoverySongs() {
     List<SongModel> songList = [];
-    if (dataProvider.type == "City") {
+    if (dataProvider.type == "City Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first ==
             dataProvider.userModel!.selectedGenres.first) {
@@ -212,7 +212,7 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
           }
         }
       }
-    } else if (dataProvider.type == "State") {
+    } else if (dataProvider.type == "State Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first ==
             dataProvider.userModel!.selectedGenres.first) {
@@ -239,7 +239,7 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
 
   List<SongModel> favouriteSongs() {
     List<SongModel> songList = [];
-    if (dataProvider.type == "City") {
+    if (dataProvider.type == "City Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first == widget.favouritePlayList!.genre) {
           print(element.city);
@@ -253,7 +253,7 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
           }
         }
       }
-    } else if (dataProvider.type == "State") {
+    } else if (dataProvider.type == "State Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first == widget.favouritePlayList!.genre) {
           if (element.state == widget.favouritePlayList!.state) {
@@ -280,13 +280,13 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
     if (widget.favouritePlayList != null) {
       for (var element in dataProvider.userModel!.favouritePlayLists) {
         if (element.genre == widget.favouritePlayList!.genre) {
-          if (dataProvider.type == "City" &&
+          if (dataProvider.type == "City Wide" &&
               widget.favouritePlayList!.city == element.city) {
             isFavourite = true;
-          } else if (dataProvider.type == "State" &&
+          } else if (dataProvider.type == "State Wide" &&
               widget.favouritePlayList!.state == element.state) {
             isFavourite = true;
-          } else if (dataProvider.type == "Country" &&
+          } else if (dataProvider.type == "Country Wide" &&
               widget.favouritePlayList!.country == element.country) {
             isFavourite = true;
           }
@@ -295,13 +295,13 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
     } else {
       for (var element in dataProvider.userModel!.favouritePlayLists) {
         if (element.genre == dataProvider.userModel!.selectedGenres.first) {
-          if (dataProvider.type == "City" &&
+          if (dataProvider.type == "City Wide" &&
               dataProvider.userModel!.city == element.city) {
             isFavourite = true;
-          } else if (dataProvider.type == "State" &&
+          } else if (dataProvider.type == "State Wide" &&
               dataProvider.userModel!.state == element.state) {
             isFavourite = true;
-          } else if (dataProvider.type == "Country" &&
+          } else if (dataProvider.type == "Country Wide" &&
               dataProvider.userModel!.country == element.country) {
             isFavourite = true;
           }
@@ -336,10 +336,10 @@ class _PlaylistSongsState extends State<PlaylistSongs> {
       name =
           "${widget.favouritePlayList?.city ?? widget.favouritePlayList?.state ?? widget.favouritePlayList?.country}: ${widget.favouritePlayList?.genre}";
     } else {
-      if (dataProvider.type == "City") {
+      if (dataProvider.type == "City Wide") {
         name =
             "${dataProvider.userModel!.city}: ${dataProvider.userModel!.selectedGenres.first}";
-      } else if (dataProvider.type == "State") {
+      } else if (dataProvider.type == "State Wide") {
         name =
             "${dataProvider.userModel!.state}: ${dataProvider.userModel!.selectedGenres.first}";
       } else {

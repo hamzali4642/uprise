@@ -294,7 +294,7 @@ class _DashboardState extends State<Dashboard> {
                     horizontal: 10,
                   ),
                   child: Text(
-                    "${dataProvider.userModel?.city}, ${dataProvider.userModel?.state} ${dataProvider.userModel?.selectedGenres.first} Uprise",
+                    getTitle(),
                     style: AppTextStyles.message(
                         color: Colors.white, fontSize: 15),
                   ),
@@ -303,26 +303,26 @@ class _DashboardState extends State<Dashboard> {
               IconButton(
                 onPressed: () {
                   setState(() {
-                    if (dataProvider.type == "City") {
-                      dataProvider.type = "State";
+                    if (dataProvider.type == "City Wide") {
+                      dataProvider.type = "State Wide";
                       dataProvider.setSong();
                       dataProvider.stop();
                       dataProvider.initializePlayer();
-                    } else if (dataProvider.type == "State") {
-                      dataProvider.type = "Country";
+                    } else if (dataProvider.type == "State Wide") {
+                      dataProvider.type = "Country Wide";
                       dataProvider.setSong();
                       dataProvider.stop();
                       dataProvider.initializePlayer();
                     } else {
-                      dataProvider.type = "City";
+                      dataProvider.type = "City Wide";
                       dataProvider.setSong();
                       dataProvider.stop();
                       dataProvider.initializePlayer();
                     }
 
-                    // radioButtonItem("City"),
-                    // radioButtonItem("State"),
-                    // radioButtonItem("Country"),
+                    // radioButtonItem("City Wide"),
+                    // radioButtonItem("State Wide"),
+                    // radioButtonItem("Country Wide"),
                   });
 
                   // context.push(child: const RadioPreferences());
@@ -388,6 +388,21 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
     );
+  }
+
+  String getTitle() {
+    String city = dataProvider.userModel!.city!;
+    String state = dataProvider.userModel!.state;
+    String country = dataProvider.userModel!.country;
+    String genre = dataProvider.userModel!.selectedGenres.first;
+
+    if (dataProvider.type == "City Wide") {
+      return "$city $state $genre Uprise";
+    } else if (dataProvider.type == "State Wide") {
+      return "$state $genre Uprise";
+    } else {
+      return "$country $genre Uprise";
+    }
   }
 
   Widget fabWidget() {
@@ -469,7 +484,7 @@ class _DashboardState extends State<Dashboard> {
                         .toList();
 
                     if (provider.selectedIndex == 0) {
-                      if (dataProvider.type == "City") {
+                      if (dataProvider.type == "City Wide") {
                         for (var element in temp) {
                           if (element.upVotes.length < 3 &&
                               element.city == dataProvider.userModel!.city) {
@@ -486,7 +501,7 @@ class _DashboardState extends State<Dashboard> {
                             songList.add(element);
                           }
                         }
-                      } else if (dataProvider.type == "State") {
+                      } else if (dataProvider.type == "State Wide") {
                         for (var element in temp) {
                           if (element.genreList.first ==
                               dataProvider.userModel!.selectedGenres.first) {
@@ -513,11 +528,11 @@ class _DashboardState extends State<Dashboard> {
                         }
                       }
                     } else if (provider.selectedIndex == 2) {
-                      if (dataProvider.type == "City") {
+                      if (dataProvider.type == "City Wide") {
                         for (var element in temp) {
                           songList.add(element);
                         }
-                      } else if (dataProvider.type == "State") {
+                      } else if (dataProvider.type == "State Wide") {
                         for (var element in temp) {
                           if (element.genreList.first ==
                               dataProvider.userModel!.selectedGenres.first) {
@@ -817,9 +832,9 @@ class _DashboardState extends State<Dashboard> {
   Widget radioWidget() {
     return Row(
       children: [
-        radioButtonItem("City"),
-        radioButtonItem("State"),
-        radioButtonItem("Country"),
+        radioButtonItem("City Wide"),
+        radioButtonItem("State Wide"),
+        radioButtonItem("Country Wide"),
       ],
     );
   }
@@ -838,9 +853,11 @@ class _DashboardState extends State<Dashboard> {
               dataProvider.initializePlayer();
             },
           ),
-          Text(
-            text,
-            style: const TextStyle(color: CColors.White),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(color: CColors.White),
+            ),
           ),
         ],
       ),

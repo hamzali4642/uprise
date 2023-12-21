@@ -24,22 +24,30 @@ class Events extends StatelessWidget {
   }
 
   Widget events(DataProvider value) {
-    List<EventModel> events = [];
+    DateTime now = DateTime.now();
+
+    List<EventModel> temp = [];
 
     for (var element in value.events) {
       if (element.genre == value.userModel!.selectedGenres.first) {
-        if (value.type == "City" && value.userModel!.city == element.city) {
-          events.add(element);
-        } else if (value.type == "State" &&
+        if (value.type == "City Wide" &&
+            value.userModel!.city == element.city) {
+          temp.add(element);
+        } else if (value.type == "State Wide" &&
             value.userModel!.state == element.state) {
-          events.add(element);
-        } else if (value.type == "Country" &&
+          temp.add(element);
+        } else if (value.type == "Country Wide" &&
             value.userModel!.country == element.country) {
-          events.add(element);
+          temp.add(element);
         }
       }
     }
-    // value.events.where((element) => element.genre == value.userModel!.selectedGenres.first).toList();
+
+    List<EventModel> events = temp
+        .where((element) => element.startDate.difference(now).inHours >= -24)
+        .toList();
+
+    // value.temp.where((element) => element.genre == value.userModel!.selectedGenres.first).toList();
 
     return SliverList(
       delegate: SliverChildBuilderDelegate((ctx, i) {

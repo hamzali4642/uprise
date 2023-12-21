@@ -103,7 +103,7 @@ class _FeedState extends State<Feed> {
     //         .any((follow) => follow == element.bandId))
     //     .toList();
 
-    if (dataProvider.type == "City") {
+    if (dataProvider.type == "City Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first ==
             dataProvider.userModel!.selectedGenres.first) {
@@ -135,7 +135,7 @@ class _FeedState extends State<Feed> {
       //   print(song.id);
       //   print(song.genreList);
       // }
-    } else if (dataProvider.type == "State") {
+    } else if (dataProvider.type == "State Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first ==
             dataProvider.userModel!.selectedGenres.first) {
@@ -211,7 +211,7 @@ class _FeedState extends State<Feed> {
   Widget blastedSongs() {
     List<SongModel> songs = [];
 
-    if (dataProvider.type == "City") {
+    if (dataProvider.type == "City Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first ==
             dataProvider.userModel!.selectedGenres.first) {
@@ -230,7 +230,7 @@ class _FeedState extends State<Feed> {
           }
         }
       }
-    } else if (dataProvider.type == "State") {
+    } else if (dataProvider.type == "State Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first ==
             dataProvider.userModel!.selectedGenres.first) {

@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/models/event_model.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/band_member_detail/band_member_detail.dart';
@@ -82,9 +83,7 @@ class _BandDetailsState extends State<BandDetails>
                     controller: controller,
                     labelColor: CColors.primary,
                     unselectedLabelColor: CColors.textColor,
-                    labelStyle: const TextStyle(
-                      color: CColors.primary,
-                    ),
+                    labelStyle: const TextStyle(color: CColors.primary),
                     unselectedLabelStyle: const TextStyle(
                       color: CColors.textColor,
                     ),
@@ -132,9 +131,7 @@ class _BandDetailsState extends State<BandDetails>
                     fontWeight: FontWeights.medium,
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Text(
                   widget.band.bandName!,
                   style: const TextStyle(
@@ -210,9 +207,7 @@ class _BandDetailsState extends State<BandDetails>
                       Assets.imagesBlackUserAdd,
                       color: Colors.white,
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10),
                     Text(
                       isFollowed ? "Unfollow" : "Follow",
                       style: const TextStyle(
@@ -318,9 +313,7 @@ class _BandDetailsState extends State<BandDetails>
               );
             },
             separatorBuilder: (ctx, i) {
-              return SizedBox(
-                width: 10,
-              );
+              return const SizedBox(width: 10);
             },
             itemCount: songs.length,
           ),
@@ -330,16 +323,20 @@ class _BandDetailsState extends State<BandDetails>
   }
 
   Widget eventsWidget() {
-    Widget? check = stateCheck(dataProvider.eventState, dataProvider.events);
+
+    DateTime now = DateTime.now();
+    List<EventModel> events = dataProvider.events.where((element) => element.bandId == widget.band.id && element.startDate.difference(now).inHours >= -24).toList();
+
+    Widget? check = stateCheck(dataProvider.eventState, events);
 
     return check != null
-        ? check.toSliver
+        ? SliverPadding(sliver: check.toSliver, padding: const EdgeInsets.all(40),)
         : SliverList(
             delegate: SliverChildBuilderDelegate((ctx, i) {
               return EventWidget(
-                eventModel: dataProvider.events[i],
+                eventModel: events[i],
               );
-            }, childCount: dataProvider.events.length),
+            }, childCount: events.length),
           );
   }
 

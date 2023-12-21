@@ -60,7 +60,7 @@ class DataProvider extends ChangeNotifier {
   Duration completed = const Duration(seconds: 0);
   Duration? bufferedTime = const Duration(seconds: 0);
 
-  String _type = "City";
+  String _type = "City Wide";
 
   int _index = 0;
 
@@ -343,9 +343,9 @@ class DataProvider extends ChangeNotifier {
       if (genre == null &&
           user.selectedGenres.isNotEmpty &&
           user.selectedGenres.first == userModel!.selectedGenres.first) {
-        if (type == "City" && userModel!.city == user.city ||
-            type == "State" && userModel!.state == user.state ||
-            type == "Country" && userModel!.country == user.country) {
+        if (type == "City Wide" && userModel!.city == user.city ||
+            type == "State Wide" && userModel!.state == user.state ||
+            type == "Country Wide" && userModel!.country == user.country) {
           user.totalUpVotes = 0;
           for (var song in songs
               .where((element) =>
@@ -460,7 +460,7 @@ class DataProvider extends ChangeNotifier {
     List<SongModel> songList = [];
 
     if (userModel != null) {
-      if (type == "City") {
+      if (type == "City Wide") {
         for (var element in songs) {
           if (userModel!.selectedGenres.isNotEmpty &&
               element.genreList.first == userModel!.selectedGenres.first) {
@@ -480,7 +480,7 @@ class DataProvider extends ChangeNotifier {
             }
           }
         }
-      } else if (type == "State") {
+      } else if (type == "State Wide") {
         for (var element in songs) {
           if (userModel!.selectedGenres.isNotEmpty &&
               element.genreList.first == userModel!.selectedGenres.first) {

@@ -66,9 +66,9 @@ class _StatisticsState extends State<Statistics> {
           art.selectedGenres.isNotEmpty &&
           art.selectedGenres.first ==
               provider.userModel!.selectedGenres.first) {
-        if (provider.type == "City" && art.city == user.city ||
-            provider.type == "State" && art.state == user.state ||
-            provider.type == "Country" && art.country == user.country) {
+        if (provider.type == "City Wide" && art.city == user.city ||
+            provider.type == "State Wide" && art.state == user.state ||
+            provider.type == "Country Wide" && art.country == user.country) {
           artists.add(art);
         }
       }
@@ -81,9 +81,9 @@ class _StatisticsState extends State<Statistics> {
           art.selectedGenres.isNotEmpty &&
           art.selectedGenres.first ==
               provider.userModel!.selectedGenres.first) {
-        if (provider.type == "City" && art.city == user.city ||
-            provider.type == "State" && art.state == user.state ||
-            provider.type == "Country" && art.country == user.country) {
+        if (provider.type == "City Wide" && art.city == user.city ||
+            provider.type == "State Wide" && art.state == user.state ||
+            provider.type == "Country Wide" && art.country == user.country) {
           listeners.add(art);
         }
       }

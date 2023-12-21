@@ -68,11 +68,11 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                 dataProvider.userModel!.selectedGenres.first))
                             .toList();
 
-                        if (dataProvider.type == "City") {
+                        if (dataProvider.type == "City Wide") {
                           for (var element in temp) {
                             songList.add(element);
                           }
-                        } else if (dataProvider.type == "State") {
+                        } else if (dataProvider.type == "State Wide") {
                           for (var element in temp) {
                             if (element.genreList.first ==
                                 dataProvider.userModel!.selectedGenres.first) {
@@ -156,9 +156,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 60,
-                                  ),
+                                  const SizedBox(width: 60),
                                   InkWell(
                                     onTap: () {
                                       switch (value.audioState) {
@@ -212,7 +210,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                                       .selectedGenres.first))
                                           .toList();
 
-                                      if (dataProvider.type == "City") {
+                                      if (dataProvider.type == "City Wide") {
                                         for (var element in temp) {
                                           if (element.upVotes.length < 3 &&
                                               element.city ==
@@ -241,7 +239,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                             songList.add(element);
                                           }
                                         }
-                                      } else if (dataProvider.type == "State") {
+                                      } else if (dataProvider.type ==
+                                          "State Wide") {
                                         for (var element in temp) {
                                           if (element.genreList.first ==
                                               dataProvider.userModel!
@@ -377,7 +376,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                   thumbRadius: 5,
                                   barHeight: 2,
                                   baseBarColor: CColors.placeholderTextColor,
-                                  bufferedBarColor: CColors.placeholderTextColor,
+                                  bufferedBarColor:
+                                      CColors.placeholderTextColor,
                                   progress: value.audioState == "stopped"
                                       ? const Duration(seconds: 0)
                                       : value.completed,

@@ -234,7 +234,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
 
     List<SongModel> songList = [];
 
-    if (dataProvider.type == "City") {
+    if (dataProvider.type == "City Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first ==
             dataProvider.userModel!.selectedGenres.first) {
@@ -259,7 +259,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
       //         element.genreList
       //             .any((genre) => genre == userModel!.selectedGenres.first))
       //     .toList();
-    } else if (dataProvider.type == "State") {
+    } else if (dataProvider.type == "State Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first ==
             dataProvider.userModel!.selectedGenres.first) {

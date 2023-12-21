@@ -97,13 +97,13 @@ class _DiscoveryState extends State<Discovery> {
 
     for (var element in dataProvider.events) {
       if (element.genre == dataProvider.userModel!.selectedGenres.first) {
-        if (dataProvider.type == "City" &&
+        if (dataProvider.type == "City Wide" &&
             dataProvider.userModel!.city == element.city) {
           events.add(element);
-        } else if (dataProvider.type == "State" &&
+        } else if (dataProvider.type == "State Wide" &&
             dataProvider.userModel!.state == element.state) {
           events.add(element);
-        } else if (dataProvider.type == "Country" &&
+        } else if (dataProvider.type == "Country Wide" &&
             dataProvider.userModel!.country == element.country) {
           events.add(element);
         }
@@ -143,12 +143,12 @@ class _DiscoveryState extends State<Discovery> {
   //
   //   for (var element in value.events) {
   //     if (element.genre == value.userModel!.selectedGenres.first) {
-  //       if (value.type == "City" && value.userModel!.city == element.city) {
+  //       if (value.type == "City Wide" && value.userModel!.city == element.city) {
   //         events.add(element);
-  //       } else if (value.type == "State" &&
+  //       } else if (value.type == "State Wide" &&
   //           value.userModel!.state == element.state) {
   //         events.add(element);
-  //       } else if (value.type == "Country" &&
+  //       } else if (value.type == "Country Wide" &&
   //           value.userModel!.country == element.country) {
   //         events.add(element);
   //       }
@@ -165,9 +165,9 @@ class _DiscoveryState extends State<Discovery> {
 
   Widget playList() {
     String playList = "";
-    if (dataProvider.type == "City") {
+    if (dataProvider.type == "City Wide") {
       playList = dataProvider.userModel!.city!;
-    } else if (dataProvider.type == "State") {
+    } else if (dataProvider.type == "State Wide") {
       playList = dataProvider.userModel!.state;
     } else {
       playList = dataProvider.userModel!.country;
