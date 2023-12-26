@@ -149,7 +149,6 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
                   ),
                 ],
               ),
-              Container(),
             ],
           ),
         ),
@@ -253,12 +252,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
           }
         }
       }
-      // songList = songs
-      //     .where((element) =>
-      //         (element.city == userModel!.city) &&
-      //         element.genreList
-      //             .any((genre) => genre == userModel!.selectedGenres.first))
-      //     .toList();
+
     } else if (dataProvider.type == "State Wide") {
       for (var element in dataProvider.songs) {
         if (element.genreList.first ==
@@ -273,12 +267,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
           }
         }
       }
-      // songList = songs
-      //     .where((element) =>
-      //         element.genreList
-      //             .any((genre) => genre == userModel!.selectedGenres.first) &&
-      //         (element.upVotes.length >= 25 && element.upVotes.length < 75))
-      //     .toList();
+
     } else {
       for (var element in dataProvider.songs) {
         if (element.country == dataProvider.userModel!.country &&
@@ -286,12 +275,7 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
           songList.add(element);
         }
       }
-      // songList = songs
-      //     .where((element) =>
-      //         element.genreList
-      //             .any((genre) => genre == userModel!.selectedGenres.first) &&
-      //         element.upVotes.length >= 75)
-      //     .toList();
+
     }
 
     if (dataProvider.index + 1 < songList.length) {

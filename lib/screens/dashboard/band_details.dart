@@ -49,18 +49,7 @@ class _BandDetailsState extends State<BandDetails>
     return Consumer<DataProvider>(builder: (context, value, child) {
       dataProvider = value;
       return Scaffold(
-        appBar: AppBar(
-          backgroundColor: CColors.transparentColor,
-          title: const Text(
-            "Band Details",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeights.bold,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        appBar: appBar(),
         body: Column(
           children: [
             Expanded(
@@ -79,27 +68,7 @@ class _BandDetailsState extends State<BandDetails>
                   brandInfoWidget().toSliver,
                   memberWidget().toSliver,
                   songsWidget().toSliver,
-                  TabBar(
-                    controller: controller,
-                    labelColor: CColors.primary,
-                    unselectedLabelColor: CColors.textColor,
-                    labelStyle: const TextStyle(color: CColors.primary),
-                    unselectedLabelStyle: const TextStyle(
-                      color: CColors.textColor,
-                    ),
-                    tabs: const [
-                      Tab(
-                        child: Text(
-                          "Gallery",
-                        ),
-                      ),
-                      Tab(
-                        child: Text(
-                          "Events",
-                        ),
-                      ),
-                    ],
-                  ).toSliver,
+                  tabBar().toSliver,
                   controller.index == 0 ? galleryWidget() : eventsWidget(),
                 ],
               ),
@@ -109,6 +78,45 @@ class _BandDetailsState extends State<BandDetails>
         ),
       );
     });
+  }
+
+  Widget tabBar() {
+    return TabBar(
+      controller: controller,
+      labelColor: CColors.primary,
+      unselectedLabelColor: CColors.textColor,
+      labelStyle: const TextStyle(color: CColors.primary),
+      unselectedLabelStyle: const TextStyle(
+        color: CColors.textColor,
+      ),
+      tabs: const [
+        Tab(
+          child: Text(
+            "Gallery",
+          ),
+        ),
+        Tab(
+          child: Text(
+            "Events",
+          ),
+        ),
+      ],
+    );
+  }
+
+  AppBar appBar() {
+    return AppBar(
+      backgroundColor: CColors.transparentColor,
+      title: const Text(
+        "Band Details",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 24,
+          fontWeight: FontWeights.bold,
+        ),
+      ),
+      centerTitle: false,
+    );
   }
 
   Widget brandInfoWidget() {
@@ -323,21 +331,20 @@ class _BandDetailsState extends State<BandDetails>
   }
 
   Widget eventsWidget() {
-
     DateTime now = DateTime.now();
-    List<EventModel> events = dataProvider.events.where((element) => element.bandId == widget.band.id && element.startDate.difference(now).inHours >= -24).toList();
+    List<EventModel> events = dataProvider.events
+        .where((element) =>
+            element.bandId == widget.band.id &&
+            element.startDate.difference(now).inHours >= -24)
+        .toList();
 
-    Widget? check = stateCheck(dataProvider.eventState, events);
-
-    return check != null
-        ? SliverPadding(sliver: check.toSliver, padding: const EdgeInsets.all(40),)
-        : SliverList(
-            delegate: SliverChildBuilderDelegate((ctx, i) {
-              return EventWidget(
-                eventModel: events[i],
-              );
-            }, childCount: events.length),
-          );
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((ctx, i) {
+        return EventWidget(
+          eventModel: events[i],
+        );
+      }, childCount: events.length),
+    );
   }
 
   Widget galleryWidget() {

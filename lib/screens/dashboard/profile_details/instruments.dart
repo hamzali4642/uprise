@@ -26,25 +26,7 @@ class _InstrumentsState extends State<Instruments> {
         checked = true;
       }
       return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Instrument",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeights.bold,
-            ),
-          ),
-          leading: InkWell(
-            onTap: () {
-              context.pop();
-            },
-            child: const Icon(
-              Icons.arrow_back_ios_new,
-              color: Colors.white,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        appBar: appBarWidget(),
         body: Padding(
           padding: const EdgeInsets.only(left: 25, right: 25),
           child: Column(
@@ -56,52 +38,78 @@ class _InstrumentsState extends State<Instruments> {
                 style: TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 50),
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, // Number of columns
-                    mainAxisSpacing: 15.0, // Vertical spacing between items
-                    crossAxisSpacing: 50.0,
-                    childAspectRatio: 0.7// Horizontal spacing between items
-                  ),
-                  itemCount: 30, // Total number of items in the grid
-                  itemBuilder: (context, index) {
-                    return instrumentWidget(index);
-                  },
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: 100,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                    ),
-                    onPressed: () {
-                      value.updateUserPref({
-                        "instrument": selectedIndex,
-                      });
-
-                      context.pop();
-                    },
-                    child: const Text(
-                      "Save",
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: context.bottomPadding + 20,
-              ),
+              instrumentsGrid(),
+              const SizedBox(height: 20),
+              saveBtn(value),
+              SizedBox(height: context.bottomPadding + 20),
             ],
           ),
         ),
       );
     });
+  }
+
+  Widget saveBtn(DataProvider value) {
+    return Align(
+      alignment: Alignment.center,
+      child: SizedBox(
+        width: 100,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: const StadiumBorder(),
+          ),
+          onPressed: () {
+            value.updateUserPref({
+              "instrument": selectedIndex,
+            });
+
+            context.pop();
+          },
+          child: const Text(
+            "Save",
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget instrumentsGrid() {
+    return Expanded(
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3, // Number of columns
+            mainAxisSpacing: 15.0, // Vertical spacing between items
+            crossAxisSpacing: 50.0,
+            childAspectRatio: 0.7 // Horizontal spacing between items
+            ),
+        itemCount: 30, // Total number of items in the grid
+        itemBuilder: (context, index) {
+          return instrumentWidget(index);
+        },
+      ),
+    );
+  }
+
+  AppBar appBarWidget() {
+    return AppBar(
+      title: const Text(
+        "Instrument",
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeights.bold,
+        ),
+      ),
+      leading: InkWell(
+        onTap: () {
+          context.pop();
+        },
+        child: const Icon(
+          Icons.arrow_back_ios_new,
+          color: Colors.white,
+        ),
+      ),
+      centerTitle: false,
+    );
   }
 
   Widget instrumentWidget(int index) {
@@ -131,26 +139,28 @@ class _InstrumentsState extends State<Instruments> {
                     fit: BoxFit.fill,
                   ),
                 ),
-                if(selectedIndex == index)
-                const Positioned.fill(
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: Icon(
-                        Icons.check_circle,
-                        color: CColors.primary,
-                        size: 18,
+                if (selectedIndex == index)
+                  const Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Icon(
+                          Icons.check_circle,
+                          color: CColors.primary,
+                          size: 18,
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
-
           ),
-          const SizedBox(height: 10,),
-          Text(instruments[index],
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            instruments[index],
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeights.normal,

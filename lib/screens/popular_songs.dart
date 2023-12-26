@@ -3,9 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/widgets/new_song_widget.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
-
 import '../helpers/colors.dart';
-import '../widgets/songs_widget.dart';
 
 class PopularSongs extends StatelessWidget {
   const PopularSongs({super.key});

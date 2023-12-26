@@ -7,7 +7,6 @@ import 'package:uprise/screens/dashboard/discovery/map_view_section.dart';
 import 'package:uprise/screens/popular_songs.dart';
 import 'package:uprise/widgets/cupertino_textfield.dart';
 import 'package:uprise/widgets/discovery_event_cover.dart';
-import 'package:uprise/widgets/event_widget.dart';
 import 'package:uprise/widgets/margin_widget.dart';
 import 'package:uprise/widgets/playlist_songs.dart';
 import 'package:uprise/widgets/radio_station_cover.dart';
@@ -93,30 +92,33 @@ class _DiscoveryState extends State<Discovery> {
   }
 
   Widget events() {
-    List<EventModel> events = [];
+    List<EventModel> temp = dataProvider.events;
+    //
+    // for (var element in dataProvider.events) {
+    //   if (element.genre == dataProvider.userModel!.selectedGenres.first) {
+    //     if (dataProvider.type == "City Wide" &&
+    //         dataProvider.userModel!.city == element.city) {
+    //       temp.add(element);
+    //     } else if (dataProvider.type == "State Wide" &&
+    //         dataProvider.userModel!.state == element.state) {
+    //       temp.add(element);
+    //     } else if (dataProvider.type == "Country Wide" &&
+    //         dataProvider.userModel!.country == element.country) {
+    //       temp.add(element);
+    //     }
+    //   }
+    // }
 
-    for (var element in dataProvider.events) {
-      if (element.genre == dataProvider.userModel!.selectedGenres.first) {
-        if (dataProvider.type == "City Wide" &&
-            dataProvider.userModel!.city == element.city) {
-          events.add(element);
-        } else if (dataProvider.type == "State Wide" &&
-            dataProvider.userModel!.state == element.state) {
-          events.add(element);
-        } else if (dataProvider.type == "Country Wide" &&
-            dataProvider.userModel!.country == element.country) {
-          events.add(element);
-        }
-      }
-    }
+    List<EventModel> events = temp
+        .where((element) => element.startDate.difference(DateTime.now()).inHours >= -24)
+        .toList();
+
     return events.isEmpty
         ? const SizedBox()
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const HeadingWidget(
-                text: "Events",
-              ),
+              const HeadingWidget(text: "Events"),
               const SizedBox(height: 20),
               CarouselSlider.builder(
                 itemCount: events.length,
@@ -137,31 +139,6 @@ class _DiscoveryState extends State<Discovery> {
             ],
           );
   }
-
-  // Widget events(DataProvider value) {
-  //   List<EventModel> events = [];
-  //
-  //   for (var element in value.events) {
-  //     if (element.genre == value.userModel!.selectedGenres.first) {
-  //       if (value.type == "City Wide" && value.userModel!.city == element.city) {
-  //         events.add(element);
-  //       } else if (value.type == "State Wide" &&
-  //           value.userModel!.state == element.state) {
-  //         events.add(element);
-  //       } else if (value.type == "Country Wide" &&
-  //           value.userModel!.country == element.country) {
-  //         events.add(element);
-  //       }
-  //     }
-  //   }
-  //   // value.events.where((element) => element.genre == value.userModel!.selectedGenres.first).toList();
-  //
-  //   return SliverList(
-  //     delegate: SliverChildBuilderDelegate((ctx, i) {
-  //       return EventWidget(eventModel: events[i]);
-  //     }, childCount: events.length),
-  //   );
-  // }
 
   Widget playList() {
     String playList = "";
@@ -259,8 +236,8 @@ class _DiscoveryState extends State<Discovery> {
     for (var element in radioStations) {
       var songs = dataProvider.songs
           .where((songElement) =>
-      songElement.city == element.name ||
-          songElement.genreList.contains(element.name))
+              songElement.city == element.name ||
+              songElement.genreList.contains(element.name))
           .toList();
       if (songs.isNotEmpty) {
         updateStations.add(element);
@@ -288,7 +265,6 @@ class _DiscoveryState extends State<Discovery> {
                     ),
                   );
                 },
-
                 options: CarouselOptions(
                     initialPage: 0,
                     height: height,
@@ -302,7 +278,7 @@ class _DiscoveryState extends State<Discovery> {
           );
   }
 
-  Widget  popularSongsWidget() {
+  Widget popularSongsWidget() {
     var s = dataProvider.songs;
     var songs = s
         .where((element) =>

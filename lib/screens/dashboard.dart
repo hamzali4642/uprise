@@ -12,6 +12,7 @@ import 'package:uprise/screens/dashboard/home/notification_screen.dart';
 import 'package:uprise/screens/dashboard/profile_details/instruments.dart';
 import 'package:uprise/screens/dashboard/radio_preferences.dart';
 import 'package:uprise/widgets/chip_widget.dart';
+import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:uprise/widgets/player_widget.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 import '../generated/assets.dart';
@@ -133,7 +134,8 @@ class _DashboardState extends State<Dashboard> {
                           if (provider.selectedIndex == 0 ||
                               provider.selectedIndex == 2) ...[
                             headerWidget(),
-                            locationWidget(),
+                            locationTitle(),
+                            locationSelection(),
                             if (provider.selectedIndex != 2) ...[
                               const PlayerWidget(),
                               const Divider(
@@ -271,7 +273,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget locationWidget() {
+  Widget locationTitle() {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: Constants.horizontalPadding,
@@ -305,74 +307,24 @@ class _DashboardState extends State<Dashboard> {
                   setState(() {
                     if (dataProvider.type == "City Wide") {
                       dataProvider.type = "State Wide";
-                      dataProvider.setSong();
-                      dataProvider.stop();
-                      dataProvider.initializePlayer();
                     } else if (dataProvider.type == "State Wide") {
                       dataProvider.type = "Country Wide";
-                      dataProvider.setSong();
-                      dataProvider.stop();
-                      dataProvider.initializePlayer();
                     } else {
                       dataProvider.type = "City Wide";
-                      dataProvider.setSong();
-                      dataProvider.stop();
-                      dataProvider.initializePlayer();
                     }
 
-                    // radioButtonItem("City Wide"),
-                    // radioButtonItem("State Wide"),
-                    // radioButtonItem("Country Wide"),
+                    dataProvider.setSong();
+                    dataProvider.stop();
+                    dataProvider.initializePlayer();
                   });
-
-                  // context.push(child: const RadioPreferences());
                 },
                 color: Colors.white,
                 icon: const Icon(Icons.share_location_sharp),
               ),
             ],
           ),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    radioWidget(),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                children: [
-                  // IconButton(
-                  //   onPressed: () {
-                  //     dataProvider.updateUserPref({
-                  //       "city": city.text,
-                  //       "country": country.text,
-                  //       "state": state.text,
-                  //     });
-                  //
-                  //     isEditing = !isEditing;
-                  //     setState(() {});
-                  //   },
-                  //   color: Colors.white,
-                  //   icon: Icon(Icons.check_circle),
-                  // ),
-                  IconButton(
-                    onPressed: () {
-                      context.push(child: RadioPreferences());
-                    },
-                    color: Colors.white,
-                    icon: Icon(Icons.more_horiz),
-                  ),
-                ],
-              ),
-            ],
-          ),
           true
-              ? SizedBox()
+              ? const SizedBox()
               : SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -390,6 +342,27 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Widget locationSelection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Constants.horizontalPadding - 5,
+      ),      child: Row(
+            children: [
+              Expanded(
+                child: radioWidget(),
+              ),
+              IconButton(
+                onPressed: () {
+                  context.push(child: const RadioPreferences());
+                },
+                color: Colors.white,
+                icon: const Icon(Icons.more_horiz),
+              ),
+            ],
+          ),
+    );
+  }
+
   String getTitle() {
     String city = dataProvider.userModel!.city!;
     String state = dataProvider.userModel!.state;
@@ -397,7 +370,7 @@ class _DashboardState extends State<Dashboard> {
     String genre = dataProvider.userModel!.selectedGenres.first;
 
     if (dataProvider.type == "City Wide") {
-      return "$city $state $genre Uprise";
+      return "$city, $state $genre Uprise";
     } else if (dataProvider.type == "State Wide") {
       return "$state $genre Uprise";
     } else {
@@ -413,13 +386,13 @@ class _DashboardState extends State<Dashboard> {
         // }
       },
       child: Container(
-        margin: EdgeInsets.only(top: 3),
-        decoration: BoxDecoration(
+        margin: const EdgeInsets.only(top: 3),
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.black,
         ),
-        child: const Image(
-          image: AssetImage(Assets.imagesUpriseRadiyoIcon),
+        child: const CustomAssetImage(
+          path: Assets.imagesUpriseRadiyoIcon,
           width: 60,
         ),
       ),
@@ -844,6 +817,10 @@ class _DashboardState extends State<Dashboard> {
       child: Row(
         children: [
           Radio(
+            visualDensity: const VisualDensity(
+              horizontal: VisualDensity.minimumDensity,
+              vertical: VisualDensity.minimumDensity,
+            ),
             value: text,
             groupValue: dataProvider.type,
             onChanged: (value) {
@@ -853,11 +830,9 @@ class _DashboardState extends State<Dashboard> {
               dataProvider.initializePlayer();
             },
           ),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(color: CColors.White),
-            ),
+          Text(
+            text,
+            style: const TextStyle(color: CColors.White, fontSize: 12),
           ),
         ],
       ),

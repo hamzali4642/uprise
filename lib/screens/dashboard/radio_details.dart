@@ -38,91 +38,95 @@ class _RadioDetailsState extends State<RadioDetails> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             headerWidget(),
-            const SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: Constants.horizontalPadding,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget.radioStationModel.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeights.bold,
-                      ),
-                    ),
-                  ),
-                  Builder(builder: (context) {
-                    bool isFavourite = dataProvider
-                        .userModel!.favouriteRadioStations
-                        .contains(widget.radioStationModel.id);
-                    return InkWell(
-                      onTap: () {
-                        var uid = FirebaseAuth.instance.currentUser!.uid;
-                        var db = FirebaseFirestore.instance;
-                        if (isFavourite) {
-                          db.collection("users").doc(uid).update({
-                            "favouriteRadioStations": FieldValue.arrayRemove(
-                                [widget.radioStationModel.id]),
-                          });
-                          db
-                              .collection("radiostation")
-                              .doc(widget.radioStationModel.id)
-                              .update({
-                            "favourites": FieldValue.arrayRemove([uid]),
-                          });
-                        } else {
-                          db.collection("users").doc(uid).update({
-                            "favouriteRadioStations": FieldValue.arrayUnion(
-                                [widget.radioStationModel.id]),
-                          });
-                          db
-                              .collection("radiostation")
-                              .doc(widget.radioStationModel.id)
-                              .update({
-                            "favourites": FieldValue.arrayUnion([uid]),
-                          });
-                        }
-                      },
-                      child: Icon(
-                        isFavourite
-                            ? Icons.favorite
-                            : Icons.favorite_outline_outlined,
-                        color: isFavourite ? Colors.red : CColors.textColor,
-                        size: 30,
-                      ),
-                    );
-                  })
-                ],
-              ),
-            ),
-            Builder(builder: (context) {
-              var songs = dataProvider.songs
-                  .where((element) =>
-                      element.city == widget.radioStationModel.name ||
-                      element.genreList.contains(widget.radioStationModel.name))
-                  .toList();
-              return Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (ctx, i) {
-                    return SongWidget(song: songs[i]);
-                  },
-                  itemCount: songs.length,
-                ),
-              );
-            }),
+            const SizedBox(height: 10),
+            radioTitleRow(),
+            radioSongs(),
             const PlayerWidget(),
             const SizedBox(height: 20),
           ],
         ),
       );
     });
+  }
+
+  Widget radioTitleRow() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Constants.horizontalPadding,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              widget.radioStationModel.name,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeights.bold,
+              ),
+            ),
+          ),
+          favourite(),
+        ],
+      ),
+    );
+  }
+
+  Widget radioSongs() {
+    var songs = dataProvider.songs
+        .where((element) =>
+            element.city == widget.radioStationModel.name ||
+            element.genreList.contains(widget.radioStationModel.name))
+        .toList();
+
+    return Expanded(
+      child: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemBuilder: (ctx, i) {
+          return SongWidget(song: songs[i]);
+        },
+        itemCount: songs.length,
+      ),
+    );
+  }
+
+  Widget favourite() {
+    bool isFavourite = dataProvider.userModel!.favouriteRadioStations
+        .contains(widget.radioStationModel.id);
+    return InkWell(
+      onTap: () {
+        var uid = FirebaseAuth.instance.currentUser!.uid;
+        var db = FirebaseFirestore.instance;
+        if (isFavourite) {
+          db.collection("users").doc(uid).update({
+            "favouriteRadioStations":
+                FieldValue.arrayRemove([widget.radioStationModel.id]),
+          });
+          db
+              .collection("radiostation")
+              .doc(widget.radioStationModel.id)
+              .update({
+            "favourites": FieldValue.arrayRemove([uid]),
+          });
+        } else {
+          db.collection("users").doc(uid).update({
+            "favouriteRadioStations":
+                FieldValue.arrayUnion([widget.radioStationModel.id]),
+          });
+          db
+              .collection("radiostation")
+              .doc(widget.radioStationModel.id)
+              .update({
+            "favourites": FieldValue.arrayUnion([uid]),
+          });
+        }
+      },
+      child: Icon(
+        isFavourite ? Icons.favorite : Icons.favorite_outline_outlined,
+        color: isFavourite ? Colors.red : CColors.textColor,
+        size: 30,
+      ),
+    );
   }
 
   Widget headerWidget() {

@@ -8,7 +8,7 @@ class CustomAssetImage extends StatelessWidget {
 
   const CustomAssetImage({
     super.key,
-    required this.height,
+    this.height,
     this.width,
     this.color,
     required this.path,

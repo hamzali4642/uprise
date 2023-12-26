@@ -23,9 +23,9 @@ class RadioPreferences extends StatefulWidget {
 }
 
 class _RadioPreferencesState extends State<RadioPreferences> {
-  var city = TextEditingController();
-  var state = TextEditingController();
-  var country = TextEditingController();
+  TextEditingController city = TextEditingController();
+  TextEditingController state = TextEditingController();
+  TextEditingController country = TextEditingController();
 
   double? latitude, longitude;
   late DataProvider dataProvider;
@@ -40,28 +40,10 @@ class _RadioPreferencesState extends State<RadioPreferences> {
       return Consumer<DataProvider>(builder: (context, provider, child) {
         dataProvider = provider;
         if (check) {
-          dashboardProvider.selectedGenres =
-              dataProvider.userModel!.selectedGenres;
-          city.text = dataProvider.userModel!.city!;
-          state.text = dataProvider.userModel!.state;
-          country.text = dataProvider.userModel!.country;
-          latitude = dataProvider.userModel!.latitude;
-          longitude = dataProvider.userModel!.longitude;
-          check = false;
+          checkOperations();
         }
         return Scaffold(
-          appBar: AppBar(
-            backgroundColor: CColors.transparentColor,
-            title: const Text(
-              "Radio Preferences",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeights.bold,
-              ),
-            ),
-            centerTitle: false,
-          ),
+          appBar: appBarWidget(),
           body: Container(
             padding: const EdgeInsets.symmetric(
               horizontal: Constants.horizontalPadding,
@@ -79,61 +61,9 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                     ),
                   ),
                   radioWidget(),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFieldWidget(
-                          controller: type == "City Wide"
-                              ? city
-                              : type == "State Wide"
-                                  ? state
-                                  : country,
-                          hint: "Manually Enter Location",
-                          errorText: "",
-                          enable: true,
-                          // type == "City Wide" && city.text.isEmpty ||
-                          //     type == "State Wide" && state.text.isEmpty ||
-                          //     type == "Country Wide" && country.text.isEmpty,
-                          onChange: (value) async {
-                            if (value.trim().isEmpty) {
-                              responses = [];
-                            } else {
-                              var res = await Functions.autoCompleteCity(value);
-                              responses = res.first;
-                              placeIds = res.last;
-                              responses = responses.toSet().toList();
-                              placeIds = placeIds.toSet().toList();
-                            }
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          var model = await context.push(
-                              child: SelectLocation(
-                            lat: latitude,
-                            long: longitude,
-                          ));
-                          if (model is AddressModel) {
-                            city.text = model.city;
-                            state.text = model.state;
-                            country.text = model.country;
-                            latitude = model.latitude;
-                            longitude = model.longitude;
-                          }
-                        },
-                        color: CColors.White,
-                        icon: const Icon(
-                          Icons.map,
-                        ),
-                      )
-                    ],
-                  ),
+                  locationInputRow(),
                   suggestionsWidget(),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   const Text(
                     "Pick your favorite Genre",
                     style: TextStyle(
@@ -142,76 +72,10 @@ class _RadioPreferencesState extends State<RadioPreferences> {
                       fontSize: 24,
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Wrap(
-                    children: [
-                      for (var genre in dataProvider.genres)
-                        GenreTileWidget(
-                          text: genre,
-                        ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (type == "City Wide" && city.text.isEmpty) {
-                          Functions.showSnackBar(context, "Invalid City Name");
-                        } else if (type == "State Wide" && state.text.isEmpty) {
-                          Functions.showSnackBar(context, "Invalid State Name");
-                        } else if (type == "Country Wide" && country.text.isEmpty) {
-                          Functions.showSnackBar(
-                              context, "Invalid Country Name");
-                        } else {
-                          Functions.showLoaderDialog(context);
-
-                          late Map<String, dynamic> data;
-
-                          if (dataProvider.userModel!.defaultGenre == null) {
-                            data = {
-                              "selectedGenres":
-                                  dashboardProvider.selectedGenres,
-                              "city": city.text,
-                              "country": country.text,
-                              "state": state.text,
-                              "latitude": latitude,
-                              "longitude": longitude,
-                              "defaultGenre":
-                                  dashboardProvider.selectedGenres.first,
-                              "defaultCity": city.text,
-                            };
-                          } else {
-                            data = {
-                              "selectedGenres":
-                                  dashboardProvider.selectedGenres,
-                              "city": city.text,
-                              "country": country.text,
-                              "state": state.text,
-                              "latitude": latitude,
-                              "longitude": longitude,
-                            };
-                          }
-                          await dataProvider.updateUserPref(data);
-                          Future.delayed(const Duration(seconds: 1), () {
-                            dataProvider.setSong();
-                            dataProvider.stop();
-                            context.pop();
-                            context.pop();
-                            Functions.showSnackBar(
-                                context, "Data successfully saved");
-                          });
-                        }
-                      },
-                      child: const Text(
-                        "Save",
-                      ),
-                    ),
-                  ),
+                  const SizedBox(height: 10),
+                  genres(),
+                  const SizedBox(height: 30),
+                  savePreference(),
                 ],
               ),
             ),
@@ -219,6 +83,145 @@ class _RadioPreferencesState extends State<RadioPreferences> {
         );
       });
     });
+  }
+
+  Widget savePreference() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () async {
+          if (type == "City Wide" && city.text.isEmpty) {
+            Functions.showSnackBar(context, "Invalid City Name");
+          } else if (type == "State Wide" && state.text.isEmpty) {
+            Functions.showSnackBar(context, "Invalid State Name");
+          } else if (type == "Country Wide" && country.text.isEmpty) {
+            Functions.showSnackBar(context, "Invalid Country Name");
+          } else {
+            Functions.showLoaderDialog(context);
+
+            late Map<String, dynamic> data;
+
+            if (dataProvider.userModel!.defaultGenre == null) {
+              data = {
+                "selectedGenres": dashboardProvider.selectedGenres,
+                "city": city.text,
+                "country": country.text,
+                "state": state.text,
+                "latitude": latitude,
+                "longitude": longitude,
+                "defaultGenre": dashboardProvider.selectedGenres.first,
+                "defaultCity": city.text,
+              };
+            } else {
+              data = {
+                "selectedGenres": dashboardProvider.selectedGenres,
+                "city": city.text,
+                "country": country.text,
+                "state": state.text,
+                "latitude": latitude,
+                "longitude": longitude,
+              };
+            }
+            await dataProvider.updateUserPref(data);
+            Future.delayed(const Duration(seconds: 1), () {
+              dataProvider.setSong();
+              dataProvider.stop();
+              context.pop();
+              context.pop();
+              Functions.showSnackBar(context, "Data successfully saved");
+            });
+          }
+        },
+        child: const Text("Save"),
+      ),
+    );
+  }
+
+  Wrap genres() {
+    return Wrap(
+      children: [
+        for (var genre in dataProvider.genres)
+          GenreTileWidget(
+            text: genre,
+          ),
+      ],
+    );
+  }
+
+  Widget locationInputRow() {
+    return Row(
+      children: [
+        Expanded(
+          child: TextFieldWidget(
+            controller: type == "City Wide"
+                ? city
+                : type == "State Wide"
+                    ? state
+                    : country,
+            hint: "Manually Enter Location",
+            errorText: "",
+            enable: true,
+            onChange: (value) async {
+              if (value.trim().isEmpty) {
+                responses = [];
+              } else {
+                var res = await Functions.autoCompleteCity(value);
+                responses = res.first;
+                placeIds = res.last;
+                responses = responses.toSet().toList();
+                placeIds = placeIds.toSet().toList();
+              }
+              setState(() {});
+            },
+          ),
+        ),
+        IconButton(
+          onPressed: () async {
+            var model = await context.push(
+                child: SelectLocation(
+              lat: latitude,
+              long: longitude,
+            ));
+            if (model is AddressModel) {
+              city.text = model.city;
+              state.text = model.state;
+              country.text = model.country;
+              latitude = model.latitude;
+              longitude = model.longitude;
+            }
+          },
+          color: CColors.White,
+          icon: const Icon(
+            Icons.map,
+          ),
+        )
+      ],
+    );
+  }
+
+  AppBar appBarWidget() {
+    return AppBar(
+      backgroundColor: CColors.transparentColor,
+      title: const Text(
+        "Radio Preferences",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 24,
+          fontWeight: FontWeights.bold,
+        ),
+      ),
+      centerTitle: false,
+    );
+  }
+
+  void checkOperations() {
+    dashboardProvider.selectedGenres = dataProvider.userModel!.selectedGenres;
+    city.text = dataProvider.userModel!.city!;
+    state.text = dataProvider.userModel!.state;
+    country.text = dataProvider.userModel!.country;
+    latitude = dataProvider.userModel!.latitude;
+    longitude = dataProvider.userModel!.longitude;
+    check = false;
   }
 
   String type = "City Wide";
@@ -269,7 +272,6 @@ class _RadioPreferencesState extends State<RadioPreferences> {
         for (int i = 0; i < responses.length; i++)
           InkWell(
             onTap: () async {
-
               Functions.showLoaderDialog(context);
 
               GoogleMapsPlaces places = GoogleMapsPlaces(

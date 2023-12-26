@@ -19,8 +19,7 @@ import '../helpers/colors.dart';
 class PlayerWidget extends StatefulWidget {
   const PlayerWidget({super.key});
 
-  @override
-  State<PlayerWidget> createState() => _PlayerWidgetState();
+  @override State<PlayerWidget> createState() => _PlayerWidgetState();
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
@@ -352,9 +351,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                       ),
                                     );
                                   }),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
+                                  const SizedBox(width: 10),
                                 ],
                               ),
                               Builder(builder: (context) {
