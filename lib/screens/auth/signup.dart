@@ -1,17 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uprise/dropdown_search/properties/text_field_props.dart';
 import 'package:uprise/generated/assets.dart';
 import 'package:uprise/helpers/colors.dart';
 import 'package:uprise/helpers/constants.dart';
 import 'package:uprise/helpers/functions.dart';
 import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/user_model.dart';
+import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/auth/auth_service/auth_service.dart';
 import 'package:uprise/screens/select_location.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
 import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
+import '../../dropdown_search/dropdown_search.dart';
+import '../../dropdown_search/properties/dropdown_button_props.dart';
+import '../../dropdown_search/properties/dropdown_decorator_props.dart';
+import '../../dropdown_search/properties/menu_props.dart';
+import '../../dropdown_search/properties/popup_props.dart';
 import '../../widgets/google_login.dart';
 import '../../widgets/textfield_widget.dart';
 import 'package:google_api_headers/google_api_headers.dart';
@@ -39,6 +47,10 @@ class _SignUpState extends State<SignUp> {
 
   TextEditingController location = TextEditingController();
 
+  TextEditingController genre = TextEditingController();
+
+  List<String> genreResponses = [];
+
   List<String> responses = [];
   List<String> placeIds = [];
 
@@ -52,6 +64,7 @@ class _SignUpState extends State<SignUp> {
   bool hideCPassword = true;
 
   String? accountType;
+  String? selectedGenre;
 
   @override
   void initState() {
@@ -216,167 +229,262 @@ class _SignUpState extends State<SignUp> {
   }
 
   Widget details() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          header("Username"),
-          const SizedBox(height: 2),
-          TextFieldWidget(
-            errorText: "Username is required",
-            controller: username,
-            hint: "Enter your name",
-          ),
-          const SizedBox(height: 20),
-          header("Email"),
-          const SizedBox(height: 2),
-          TextFieldWidget(
-              errorText: "Email is required",
-              controller: email,
-              hint: "Enter your email",
-              validator: (val) {
-                if (val!.isEmpty) {
-                  return "Email or username is required";
-                }
-                if (!EmailValidator.validate(val)) {
-                  return "Please write valid email";
-                }
-                return null;
-              }),
-          const SizedBox(height: 20),
-          header("Password"),
-          const SizedBox(height: 2),
-          TextFieldWidget(
-            validator: (val) {
-              if (val!.isEmpty) {
-                return "Password is required";
-              }
-              if (val.length < 8) {
-                return "Password must be atleast 8 characters";
-              }
-              return null;
-            },
-            suffixWidget: GestureDetector(
-              onTap: () {
-                setState(() {
-                  hidePassword = !hidePassword;
-                });
-              },
-              child: Icon(
-                  hidePassword
-                      ? Icons.remove_red_eye
-                      : Icons.remove_red_eye_outlined,
-                  color: hidePassword
-                      ? CColors.placeholderTextColor
-                      : CColors.primary),
-            ),
-            isPass: hidePassword,
-            errorText: "Password must be atleast 8 characters",
-            controller: password,
-            hint: "Enter your Password",
-          ),
-          const SizedBox(height: 20),
-          header("Confirm Password"),
-          const SizedBox(height: 2),
-          TextFieldWidget(
-            suffixWidget: GestureDetector(
-              onTap: () {
-                setState(() {
-                  hideCPassword = !hideCPassword;
-                });
-              },
-              child: Icon(
-                  hideCPassword
-                      ? Icons.remove_red_eye
-                      : Icons.remove_red_eye_outlined,
-                  color: hideCPassword
-                      ? CColors.placeholderTextColor
-                      : CColors.primary),
-            ),
-            isPass: hideCPassword,
-            errorText: "Confirm Password must be atleast 8 characters",
-            controller: cPassword,
-            hint: "Enter your confirm password",
-            validator: (val) {
-              if (val!.isEmpty) {
-                return "Confirm Password is required";
-              }
-              if (val.length < 8) {
-                return "Password must be atleast 8 characters";
-              }
-              return null;
-            },
-          ),
-          header("Location"),
-          const SizedBox(height: 2),
-          TextFieldWidget(
-            controller: location,
-            hint: "Manually Enter Location",
-            errorText: "",
-            enable: true,
-            onChange: (value) async {
-              if (value.trim().isEmpty) {
-                responses = [];
-              } else {
-                var res = await Functions.autoCompleteCity(value);
-                responses = res.first;
-                placeIds = res.last;
-                responses = responses.toSet().toList();
-                placeIds = placeIds.toSet().toList();
-              }
-              setState(() {});
-            },
-            validator: (val){
-              if (val!.isEmpty) {
-                return "Location is required";
-              }
-              if (val.split(",").length < 3) {
-                return "Please add city,state,country in same format";
-              }
-            },
-          ),
-          suggestionsWidget(),
-
-          const SizedBox(height: 20),
-          if (registerBandArtist) ...[
-            const SizedBox(height: 20),
-            header("Band name"),
+    return Consumer<DataProvider>(builder: (context, data, child) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            header("Username"),
             const SizedBox(height: 2),
             TextFieldWidget(
-              errorText: "Band Name is required",
-              controller: brandName,
-              hint: "Enter your Band",
+              errorText: "Username is required",
+              controller: username,
+              hint: "Enter your name",
             ),
             const SizedBox(height: 20),
-            buildText("Donation Link"),
+            header("Email"),
             const SizedBox(height: 2),
             TextFieldWidget(
-              errorText: "Donation Link is Required",
-              controller: donationLink,
-              hint: "Enter your Donation link",
-              validator: (val) {
-                return null;
-              },
-            ),
-            const SizedBox(height: 20),
-            buildText("PayPal Email"),
-            const SizedBox(height: 2),
-            TextFieldWidget(
-                errorText: "PayPal Email is required",
-                controller: paypalEmail,
-                hint: "Enter your PayPal email",
+                errorText: "Email is required",
+                controller: email,
+                hint: "Enter your email",
                 validator: (val) {
+                  if (val!.isEmpty) {
+                    return "Email or username is required";
+                  }
+                  if (!EmailValidator.validate(val)) {
+                    return "Please write valid email";
+                  }
                   return null;
                 }),
             const SizedBox(height: 20),
-            buildText("PayPal Account Type"),
+            header("Password"),
             const SizedBox(height: 2),
-            dropdownWidget(),
-          ]
-        ],
-      ),
-    );
+            TextFieldWidget(
+              validator: (val) {
+                if (val!.isEmpty) {
+                  return "Password is required";
+                }
+                if (val.length < 8) {
+                  return "Password must be atleast 8 characters";
+                }
+                return null;
+              },
+              suffixWidget: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    hidePassword = !hidePassword;
+                  });
+                },
+                child: Icon(
+                    hidePassword
+                        ? Icons.remove_red_eye
+                        : Icons.remove_red_eye_outlined,
+                    color: hidePassword
+                        ? CColors.placeholderTextColor
+                        : CColors.primary),
+              ),
+              isPass: hidePassword,
+              errorText: "Password must be atleast 8 characters",
+              controller: password,
+              hint: "Enter your Password",
+            ),
+            const SizedBox(height: 20),
+            header("Confirm Password"),
+            const SizedBox(height: 2),
+            TextFieldWidget(
+              suffixWidget: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    hideCPassword = !hideCPassword;
+                  });
+                },
+                child: Icon(
+                    hideCPassword
+                        ? Icons.remove_red_eye
+                        : Icons.remove_red_eye_outlined,
+                    color: hideCPassword
+                        ? CColors.placeholderTextColor
+                        : CColors.primary),
+              ),
+              isPass: hideCPassword,
+              errorText: "Confirm Password must be atleast 8 characters",
+              controller: cPassword,
+              hint: "Enter your confirm password",
+              validator: (val) {
+                if (val!.isEmpty) {
+                  return "Confirm Password is required";
+                }
+                if (val.length < 8) {
+                  return "Password must be atleast 8 characters";
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            header("Location"),
+            const SizedBox(height: 2),
+            TextFieldWidget(
+              controller: location,
+              hint: "Manually Enter Location",
+              errorText: "",
+              enable: true,
+              onChange: (value) async {
+                if (value.trim().isEmpty) {
+                  responses = [];
+                } else {
+                  var res = await Functions.autoCompleteCity(value);
+                  responses = res.first;
+                  placeIds = res.last;
+                  responses = responses.toSet().toList();
+                  placeIds = placeIds.toSet().toList();
+                }
+                setState(() {});
+              },
+              validator: (val) {
+                if (val!.isEmpty) {
+                  return "Location is required";
+                }
+                if (val.split(",").length < 3) {
+                  return "Please add city,state,country in same format";
+                }
+              },
+            ),
+            suggestionsWidget(),
+            const SizedBox(height: 20),
+            header("Genre"),
+            TextFieldWidget(
+              controller: genre,
+              hint: "Search Genre",
+              errorText: "",
+              enable: true,
+              onChange: (value) async {
+                print(value);
+                if (value.trim().isEmpty) {
+                  print("object");
+                  responses.clear();
+                } else {
+                  responses = [];
+
+                  var temp = data.genres
+                      .where((element) =>
+                          element.toLowerCase().contains(value.toLowerCase()))
+                      .toList();
+                  genreResponses = List.from(temp);
+                }
+                print(responses.length);
+                setState(() {});
+              },
+              validator: (val) {
+                if (val!.isEmpty) {
+                  return "Genre is required";
+                }
+              },
+            ),
+            if (genreResponses.isNotEmpty) ...[
+              genreSuggestions(),
+            ],
+            // genreSelections(),
+            const SizedBox(height: 20),
+            if (registerBandArtist) ...[
+              const SizedBox(height: 20),
+              header("Band name"),
+              const SizedBox(height: 2),
+              TextFieldWidget(
+                errorText: "Band Name is required",
+                controller: brandName,
+                hint: "Enter your Band",
+              ),
+              const SizedBox(height: 20),
+              buildText("Donation Link"),
+              const SizedBox(height: 2),
+              TextFieldWidget(
+                errorText: "Donation Link is Required",
+                controller: donationLink,
+                hint: "Enter your Donation link",
+                validator: (val) {
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              buildText("PayPal Email"),
+              const SizedBox(height: 2),
+              TextFieldWidget(
+                  errorText: "PayPal Email is required",
+                  controller: paypalEmail,
+                  hint: "Enter your PayPal email",
+                  validator: (val) {
+                    return null;
+                  }),
+              const SizedBox(height: 20),
+              buildText("PayPal Account Type"),
+              const SizedBox(height: 2),
+              dropdownWidget(),
+            ]
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget genreSelections() {
+    return Consumer<DataProvider>(builder: (context, value, child) {
+      return DropdownSearch<String>(
+        popupProps: const PopupProps.menu(
+          searchFieldProps: TextFieldProps(
+              style: TextStyle(
+            color: Colors.white,
+          )),
+          menuProps: MenuProps(),
+          showSearchBox: true,
+          showSelectedItems: true,
+        ),
+        items: value.genres,
+        validator: (text) {
+          if (selectedGenre == null) {
+            return "Genre is Required";
+          }
+        },
+        dropdownButtonProps: const DropdownButtonProps(
+          icon: Icon(
+            Icons.arrow_drop_down,
+            color: CColors.placeholder,
+            size: 30,
+          ),
+        ),
+        dropdownDecoratorProps: DropDownDecoratorProps(
+          baseStyle: AppTextStyles.popins(
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          dropdownSearchDecoration: InputDecoration(
+            fillColor: Colors.red,
+            errorBorder: errorBorder(),
+            enabledBorder: buildOutlineInputBorder(),
+            focusedBorder: buildOutlineInputBorder(),
+            border: InputBorder.none,
+            hintText: "Please Select Genre",
+            hintStyle: AppTextStyles.popins(
+              style: const TextStyle(
+                fontSize: 13,
+                color: CColors.placeholder,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        onChanged: (text) {
+          setState(() {
+            selectedGenre = text;
+          });
+        },
+        selectedItem: selectedGenre,
+      );
+    });
   }
 
   Widget dropdownWidget() {
@@ -490,8 +598,6 @@ class _SignUpState extends State<SignUp> {
                   Functions.showSnackBar(
                       context, "This email is already taken by another user.");
                 } else {
-
-
                   UserModel userModel = UserModel(
                     username: username.text,
                     email: email.text,
@@ -504,11 +610,10 @@ class _SignUpState extends State<SignUp> {
                   userModel.city = locationText[0];
                   userModel.state = locationText[1];
                   userModel.country = locationText[2];
+                  userModel.defaultGenre = selectedGenre!;
+                  userModel.selectedGenres.add(selectedGenre!);
 
-
-
-                  await AuthService.signUp(
-                      context, userModel, password.text);
+                  await AuthService.signUp(context, userModel, password.text);
                   // context.push(
                   //   child: SelectLocation(
                   //     isSignUp: true,
@@ -577,14 +682,15 @@ class _SignUpState extends State<SignUp> {
               );
 
               PlacesDetailsResponse detail =
-              await places.getDetailsByPlaceId(placeIds[i]);
+                  await places.getDetailsByPlaceId(placeIds[i]);
 
               if (detail.result.geometry != null) {
                 await getAddressFunction(detail.result.geometry!.location.lat,
                     detail.result.geometry!.location.lng);
                 context.pop();
               } else {
-                location.text = "${responses[i].split(",")[0]},${responses[i].split(",")[1]},${responses[i].split(",")[2]}";
+                location.text =
+                    "${responses[i].split(",")[0]},${responses[i].split(",")[1]},${responses[i].split(",")[2]}";
                 context.pop();
               }
 
@@ -623,8 +729,49 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
+  Widget genreSuggestions() {
+    return Column(
+      children: [
+        for (int i = 0; i < genreResponses.length; i++)
+          InkWell(
+            onTap: () async {
+              genre.text = genreResponses[i];
+              genreResponses = [];
+              FocusScope.of(context).unfocus();
+              setState(() {});
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                color: CColors.screenContainer,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      genreResponses[i],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                    height: 1,
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   getAddressFunction(double lat, double lng) async {
-    var addressComponent = await  Functions.getAddress(lat, lng);
+    var addressComponent = await Functions.getAddress(lat, lng);
     if (addressComponent != null) {
       for (var element in addressComponent!) {
         if (element.types == null || element.longName == null) {
@@ -644,8 +791,24 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-  getCurrentLatLong() async{
-    Map<String,dynamic> location = await Functions.determinePosition(context);
+  getCurrentLatLong() async {
+    Map<String, dynamic> location = await Functions.determinePosition(context);
     getAddressFunction(location["lat"], location["long"]);
+  }
+
+  OutlineInputBorder errorBorder() {
+    return const OutlineInputBorder(
+      borderRadius: BorderRadius.zero,
+      borderSide: BorderSide(color: Colors.red), // Customize error border color
+    );
+  }
+
+  OutlineInputBorder buildOutlineInputBorder() {
+    return const OutlineInputBorder(
+      borderRadius: BorderRadius.zero,
+      borderSide: BorderSide(
+        color: CColors.placeholderTextColor,
+      ),
+    );
   }
 }

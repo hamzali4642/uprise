@@ -83,15 +83,18 @@ class DataProvider extends ChangeNotifier {
   }
 
   authStream() {
+    if (genres.isEmpty) {
+      getGenres();
+    }
+
     FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user == null) {
         cancelStreams();
       } else {
         getUserData();
         getUsers();
-        getGenres();
         getSongs();
-        getEvents();
+        // getEvents();
         getPosts();
         getRadioStations();
         getNotifications();
@@ -163,9 +166,6 @@ class DataProvider extends ChangeNotifier {
       songsState = DataStates.success;
       notifyListeners();
     });
-
-
-
   }
 
   getNotifications() async {
@@ -206,8 +206,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   void getGenres() {
-    genreSubscription =
-        db.collection("genre").doc("genre").snapshots().listen((event) {
+    db.collection("genre").doc("genre").snapshots().listen((event) {
       var genres = event.data()!["genre"] ?? <String>[];
       this.genres = List.generate(genres.length, (index) => genres[index]);
       notifyListeners();
@@ -217,7 +216,6 @@ class DataProvider extends ChangeNotifier {
   getPosts() async {
     postsSubscription = db.collection("feed").snapshots().listen((event) {
       posts = [];
-
       posts = event.docs.map((doc) => PostModel.fromMap(doc.data())).toList();
       postState = DataStates.success;
       notifyListeners();
@@ -503,7 +501,6 @@ class DataProvider extends ChangeNotifier {
             songList.add(element);
           }
         }
-
       }
     }
 

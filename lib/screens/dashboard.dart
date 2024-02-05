@@ -346,20 +346,21 @@ class _DashboardState extends State<Dashboard> {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: Constants.horizontalPadding - 5,
-      ),      child: Row(
-            children: [
-              Expanded(
-                child: radioWidget(),
-              ),
-              IconButton(
-                onPressed: () {
-                  context.push(child: const RadioPreferences());
-                },
-                color: Colors.white,
-                icon: const Icon(Icons.more_horiz),
-              ),
-            ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: radioWidget(),
           ),
+          IconButton(
+            onPressed: () {
+              context.push(child: const RadioPreferences());
+            },
+            color: Colors.white,
+            icon: const Icon(Icons.more_horiz),
+          ),
+        ],
+      ),
     );
   }
 

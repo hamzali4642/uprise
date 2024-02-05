@@ -19,7 +19,8 @@ import '../helpers/colors.dart';
 class PlayerWidget extends StatefulWidget {
   const PlayerWidget({super.key});
 
-  @override State<PlayerWidget> createState() => _PlayerWidgetState();
+  @override
+  State<PlayerWidget> createState() => _PlayerWidgetState();
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
@@ -45,6 +46,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         });
       }
 
+
       return dataProvider.currentSong == null
           ? const Center(
               child: Text(
@@ -53,53 +55,109 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             ))
           : Consumer<DashboardProvider>(builder: (context, dp, child) {
               return GestureDetector(
-                onHorizontalDragEnd: dp.selectedIndex == 2
-                    ? (dragEndDetail) {
-                        dataProvider.stop();
+                onHorizontalDragEnd: (dragEndDetails) {
+                  if (dp.selectedIndex == 2) {
+                    if (dragEndDetails.primaryVelocity! < 0) {
+                      dataProvider.stop();
 
-                        dataProvider.setAudio = "stopped";
+                      dataProvider.setAudio = "stopped";
 
-                        List<SongModel> songList = [];
+                      List<SongModel> songList = [];
 
-                        List<SongModel> temp = dataProvider.songs
-                            .where((element) => element.genreList.any((genre) =>
-                                genre ==
-                                dataProvider.userModel!.selectedGenres.first))
-                            .toList();
+                      List<SongModel> temp = dataProvider.songs
+                          .where((element) => element.genreList.any((genre) =>
+                              genre ==
+                              dataProvider.userModel!.selectedGenres.first))
+                          .toList();
 
-                        if (dataProvider.type == "City Wide") {
-                          for (var element in temp) {
-                            songList.add(element);
-                          }
-                        } else if (dataProvider.type == "State Wide") {
-                          for (var element in temp) {
-                            if (element.genreList.first ==
-                                dataProvider.userModel!.selectedGenres.first) {
-                              if (element.upVotes.length >= 3) {
-                                songList.add(element);
-                              }
-                            }
-                          }
-                        } else {
-                          for (var element in temp) {
-                            if (element.upVotes.length > 3) {
+
+                      if (dataProvider.type == "City Wide") {
+                        for (var element in temp) {
+                          songList.add(element);
+                        }
+                      } else if (dataProvider.type == "State Wide") {
+                        for (var element in temp) {
+                          if (element.genreList.first ==
+                              dataProvider.userModel!.selectedGenres.first) {
+                            if (element.upVotes.length >= 3) {
                               songList.add(element);
                             }
                           }
                         }
-
-                        songList.shuffle();
-
-                        if (songList.isNotEmpty) {
-                          dataProvider.stop();
-                          dataProvider.setAudio = "stopped";
-                          SongModel prev = dataProvider.currentSong!;
-                          SongModel songModel = getRandomValue(songList, prev);
-                          dataProvider.currentSong = songModel;
-                          dataProvider.initializePlayer();
+                      } else {
+                        for (var element in temp) {
+                          if (element.upVotes.length > 3) {
+                            songList.add(element);
+                          }
                         }
                       }
-                    : null,
+
+                      songList.shuffle();
+
+                      if (songList.isNotEmpty) {
+                        dataProvider.stop();
+                        dataProvider.setAudio = "stopped";
+                        SongModel prev = dataProvider.currentSong!;
+                        SongModel songModel = getRandomValue(songList, prev);
+                        dataProvider.currentSong = songModel;
+                        dataProvider.initializePlayer();
+                      }
+                    } else if (dragEndDetails.primaryVelocity! > 0) {}
+                  }
+                },
+                onPanUpdate: (details) {
+                  if (details.delta.dx < 0) {
+                    print('Right-to-left swipe detected!');
+                    // Perform your desired action here, e.g., navigate to a new page, show a menu, etc.
+                  }
+                },
+                // onHorizontalDragEnd: dp.selectedIndex == 2
+                //     ? (dragEndDetail) {
+                //         dataProvider.stop();
+                //
+                //         dataProvider.setAudio = "stopped";
+                //
+                //         List<SongModel> songList = [];
+                //
+                //         List<SongModel> temp = dataProvider.songs
+                //             .where((element) => element.genreList.any((genre) =>
+                //                 genre ==
+                //                 dataProvider.userModel!.selectedGenres.first))
+                //             .toList();
+                //
+                //         if (dataProvider.type == "City Wide") {
+                //           for (var element in temp) {
+                //             songList.add(element);
+                //           }
+                //         } else if (dataProvider.type == "State Wide") {
+                //           for (var element in temp) {
+                //             if (element.genreList.first ==
+                //                 dataProvider.userModel!.selectedGenres.first) {
+                //               if (element.upVotes.length >= 3) {
+                //                 songList.add(element);
+                //               }
+                //             }
+                //           }
+                //         } else {
+                //           for (var element in temp) {
+                //             if (element.upVotes.length > 3) {
+                //               songList.add(element);
+                //             }
+                //           }
+                //         }
+                //
+                //         songList.shuffle();
+                //
+                //         if (songList.isNotEmpty) {
+                //           dataProvider.stop();
+                //           dataProvider.setAudio = "stopped";
+                //           SongModel prev = dataProvider.currentSong!;
+                //           SongModel songModel = getRandomValue(songList, prev);
+                //           dataProvider.currentSong = songModel;
+                //           dataProvider.initializePlayer();
+                //         }
+                //       }
+                //     : null,
                 onTap: () {
                   Provider.of<DashboardProvider>(context, listen: false)
                       .selectedIndex = 4;

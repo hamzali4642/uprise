@@ -99,6 +99,7 @@ class UserModel {
       "state": state,
       "country": country,
       "defaultGenre": defaultGenre,
+      "selectedGenres": selectedGenres,
       "defaultCity": defaultCity,
       "favouritePlayList": favouritePlayLists.map((e) => e.toMap()).toList()
     };

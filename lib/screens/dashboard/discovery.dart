@@ -110,7 +110,8 @@ class _DiscoveryState extends State<Discovery> {
     // }
 
     List<EventModel> events = temp
-        .where((element) => element.startDate.difference(DateTime.now()).inHours >= -24)
+        .where((element) =>
+            element.startDate.difference(DateTime.now()).inHours >= -24)
         .toList();
 
     return events.isEmpty
