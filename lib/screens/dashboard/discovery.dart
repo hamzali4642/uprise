@@ -15,6 +15,7 @@ import 'package:utility_extensions/utility_extensions.dart';
 import '../../helpers/constants.dart';
 import '../../models/event_model.dart';
 import '../../models/radio_station.dart';
+import '../../models/song_model.dart';
 import '../../widgets/band_widget.dart';
 import '../../widgets/heading_widget.dart';
 import '../../widgets/player_widget.dart';
@@ -40,6 +41,11 @@ class _DiscoveryState extends State<Discovery> {
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, value, child) {
       dataProvider = value;
+      if(dataProvider.currentSong == null){
+        nextGenre();
+      }
+
+
       return Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: Constants.horizontalPadding),
@@ -333,5 +339,49 @@ class _DiscoveryState extends State<Discovery> {
               ),
             ],
           );
+  }
+
+
+  nextGenre() {
+    dataProvider.stop();
+    dataProvider.setAudio = "stopped";
+
+    List<SongModel> songList = [];
+    List<SongModel> temp = dataProvider.songs
+        .where((element) => element.genreList.any(
+            (genre) => genre == dataProvider.userModel!.selectedGenres.first))
+        .toList();
+
+    if (dataProvider.type == "City Wide") {
+      for (var element in temp) {
+        songList.add(element);
+      }
+    } else if (dataProvider.type == "State Wide") {
+      for (var element in temp) {
+        if (element.genreList.first ==
+            dataProvider.userModel!.selectedGenres.first) {
+          if (element.upVotes.length >= 3) {
+            songList.add(element);
+          }
+        }
+      }
+    } else {
+      for (var element in temp) {
+        if (element.upVotes.length > 3) {
+          songList.add(element);
+        }
+      }
+    }
+
+    songList.shuffle();
+
+    if (songList.isNotEmpty) {
+      dataProvider.stop();
+      dataProvider.setAudio = "stopped";
+      // SongModel prev = dataProvider.currentSong!;
+      // SongModel songModel = getRandomValue(songList, prev);
+      dataProvider.currentSong = songList.first;
+      // dataProvider.initializePlayer();
+    }
   }
 }

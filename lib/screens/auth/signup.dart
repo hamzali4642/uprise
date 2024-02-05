@@ -11,9 +11,8 @@ import 'package:uprise/helpers/textstyles.dart';
 import 'package:uprise/models/user_model.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/auth/auth_service/auth_service.dart';
-import 'package:uprise/screens/select_location.dart';
+import '../select_location.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
-import 'package:utility_extensions/extensions/font_utilities.dart';
 import 'package:utility_extensions/utility_extensions.dart';
 import '../../dropdown_search/dropdown_search.dart';
 import '../../dropdown_search/properties/dropdown_button_props.dart';
@@ -363,7 +362,11 @@ class _SignUpState extends State<SignUp> {
                 print(value);
                 if (value.trim().isEmpty) {
                   print("object");
-                  responses.clear();
+                  responses = [];
+                  genreResponses = [];
+                  setState(() {
+
+                  });
                 } else {
                   responses = [];
 
@@ -377,8 +380,8 @@ class _SignUpState extends State<SignUp> {
                 setState(() {});
               },
               validator: (val) {
-                if (val!.isEmpty) {
-                  return "Genre is required";
+                if (!data.genres.contains(val)) {
+                  return "Select Genre from given list.";
                 }
               },
             ),
@@ -598,6 +601,7 @@ class _SignUpState extends State<SignUp> {
                   Functions.showSnackBar(
                       context, "This email is already taken by another user.");
                 } else {
+                  // return;
                   UserModel userModel = UserModel(
                     username: username.text,
                     email: email.text,

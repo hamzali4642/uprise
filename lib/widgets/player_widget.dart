@@ -25,6 +25,7 @@ class PlayerWidget extends StatefulWidget {
 
 class _PlayerWidgetState extends State<PlayerWidget> {
   late DataProvider dataProvider;
+  late DashboardProvider dp;
 
   bool isLeftToRightDrag = false;
   double startX = 0.0;
@@ -46,7 +47,6 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         });
       }
 
-
       return dataProvider.currentSong == null
           ? const Center(
               child: Text(
@@ -54,54 +54,12 @@ class _PlayerWidgetState extends State<PlayerWidget> {
               style: TextStyle(color: Colors.white),
             ))
           : Consumer<DashboardProvider>(builder: (context, dp, child) {
+              this.dp = dp;
               return GestureDetector(
                 onHorizontalDragEnd: (dragEndDetails) {
                   if (dp.selectedIndex == 2) {
                     if (dragEndDetails.primaryVelocity! < 0) {
-                      dataProvider.stop();
-
-                      dataProvider.setAudio = "stopped";
-
-                      List<SongModel> songList = [];
-
-                      List<SongModel> temp = dataProvider.songs
-                          .where((element) => element.genreList.any((genre) =>
-                              genre ==
-                              dataProvider.userModel!.selectedGenres.first))
-                          .toList();
-
-
-                      if (dataProvider.type == "City Wide") {
-                        for (var element in temp) {
-                          songList.add(element);
-                        }
-                      } else if (dataProvider.type == "State Wide") {
-                        for (var element in temp) {
-                          if (element.genreList.first ==
-                              dataProvider.userModel!.selectedGenres.first) {
-                            if (element.upVotes.length >= 3) {
-                              songList.add(element);
-                            }
-                          }
-                        }
-                      } else {
-                        for (var element in temp) {
-                          if (element.upVotes.length > 3) {
-                            songList.add(element);
-                          }
-                        }
-                      }
-
-                      songList.shuffle();
-
-                      if (songList.isNotEmpty) {
-                        dataProvider.stop();
-                        dataProvider.setAudio = "stopped";
-                        SongModel prev = dataProvider.currentSong!;
-                        SongModel songModel = getRandomValue(songList, prev);
-                        dataProvider.currentSong = songModel;
-                        dataProvider.initializePlayer();
-                      }
+                      nextGenre();
                     } else if (dragEndDetails.primaryVelocity! > 0) {}
                   }
                 },
@@ -189,7 +147,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                       height: 30,
                                       child: Marquee(
                                         text:
-                                            "${value.currentSong!.title}            ",
+                                            "${value.currentSong!.title}                    ${value.currentSong!.title}                    ${value.currentSong!.title}                    ${value.currentSong!.title}                    ${value.currentSong!.title}                    ${value.currentSong!.title}                    ${value.currentSong!.title}                    ${value.currentSong!.title}                    ",
                                         style: const TextStyle(
                                           fontWeight: FontWeights.normal,
                                           color: Colors.white,
@@ -207,7 +165,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                             const Duration(seconds: 3),
                                         accelerationCurve: Curves.linear,
                                         decelerationDuration: const Duration(
-                                          milliseconds: 500,
+                                          milliseconds: 300,
                                         ),
                                         decelerationCurve: Curves.easeOut,
                                       ),
@@ -253,94 +211,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      dataProvider.stop();
-
-                                      dataProvider.setAudio = "stopped";
-
-                                      List<SongModel> songList = [];
-
-                                      List<SongModel> temp = dataProvider.songs
-                                          .where((element) => element.genreList
-                                              .any((genre) =>
-                                                  genre ==
-                                                  dataProvider.userModel!
-                                                      .selectedGenres.first))
-                                          .toList();
-
-                                      if (dataProvider.type == "City Wide") {
-                                        for (var element in temp) {
-                                          if (element.upVotes.length < 3 &&
-                                              element.city ==
-                                                  dataProvider
-                                                      .userModel!.city) {
-                                            songList.add(element);
-                                          } else if (element.upVotes.length ==
-                                                  3 &&
-                                              element.state ==
-                                                  dataProvider
-                                                      .userModel!.state &&
-                                              element.city ==
-                                                  dataProvider
-                                                      .userModel!.city) {
-                                            songList.add(element);
-                                          } else if (element.country ==
-                                                  dataProvider
-                                                      .userModel!.country &&
-                                              element.upVotes.length > 3 &&
-                                              element.state ==
-                                                  dataProvider
-                                                      .userModel!.state &&
-                                              element.city ==
-                                                  dataProvider
-                                                      .userModel!.city) {
-                                            songList.add(element);
-                                          }
-                                        }
-                                      } else if (dataProvider.type ==
-                                          "State Wide") {
-                                        for (var element in temp) {
-                                          if (element.genreList.first ==
-                                              dataProvider.userModel!
-                                                  .selectedGenres.first) {
-                                            if (element.upVotes.length == 3 &&
-                                                element.state ==
-                                                    dataProvider
-                                                        .userModel!.state) {
-                                              songList.add(element);
-                                            } else if (element.country ==
-                                                    dataProvider
-                                                        .userModel!.country &&
-                                                element.upVotes.length > 3 &&
-                                                element.state ==
-                                                    dataProvider
-                                                        .userModel!.state) {
-                                              songList.add(element);
-                                            }
-                                          }
-                                        }
-                                      } else {
-                                        for (var element in temp) {
-                                          if (element.country ==
-                                                  dataProvider
-                                                      .userModel!.country &&
-                                              element.upVotes.length > 3) {
-                                            songList.add(element);
-                                          }
-                                        }
-                                      }
-
-                                      if (dataProvider.index + 1 <
-                                          songList.length) {
-                                        dataProvider.index++;
-                                      } else {
-                                        dataProvider.index = 0;
-                                      }
-                                      if (songList.isEmpty) {
-                                        dataProvider.currentSong = null;
-                                      } else {
-                                        dataProvider.currentSong =
-                                            songList[dataProvider.index];
-                                        dataProvider.initializePlayer();
+                                      if (dp.selectedIndex == 2) {
+                                        nextGenre();
+                                      }else{
+                                        nextCity();
                                       }
                                     },
                                     child: Image.asset(
@@ -470,6 +344,116 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     } while (songs[randomIndex] == previous && songs.length > 1);
 
     return songs[randomIndex];
+  }
+
+  nextCity() {
+    dataProvider.stop();
+
+    dataProvider.setAudio = "stopped";
+
+    List<SongModel> songList = [];
+
+    List<SongModel> temp = dataProvider.songs
+        .where((element) => element.genreList.any(
+            (genre) => genre == dataProvider.userModel!.selectedGenres.first))
+        .toList();
+
+    if (dataProvider.type == "City Wide") {
+      for (var element in temp) {
+        if (element.upVotes.length < 3 &&
+            element.city == dataProvider.userModel!.city) {
+          songList.add(element);
+        } else if (element.upVotes.length == 3 &&
+            element.state == dataProvider.userModel!.state &&
+            element.city == dataProvider.userModel!.city) {
+          songList.add(element);
+        } else if (element.country == dataProvider.userModel!.country &&
+            element.upVotes.length > 3 &&
+            element.state == dataProvider.userModel!.state &&
+            element.city == dataProvider.userModel!.city) {
+          songList.add(element);
+        }
+      }
+    } else if (dataProvider.type == "State Wide") {
+      for (var element in temp) {
+        if (element.genreList.first ==
+            dataProvider.userModel!.selectedGenres.first) {
+          if (element.upVotes.length == 3 &&
+              element.state == dataProvider.userModel!.state) {
+            songList.add(element);
+          } else if (element.country == dataProvider.userModel!.country &&
+              element.upVotes.length > 3 &&
+              element.state == dataProvider.userModel!.state) {
+            songList.add(element);
+          }
+        }
+      }
+    } else {
+      for (var element in temp) {
+        if (element.country == dataProvider.userModel!.country &&
+            element.upVotes.length > 3) {
+          songList.add(element);
+        }
+      }
+    }
+
+    if (dataProvider.index + 1 < songList.length) {
+      dataProvider.index++;
+    } else {
+      dataProvider.index = 0;
+    }
+    if (songList.isEmpty) {
+      dataProvider.currentSong = null;
+    } else {
+      dataProvider.currentSong = songList[dataProvider.index];
+      dataProvider.initializePlayer();
+    }
+  }
+
+  nextGenre() {
+    dataProvider.stop();
+    dataProvider.setAudio = "stopped";
+
+    List<SongModel> songList = [];
+    List<SongModel> temp = dataProvider.songs
+        .where((element) => element.genreList.any(
+            (genre) => genre == dataProvider.userModel!.selectedGenres.first))
+        .toList();
+
+    if (dataProvider.type == "City Wide") {
+      for (var element in temp) {
+        songList.add(element);
+      }
+    } else if (dataProvider.type == "State Wide") {
+      for (var element in temp) {
+        if (element.genreList.first ==
+            dataProvider.userModel!.selectedGenres.first) {
+          if (element.upVotes.length >= 3) {
+            songList.add(element);
+          }
+        }
+      }
+    } else {
+      for (var element in temp) {
+        if (element.upVotes.length > 3) {
+          songList.add(element);
+        }
+      }
+    }
+
+    songList.shuffle();
+
+    if (songList.isNotEmpty) {
+      dataProvider.stop();
+      dataProvider.setAudio = "stopped";
+      SongModel prev = dataProvider.currentSong!;
+      SongModel songModel = getRandomValue(songList, prev);
+      dataProvider.currentSong = songModel;
+      dataProvider.initializePlayer();
+      setState(() {
+
+      });
+    }
   }
 
   @override

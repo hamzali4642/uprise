@@ -124,8 +124,8 @@ class _RadioPreferencesState extends State<RadioPreferences> {
             }
             await dataProvider.updateUserPref(data);
             Future.delayed(const Duration(seconds: 1), () {
-              dataProvider.setSong();
-              dataProvider.stop();
+              // dataProvider.setSong();
+              // dataProvider.stop();
               context.pop();
               context.pop();
               Functions.showSnackBar(context, "Data successfully saved");
