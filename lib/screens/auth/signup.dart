@@ -364,9 +364,7 @@ class _SignUpState extends State<SignUp> {
                   print("object");
                   responses = [];
                   genreResponses = [];
-                  setState(() {
-
-                  });
+                  setState(() {});
                 } else {
                   responses = [];
 
@@ -614,8 +612,8 @@ class _SignUpState extends State<SignUp> {
                   userModel.city = locationText[0];
                   userModel.state = locationText[1];
                   userModel.country = locationText[2];
-                  userModel.defaultGenre = selectedGenre!;
-                  userModel.selectedGenres.add(selectedGenre!);
+                  userModel.defaultGenre = genre.text;
+                  userModel.selectedGenres.add(genre.text);
 
                   await AuthService.signUp(context, userModel, password.text);
                   // context.push(

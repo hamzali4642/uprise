@@ -41,10 +41,9 @@ class _DiscoveryState extends State<Discovery> {
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, value, child) {
       dataProvider = value;
-      if(dataProvider.currentSong == null){
+      if (dataProvider.currentSong == null) {
         nextGenre();
       }
-
 
       return Padding(
         padding:
@@ -341,8 +340,8 @@ class _DiscoveryState extends State<Discovery> {
           );
   }
 
-
-  nextGenre() {
+  nextGenre() async {
+    await Future.delayed(const Duration(milliseconds: 100), () {});
     dataProvider.stop();
     dataProvider.setAudio = "stopped";
 

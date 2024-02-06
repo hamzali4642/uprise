@@ -59,8 +59,11 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                 onHorizontalDragEnd: (dragEndDetails) {
                   if (dp.selectedIndex == 2) {
                     if (dragEndDetails.primaryVelocity! < 0) {
+                      // nextGenre();
+                    } else if (dragEndDetails.primaryVelocity! > 0) {
+                      print("object");
                       nextGenre();
-                    } else if (dragEndDetails.primaryVelocity! > 0) {}
+                    }
                   }
                 },
                 onPanUpdate: (details) {
