@@ -439,6 +439,12 @@ class DataProvider extends ChangeNotifier {
     userSubscriptions?.cancel();
     radioStationsStream?.cancel();
     notificationstream?.cancel();
+    _currentSong = null;
+    songsState = DataStates.waiting;
+    userModel = null;
+    profileState = DataStates.waiting;
+
+
   }
 
   SongModel? getSong(String id) {

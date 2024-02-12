@@ -6,15 +6,15 @@ class RadioStationModel {
 
   List<String> favourites = [];
 
-  RadioStationModel(
-      {required this.id,
-      // required this.country,
-      // required this.state,
-      // required this.city,
-      required this.name,
-      required this.color,
-      // required this.genre,
-      });
+  RadioStationModel({
+    required this.id,
+    // required this.country,
+    // required this.state,
+    // required this.city,
+    required this.name,
+    required this.color,
+    // required this.genre,
+  });
 
   RadioStationModel.fromMap(Map<String, dynamic> data) {
     id = data["id"];

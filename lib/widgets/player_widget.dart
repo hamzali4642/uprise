@@ -216,7 +216,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                     onTap: () {
                                       if (dp.selectedIndex == 2) {
                                         nextGenre();
-                                      }else{
+                                      } else {
                                         nextCity();
                                       }
                                     },
@@ -341,13 +341,42 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   SongModel getRandomValue(List<SongModel> songs, SongModel previous) {
     Random random = Random();
     int randomIndex;
+    List<SongModel> filteredSongs = songs.where((song) {
+      if (dataProvider.type == "City Wide") {
+        return song.city != previous.city;
+      } else if (dataProvider.type == "State Wide") {
+        return song.state != previous.state;
+      } else {
+        return song.country != previous.country;
+      }
+    }).toList();
 
-    do {
-      randomIndex = random.nextInt(songs.length);
-    } while (songs[randomIndex] == previous && songs.length > 1);
+    if (filteredSongs.isNotEmpty) {
+      randomIndex = random.nextInt(filteredSongs.length);
+      return filteredSongs[randomIndex];
+    } else {
+      if (songs.length > 1) {
+        do {
+          randomIndex = random.nextInt(songs.length);
+        } while (songs[randomIndex] == previous && songs.length > 1);
 
-    return songs[randomIndex];
+        return songs[randomIndex];
+      } else {
+        return previous;
+      }
+    }
   }
+
+  // SongModel getRandomValue(List<SongModel> songs, SongModel previous) {
+  //   Random random = Random();
+  //   int randomIndex;
+  //
+  //   do {
+  //     randomIndex = random.nextInt(songs.length);
+  //   } while (songs[randomIndex] == previous && songs.length > 1);
+  //
+  //   return songs[randomIndex];
+  // }
 
   nextCity() {
     dataProvider.stop();
@@ -453,9 +482,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       SongModel songModel = getRandomValue(songList, prev);
       dataProvider.currentSong = songModel;
       dataProvider.initializePlayer();
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
