@@ -14,7 +14,7 @@ class Events extends StatelessWidget {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
       Widget? check = stateCheck(value.eventState, value.events);
 
-      return check?.toSliver ??
+      return check ??
           CustomScrollView(
             slivers: [
               events(value),
