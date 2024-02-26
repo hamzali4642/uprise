@@ -74,7 +74,8 @@ class UserModel {
     this.fArtist,
     this.fMixes,
     this.donationLink,
-
+    required this.state,
+    required this.country
     // this.isFPlaylist = false,
   });
 

@@ -164,7 +164,7 @@ class AuthService {
       final userData = await result.authentication;
       final credential = GoogleAuthProvider.credential(
           accessToken: userData.accessToken, idToken: userData.idToken);
-      FirebaseAuth.instance
+      await FirebaseAuth.instance
           .signInWithCredential(credential)
           .then((value) async {
         var id = value.user!.uid;
@@ -177,6 +177,8 @@ class AuthService {
           username: user.email!.split('@')[0],
           email: user.email!,
           isBand: false,
+          state: "",
+          country: ""
         );
 
         bool isExist = false;
@@ -185,7 +187,7 @@ class AuthService {
           var ref = FirebaseFirestore.instance.collection("users").doc(id);
 
           DocumentSnapshot snapshot = await ref.get();
-
+          print("before snapshot");
           if (!snapshot.exists) {
             userModel.joinAt = DateTime.now();
             print("Here");
@@ -194,13 +196,15 @@ class AuthService {
           }
           context.pushAndRemoveUntil(child: const Dashboard());
         } else {
+          print("user not fount");
           context.pushAndRemoveUntil(child: const SignIn());
         }
       }).catchError((error) {
         print("Error");
         print(error);
         context.pop();
-        Functions.showSnackBar(context, error.message!);
+        Functions.showSnackBar(context, "Something went wrong");
+        // Functions.showSnackBar(context, error.message);
       });
     } catch (error) {
       print(error);

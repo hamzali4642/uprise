@@ -606,6 +606,8 @@ class _SignUpState extends State<SignUp> {
                     isBand: registerBandArtist,
                     bandName: registerBandArtist ? brandName.text : null,
                     donationLink: donationLink.text,
+                    state: "",
+                    country: ""
                   );
 
                   List locationText = location.text.split(",");

@@ -368,8 +368,8 @@ class _DashboardState extends State<Dashboard> {
 
   String getTitle() {
     String city = dataProvider.userModel!.city!;
-    String state = dataProvider.userModel!.state;
-    String country = dataProvider.userModel!.country;
+    String state = dataProvider.userModel!.state??"";
+    String country = dataProvider.userModel!.country??"";
     String genre = dataProvider.userModel!.selectedGenres.first;
 
     if (dataProvider.type == "City Wide") {

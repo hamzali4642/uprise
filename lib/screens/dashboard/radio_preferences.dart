@@ -253,10 +253,12 @@ class _RadioPreferencesState extends State<RadioPreferences> {
               );
             },
           ),
-          Text(
-            text,
-            style: const TextStyle(
-              color: CColors.White,
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: CColors.White,
+              ),
             ),
           ),
         ],
