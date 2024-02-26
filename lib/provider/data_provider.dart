@@ -94,7 +94,7 @@ class DataProvider extends ChangeNotifier {
         getUserData();
         getUsers();
         getSongs();
-        // getEvents();
+        getEvents();
         getPosts();
         getRadioStations();
         getNotifications();

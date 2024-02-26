@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../helpers/data_state.dart';
 
 Widget? stateCheck(DataStates state, List list) {
+
+  print(list.length);
+  print(state);
   if (state == DataStates.waiting) {
     return Center(
       child: CircularProgressIndicator(),

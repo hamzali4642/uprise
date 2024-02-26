@@ -164,7 +164,7 @@ class _SelectLocationState extends State<SelectLocation> {
               padding: EdgeInsets.symmetric(horizontal: width * 0.03),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: widget.primary,
+                  backgroundColor: widget.primary,
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   shape: const StadiumBorder(),
                 ),
