@@ -255,7 +255,7 @@ class _DiscoveryState extends State<Discovery> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const HeadingWidget(
-                text: "Popular Radio Stations",
+                text: "Popular Communities",
               ),
               const SizedBox(
                 height: 20,

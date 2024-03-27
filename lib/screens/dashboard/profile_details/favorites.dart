@@ -61,7 +61,7 @@ class _FavoritesState extends State<Favorites> {
                     width: 1,
                     color: Colors.black,
                   ),
-                  tab("RadioStations"),
+                  tab("Communities"),
                   Container(
                     width: 1,
                     color: Colors.black,
