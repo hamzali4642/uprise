@@ -240,6 +240,15 @@ class _SignUpState extends State<SignUp> {
               errorText: "Username is required",
               controller: username,
               hint: "Enter your name",
+              validator: (val) {
+                if(val!.isEmpty){
+                  return "Username is required";
+                } else if(val.length > 30){
+                  return "Username must not be greater than 30 characters";
+                }
+                return null; // Return null if the input is valid
+              },
+
             ),
             const SizedBox(height: 20),
             header("Email"),
@@ -396,6 +405,14 @@ class _SignUpState extends State<SignUp> {
                 errorText: "Band Name is required",
                 controller: brandName,
                 hint: "Enter your Band",
+                validator: (val) {
+                  if(val!.isEmpty){
+                    return "Band Name is required";
+                  } else if(val.length > 30){
+                    return "Band Name must not be greater than 30 characters";
+                  }
+                  return null; // Return null if the input is valid
+                },
               ),
               const SizedBox(height: 20),
               buildText("Donation Link"),
