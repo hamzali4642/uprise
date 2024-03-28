@@ -47,6 +47,21 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         });
       }
 
+      dataProvider.checkIsAudioComplete();
+      if (value.songsState == DataStates.success &&
+          dataProvider.isPlayNextSong) {
+        if (dp.selectedIndex == 2) {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            nextGenre();
+          });
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            nextCity();
+          });
+
+        }
+      }
+
       return dataProvider.currentSong == null
           ? const Center(
               child: Text(

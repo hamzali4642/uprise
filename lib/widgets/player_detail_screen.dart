@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uprise/helpers/constants.dart';
+import 'package:uprise/helpers/data_state.dart';
 import 'package:uprise/provider/data_provider.dart';
 import 'package:uprise/screens/dashboard/band_details.dart';
 import 'package:uprise/widgets/custom_asset_image.dart';
@@ -39,6 +40,13 @@ class _PlayerDetailScreenState extends State<PlayerDetailScreen> {
 
       isBlast =
           dataProvider.userModel!.blasts.contains(dataProvider.currentSong!.id);
+
+      dataProvider.checkIsAudioComplete();
+      if (value.songsState == DataStates.success && dataProvider.isPlayNextSong) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          nextSong();
+        });
+      }
 
       return Scaffold(
         backgroundColor: Colors.black,

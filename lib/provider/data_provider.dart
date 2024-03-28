@@ -56,6 +56,8 @@ class DataProvider extends ChangeNotifier {
 
   // bool isDisposed = false;
   bool isPlaying = false;
+  bool isPlayNextSong = false;
+
   String audioState = "stopped";
   Duration completed = const Duration(seconds: 0);
   Duration? bufferedTime = const Duration(seconds: 0);
@@ -132,6 +134,20 @@ class DataProvider extends ChangeNotifier {
         ),
       );
       notifyListeners();
+    });
+  }
+
+  checkIsAudioComplete() {
+    print("checkIsAudioComplete");
+    audioPlayer.positionStream.listen((event) {
+      completed = event;
+      if (completed.inSeconds == total.inSeconds && completed.inSeconds != const Duration(seconds: 0).inSeconds) {
+        isPlayNextSong = true;
+        //notifyListeners();
+      }else{
+        isPlayNextSong = false;
+        //notifyListeners();
+      }
     });
   }
 
