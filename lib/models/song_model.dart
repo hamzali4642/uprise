@@ -18,6 +18,8 @@ class SongModel {
   List<String> upVotes = [];
   List<String> downVotes = [];
 
+
+  late int duration;
   SongModel({
     this.id,
     required this.title,
@@ -29,6 +31,7 @@ class SongModel {
     required this.updatedAt,
     required this.state,
     required this.country,
+    required this.duration,
   });
 
   Map<String, dynamic> toMap() {
@@ -53,6 +56,7 @@ class SongModel {
     title = data["title"];
     city = data["city"];
 
+    duration = data["duration"];
     state = data["state"];
     country = data["country"];
 

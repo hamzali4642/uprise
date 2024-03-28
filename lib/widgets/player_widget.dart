@@ -17,8 +17,10 @@ import 'package:utility_extensions/utility_extensions.dart';
 import '../helpers/colors.dart';
 
 class PlayerWidget extends StatefulWidget {
-  const PlayerWidget({super.key});
+  const PlayerWidget({super.key, this.isRadio = false, this.songs});
 
+  final bool isRadio;
+  final List<SongModel>? songs;
   @override
   State<PlayerWidget> createState() => _PlayerWidgetState();
 }
@@ -32,6 +34,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.isRadio);
     return Consumer<DataProvider>(builder: (ctx, value, child) {
       dataProvider = value;
 
@@ -50,6 +53,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       dataProvider.checkIsAudioComplete();
       if (value.songsState == DataStates.success &&
           dataProvider.isPlayNextSong) {
+        if(widget.isRadio){
+          nextRadio();
+        }else
         if (dp.selectedIndex == 2) {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             nextGenre();
@@ -87,53 +93,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                     // Perform your desired action here, e.g., navigate to a new page, show a menu, etc.
                   }
                 },
-                // onHorizontalDragEnd: dp.selectedIndex == 2
-                //     ? (dragEndDetail) {
-                //         dataProvider.stop();
-                //
-                //         dataProvider.setAudio = "stopped";
-                //
-                //         List<SongModel> songList = [];
-                //
-                //         List<SongModel> temp = dataProvider.songs
-                //             .where((element) => element.genreList.any((genre) =>
-                //                 genre ==
-                //                 dataProvider.userModel!.selectedGenres.first))
-                //             .toList();
-                //
-                //         if (dataProvider.type == "City Wide") {
-                //           for (var element in temp) {
-                //             songList.add(element);
-                //           }
-                //         } else if (dataProvider.type == "State Wide") {
-                //           for (var element in temp) {
-                //             if (element.genreList.first ==
-                //                 dataProvider.userModel!.selectedGenres.first) {
-                //               if (element.upVotes.length >= 3) {
-                //                 songList.add(element);
-                //               }
-                //             }
-                //           }
-                //         } else {
-                //           for (var element in temp) {
-                //             if (element.upVotes.length > 3) {
-                //               songList.add(element);
-                //             }
-                //           }
-                //         }
-                //
-                //         songList.shuffle();
-                //
-                //         if (songList.isNotEmpty) {
-                //           dataProvider.stop();
-                //           dataProvider.setAudio = "stopped";
-                //           SongModel prev = dataProvider.currentSong!;
-                //           SongModel songModel = getRandomValue(songList, prev);
-                //           dataProvider.currentSong = songModel;
-                //           dataProvider.initializePlayer();
-                //         }
-                //       }
-                //     : null,
+
                 onTap: () {
                   Provider.of<DashboardProvider>(context, listen: false)
                       .selectedIndex = 4;
@@ -229,6 +189,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                      if(widget.isRadio){
+                                        nextRadio();
+                                        return;
+                                      }
                                       if (dp.selectedIndex == 2) {
                                         nextGenre();
                                       } else {
@@ -504,5 +468,27 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void nextRadio(){
+    var index = widget.songs!.indexWhere((element) => element.id == dataProvider.currentSong!.id);
+    var i = 0;
+    if(index != -1){
+      i = index;
+    }
+
+    SongModel song;
+
+    if(index == -1){
+      song = widget.songs![0];
+    }else
+    if(widget.songs!.length == i + 1){
+      song = widget.songs![0];
+    }else{
+      song = widget.songs![i + 1];
+    }
+
+    dataProvider.currentSong = song;
+    dataProvider.play();
   }
 }

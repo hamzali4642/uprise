@@ -41,7 +41,16 @@ class _RadioDetailsState extends State<RadioDetails> {
             const SizedBox(height: 10),
             radioTitleRow(),
             radioSongs(),
-            const PlayerWidget(),
+            Builder(
+              builder: (context) {
+                var songs = dataProvider.songs
+                    .where((element) =>
+                element.city == widget.radioStationModel.name ||
+                    element.genreList.contains(widget.radioStationModel.name))
+                    .toList();
+                return PlayerWidget(isRadio: true, songs: songs,);
+              }
+            ),
             const SizedBox(height: 20),
           ],
         ),

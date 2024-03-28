@@ -81,7 +81,7 @@ class SongWidget extends StatelessWidget {
                           width: 10,
                         ),
                         Text(
-                          "03:45",
+                          secondsToTimeString(song.duration),
                           style: TextStyle(
                             color: CColors.textColor,
                             fontWeight: FontWeights.medium,
@@ -99,5 +99,11 @@ class SongWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+  String secondsToTimeString(int seconds) {
+    int minutes = seconds ~/ 60;
+    seconds %= 60;
+
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 }
