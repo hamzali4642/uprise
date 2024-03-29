@@ -53,13 +53,18 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       if (value.songsState == DataStates.success &&
           dataProvider.isPlayNextSong) {
         if (widget.isRadio) {
-          nextRadio();
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            print("NExt radio");
+            nextRadio();
+          });
         } else if (dp.selectedIndex == 2) {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            print("Next Genere");
             nextGenre();
           });
         } else {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            print("Next City");
             nextCity();
           });
         }
@@ -185,12 +190,15 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                   InkWell(
                                     onTap: () {
                                       if (widget.isRadio) {
+                                        print("NEXT RADIO");
                                         nextRadio();
                                         return;
                                       }
                                       if (dp.selectedIndex == 2) {
+                                        print("NEXTGENERE");
                                         nextGenre();
                                       } else {
+                                        print("NEXTCITY");
                                         nextCity();
                                       }
                                     },

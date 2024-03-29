@@ -842,8 +842,4 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }
