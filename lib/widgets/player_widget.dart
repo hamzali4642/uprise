@@ -34,7 +34,6 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.isRadio);
     return Consumer<DataProvider>(builder: (ctx, value, child) {
       dataProvider = value;
 
@@ -53,10 +52,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       dataProvider.checkIsAudioComplete();
       if (value.songsState == DataStates.success &&
           dataProvider.isPlayNextSong) {
-        if(widget.isRadio){
+        if (widget.isRadio) {
           nextRadio();
-        }else
-        if (dp.selectedIndex == 2) {
+        } else if (dp.selectedIndex == 2) {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             nextGenre();
           });
@@ -64,7 +62,6 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             nextCity();
           });
-
         }
       }
 
@@ -82,15 +79,13 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                     if (dragEndDetails.primaryVelocity! < 0) {
                       // nextGenre();
                     } else if (dragEndDetails.primaryVelocity! > 0) {
-                      print("object");
                       nextGenre();
                     }
                   }
                 },
                 onPanUpdate: (details) {
                   if (details.delta.dx < 0) {
-                    print('Right-to-left swipe detected!');
-                    // Perform your desired action here, e.g., navigate to a new page, show a menu, etc.
+                    //'Right-to-left swipe detected!'
                   }
                 },
 
@@ -189,7 +184,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      if(widget.isRadio){
+                                      if (widget.isRadio) {
                                         nextRadio();
                                         return;
                                       }
@@ -470,25 +465,24 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     super.dispose();
   }
 
-  void nextRadio(){
-    var index = widget.songs!.indexWhere((element) => element.id == dataProvider.currentSong!.id);
+  void nextRadio() {
+    dataProvider.stop();
+    dataProvider.setAudio = "stopped";
+
+    var index = widget.songs!
+        .indexWhere((element) => element.id == dataProvider.currentSong!.id);
     var i = 0;
-    if(index != -1){
+    if (index != -1) {
       i = index;
     }
 
     SongModel song;
 
-    if(index == -1){
-      song = widget.songs![0];
-    }else
-    if(widget.songs!.length == i + 1){
-      song = widget.songs![0];
-    }else{
-      song = widget.songs![i + 1];
-    }
+    song = (index == -1 || i + 1 == widget.songs!.length)
+        ? widget.songs![0]
+        : widget.songs![i + 1];
 
     dataProvider.currentSong = song;
-    dataProvider.play();
+    dataProvider.initializePlayer();
   }
 }
