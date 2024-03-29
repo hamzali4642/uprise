@@ -484,5 +484,6 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
     dataProvider.currentSong = song;
     dataProvider.initializePlayer();
+    setState(() {});
   }
 }
