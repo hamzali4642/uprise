@@ -33,6 +33,9 @@ class _RadioDetailsState extends State<RadioDetails> {
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, provider, child) {
       dataProvider = provider;
+      if(!dataProvider.isRadio){
+        dataProvider.isRadio = true;
+      }
       return Scaffold(
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,5 +180,11 @@ class _RadioDetailsState extends State<RadioDetails> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    dataProvider.isRadio = false;
+    super.dispose();
   }
 }

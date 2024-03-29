@@ -32,6 +32,7 @@ class DataProvider extends ChangeNotifier {
 
   List<RadioStationModel> radioStations = [];
 
+  bool isRadio = false;
   DataStates profileState = DataStates.waiting;
   DataStates songsState = DataStates.waiting;
   DataStates eventState = DataStates.waiting;
@@ -137,7 +138,7 @@ class DataProvider extends ChangeNotifier {
     });
   }
 
-  checkIsAudioComplete() {
+  void checkIsAudioComplete() {
     print("checkIsAudioComplete");
     audioPlayer.positionStream.listen((event) {
       completed = event;
@@ -239,6 +240,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   initializePlayer() async {
+
     audioPlayer.dispose();
     audioPlayer = AudioPlayer();
     if (currentSong != null) {
@@ -253,8 +255,10 @@ class DataProvider extends ChangeNotifier {
       } else {
         print("null");
       }
+
     }
 
+    checkIsAudioComplete();
     notifyListeners();
   }
 
@@ -431,10 +435,12 @@ class DataProvider extends ChangeNotifier {
   }
 
   play() async {
+    print("object");
     audioState = "playing";
     isPlaying = true;
     notifyListeners();
     await audioPlayer.play();
+    checkIsAudioComplete();
   }
 
   stop() async {

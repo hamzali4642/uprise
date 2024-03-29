@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   bool isLeftToRightDrag = false;
   double startX = 0.0;
 
+  bool canAutoNext = true;
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (ctx, value, child) {
@@ -49,25 +51,41 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         });
       }
 
-      dataProvider.checkIsAudioComplete();
+      // dataProvider.checkIsAudioComplete();
       if (value.songsState == DataStates.success &&
           dataProvider.isPlayNextSong) {
-        if (widget.isRadio) {
+        if (dataProvider.isRadio) {
+
+
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             print("NExt radio");
-            nextRadio();
+
+
+            if(canAutoNext && widget.isRadio){
+              canAutoNext = false;
+              nextRadio();
+            }
+
           });
-        } else if (dp.selectedIndex == 2) {
+        }else
+        if (dp.selectedIndex == 2) {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             print("Next Genere");
-            nextGenre();
+            if(canNextGenre){
+              nextGenre();
+            }
           });
         } else {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             print("Next City");
-            nextCity();
+            if(canNextCity){
+              nextCity();
+            }
+
           });
         }
+
+
       }
 
       return dataProvider.currentSong == null
@@ -285,7 +303,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                               }),
                               const SizedBox(height: 5),
                               AbsorbPointer(
-                                absorbing: true,
+                                absorbing: kReleaseMode,
                                 child: ProgressBar(
                                   thumbRadius: 5,
                                   barHeight: 2,
@@ -360,6 +378,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   //   return songs[randomIndex];
   // }
 
+
+  bool canNextCity = true;
   nextCity() {
     dataProvider.stop();
 
@@ -421,9 +441,13 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     } else {
       dataProvider.currentSong = songList[dataProvider.index];
       dataProvider.initializePlayer();
+
+      canNextCity = true;
     }
   }
 
+
+  bool canNextGenre = true;
   nextGenre() {
     dataProvider.stop();
     dataProvider.setAudio = "stopped";
@@ -464,6 +488,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       SongModel songModel = getRandomValue(songList, prev);
       dataProvider.currentSong = songModel;
       dataProvider.initializePlayer();
+
+      canNextGenre = true;
       setState(() {});
     }
   }
@@ -473,10 +499,15 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     super.dispose();
   }
 
-  void nextRadio() {
+  void nextRadio() async{
+    await Future.delayed(Duration(milliseconds: 100));
     dataProvider.stop();
+    await Future.delayed(Duration(milliseconds: 100));
     dataProvider.setAudio = "stopped";
 
+    if(widget.songs == null){
+      return;
+    }
     var index = widget.songs!
         .indexWhere((element) => element.id == dataProvider.currentSong!.id);
     var i = 0;
@@ -491,7 +522,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         : widget.songs![i + 1];
 
     dataProvider.currentSong = song;
-    dataProvider.initializePlayer();
-    setState(() {});
+    await dataProvider.initializePlayer();
+    canAutoNext = true;
+
   }
 }
